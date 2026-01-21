@@ -1,0 +1,23 @@
+<!-- header.html -->
+<header class="fixed top-0 left-0 w-full bg-blue-700 text-white shadow-md z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-4">
+            <a href="dashboard.html" class="text-2xl font-bold">Car Rental System</a>
+            <nav>
+                <ul class="flex space-x-6">
+                    <li><a href="dashboard.html" class="hover:underline">Home</a></li>
+                    <li><a href="bookings.html" class="hover:underline">My Bookings</a></li>
+                    <li><a href="profile.html" class="hover:underline">Profile</a></li>
+                    <li><a href="#" id="logout" class="hover:underline">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<script>
+    document.getElementById("logout").addEventListener("click", function () {
+        localStorage.removeItem("token");
+        window.location.href = "login.html";
+    });
+</script>

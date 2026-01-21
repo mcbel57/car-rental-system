@@ -1,0 +1,50 @@
+<!-- car_form.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Registration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex justify-center items-center h-screen">
+
+    <form id="carForm" class="bg-white p-6 rounded-xl shadow-lg w-96">
+        <h2 class="text-2xl font-bold text-center mb-4">Register a Car</h2>
+        
+        <input type="text" name="name" placeholder="Car Name" required class="w-full p-2 border rounded mb-2">
+        <textarea name="description" placeholder="Car Features" required class="w-full p-2 border rounded mb-2"></textarea>
+        <input type="text" name="color" placeholder="Car Color" required class="w-full p-2 border rounded mb-2">
+
+        <select name="vehicleType" class="w-full p-2 border rounded mb-2">
+            <option value="FWD">FWD</option>
+            <option value="RWD">RWD</option>
+            <option value="AWD">AWD</option>
+            <option value="4WD">4WD</option>
+        </select>
+
+        <input type="number" name="costPerDay" placeholder="Hiring Cost per Day" required class="w-full p-2 border rounded mb-2">
+        <input type="file" name="image" accept="image/*" required class="w-full p-2 border rounded mb-2">
+
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Submit</button>
+    </form>
+
+
+    <script>
+        document.getElementById("carForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+
+            const response = await fetch("http://localhost:5000/api/cars", {
+                method: "POST",
+                body: formData,
+            });
+
+            const data = await response.json();
+            alert(data.message);
+        });
+    </script>
+    
+
+</body>
+</html>

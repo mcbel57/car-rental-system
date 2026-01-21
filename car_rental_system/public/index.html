@@ -1,0 +1,110 @@
+<!-- landing_page.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Rental System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+    <!-- 🚀 Navigation Bar (Stationary Header) -->
+    <header class="bg-blue-700 text-white fixed top-0 left-0 w-full shadow-lg z-10">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold">Car Rental</h1>
+            <nav id="navLinks">
+                <a href="#about" class="px-4 hover:underline">About Us</a>
+                <a href="#contact" class="px-4 hover:underline">Contact Us</a>
+                <a href="user_form.html" class="px-4 hover:underline">Sign Up</a>
+                <a href="login.html" class="px-4 hover:underline">Sign In</a>
+            </nav>
+        </div>
+    </header>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const token = localStorage.getItem("token");
+            const user = JSON.parse(localStorage.getItem("user"));
+            const navLinks = document.getElementById("navLinks");
+
+            if (token && user) {
+                let dashboardLink = user.role === "admin" ? "admin_dashboard.html" : "user_dashboard.html";
+                let dashboardText = user.role === "admin" ? "Admin Dashboard" : "My Dashboard";
+
+                navLinks.innerHTML = `
+                    <a href="#about" class="px-4 hover:underline">About Us</a>
+                    <a href="#contact" class="px-4 hover:underline">Contact Us</a>
+                    <a href="${dashboardLink}" class="px-4 hover:underline font-bold text-yellow-300">${dashboardText}</a>
+                    <a href="#" id="logoutBtn" class="px-4 hover:underline text-red-300">Logout</a>
+                `;
+
+                document.getElementById("logoutBtn").addEventListener("click", () => {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("user");
+                    window.location.reload();
+                });
+            }
+        });
+    </script>
+
+    <!-- 🚀 Hero Section -->
+    <section class="h-screen flex items-center justify-center text-center bg-cover bg-center relative"
+        style="background-image: url('');">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="relative text-white p-8 rounded-lg z-10">
+            <h2 class="text-4xl font-bold mb-4">Rent Your Dream Car Today</h2>
+            <p class="text-lg mb-6">Experience top-quality car rentals with flexible pricing and luxury vehicles.</p>
+            <a href="user_form.html"
+                class="mt-4 inline-block bg-yellow-500 px-6 py-2 text-black rounded-lg font-bold hover:bg-yellow-600">Get
+                Started</a>
+        </div>
+    </section>
+
+    <!-- 🚀 About Us Section -->
+    <section id="about" class="max-w-6xl mx-auto my-16 px-6 text-center">
+        <h2 class="text-3xl font-bold text-blue-700">About Us</h2>
+        <p class="mt-4 text-gray-700">We provide a seamless car rental experience with the best selection of vehicles
+            for all your needs.</p>
+        <div class="mt-8 flex justify-center space-x-6">
+            <img src="../images/056b4e51-5966-484b-a36e-ee5ace07710e.jpeg" alt="Luxury Car" class="rounded-lg shadow-md">
+            <img src="../images/2021 Mercedes-AMG GLE53 Coupe electrifies (1).jpeg" alt="Sports Car" class="rounded-lg shadow-md">
+            <img src="../images/913d6994-d570-41bd-9bab-dd0fe876424f.jpeg" alt="Convertible Car"
+                class="rounded-lg shadow-md">
+        </div>
+    </section>
+
+    <!-- 🚀 Contact Us Section -->
+    <section id="contact" class="max-w-6xl mx-auto my-16 px-6 text-center">
+        <h2 class="text-3xl font-bold text-blue-700">Contact Us</h2>
+        <p class="mt-4 text-gray-700">Have questions? Reach out to us via the form below and we'll get back to you as
+            soon as possible!</p>
+
+        <form class="mt-6 bg-white shadow-lg rounded-lg p-6 max-w-lg mx-auto">
+            <input type="text" placeholder="Your Name" class="w-full p-2 border rounded mb-2" required>
+            <input type="email" placeholder="Your Email" class="w-full p-2 border rounded mb-2" required>
+            <textarea placeholder="Your Message" class="w-full p-2 border rounded mb-2"></textarea>
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Send
+                Message</button>
+        </form>
+    </section>
+
+    <!-- 🚀 Footer -->
+    <footer class="bg-gray-900 text-gray-300 text-center py-6 mt-10">
+        <div class="max-w-7xl mx-auto px-4">
+            <p class="text-lg font-semibold">Car Rental System</p>
+            <div class="mt-4 flex justify-center space-x-6">
+                <a href="index.html" class="hover:text-white">Home</a>
+                <a href="about.html" class="hover:text-white">About Us</a>
+                <a href="contact.html" class="hover:text-white">Contact</a>
+            </div>
+            <p class="mt-4">📍 Nairobi, Kenya | 📞 +254 700 123 456 | 📧 info@carrental.com</p>
+            <p class="mt-2 text-sm">© 2025 Car Rental System. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>

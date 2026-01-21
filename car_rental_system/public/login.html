@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | Car Rental System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="flex items-center justify-center h-screen bg-gray-100">
+    <header class="bg-blue-700 text-white fixed top-0 left-0 w-full shadow-lg z-10">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+           <a href= "index.html"  class="text-2xl font-bold" >Car Rental</a>
+            <nav>
+                <a href="user_form.html" class="px-4 hover:underline">Sign Up</a>
+                <a href="login.html" class="px-4 hover:underline">Sign In</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="bg-white shadow-lg rounded-lg p-8 max-w-md w-full mt-24">
+        <h2 class="text-3xl font-bold text-center text-blue-700 mb-6">Sign In</h2>
+        <form id="loginForm">
+            <div class="mb-4">
+                <label for="email" class="block text-gray-700">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required
+                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div class="mb-4">
+                <label for="password" class="block text-gray-700">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required
+                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <p id="errorMessage" class="text-red-600 text-sm mt-2"></p>
+            <div class="flex justify-between items-center">
+                <a href="#" class="text-sm text-blue-600 hover:underline">Forgot Password?</a>
+                <a href="user_form.html" class="text-sm text-blue-600 hover:underline">Sign Up</a>
+            </div>
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg font-bold mt-4 hover:bg-blue-700"
+                aria-label="Sign In">
+                Sign In
+            </button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value.trim();
+            const errorMessage = document.getElementById("errorMessage");
+
+            errorMessage.innerText = "";
+
+            try {
+                const loginButton = document.querySelector("button[type='submit']");
+                loginButton.innerText = "Signing in...";
+                loginButton.disabled = true;
+
+                const response = await fetch("http://localhost:5000/api/auth/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+                console.log("🔥 Server Response:", data);
+
+                if (!response.ok) {
+                    throw new Error(data.error || "Login failed");
+                }
+
+                // Save token and user data in localStorage
+                localStorage.setItem("token", data.token);
+                localStorage.setItem("user", JSON.stringify(data.user));
+
+                // Redirect based on the role from the backend response
+                if (data.redirectTo) {
+                    window.location.href = data.redirectTo;
+                } else {
+                    errorMessage.innerText = "Login successful, but no redirect path provided.";
+                }
+
+            } catch (error) {
+                console.error("❌ Login Error:", error);
+                errorMessage.innerText = error.message;
+            } finally {
+                const loginButton = document.querySelector("button[type='submit']");
+                loginButton.innerText = "Sign In";
+                loginButton.disabled = false;
+            }
+        });
+    </script>
+</body>
+
+</html>

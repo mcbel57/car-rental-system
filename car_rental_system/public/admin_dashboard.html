@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Car Rental System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+    <!-- 🌍 Admin Header -->
+    <header class="bg-blue-800 text-white py-4 shadow-lg fixed top-0 w-full z-10">
+        <div class="container mx-auto flex justify-between items-center px-6">
+            <h1 class="text-2xl font-bold">Admin Dashboard</h1>
+
+            <!-- Dropdown Menu -->
+            <div class="relative">
+                <button id="menuBtn" class="hover:text-gray-300 focus:outline-none">
+                    Menu ▼
+                </button>
+
+                <!-- Dropdown Content -->
+                <ul id="dropdownMenu"
+                    class="absolute right-0 mt-2 bg-white text-black shadow-lg rounded-md w-48 hidden">
+                    <li><a href="admin_dashboard.html" class="block px-4 py-2 hover:bg-gray-200">Dashboard</a></li>
+                    <li><a href="admin_cars.html" class="block px-4 py-2 hover:bg-gray-200">Manage Cars</a></li>
+                    <li><a href="admin_view_rentals.html" class="block px-4 py-2 hover:bg-gray-200">View Rentals</a>
+                    </li>
+                    <li><a href="admin_users.html" class="block px-4 py-2 hover:bg-gray-200">Manage Users</a></li>
+                    <li><a href="index.html" class="block px-4 py-2 text-red-600 hover:bg-gray-200">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- 📌 Admin Dashboard Content -->
+    <main class="container mx-auto mt-20 px-6">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">Welcome, Admin</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Add Cars -->
+            <a href="admin_manage_cars.html" class="bg-blue-500 text-white p-6 rounded-lg text-center hover:bg-blue-600">
+                <h3 class="text-xl font-semibold">Add Cars</h3>
+                <p class="mt-2">Register new vehicles into the system.</p>
+            </a>
+
+            <!-- Manage Cars -->
+            <a href="admin_cars.html"
+                class="bg-blue-600 text-white p-6 rounded-lg text-center hover:bg-blue-700">
+                <h3 class="text-xl font-semibold">Manage Cars</h3>
+                <p class="mt-2">Edit or remove cars from inventory.</p>
+            </a>
+
+            <!-- View Rentals -->
+            <a href="admin_view_rentals.html"
+                class="bg-green-600 text-white p-6 rounded-lg text-center hover:bg-green-700">
+                <h3 class="text-xl font-semibold">View Rentals</h3>
+                <p class="mt-2">See current and past rentals.</p>
+            </a>
+
+            <!-- Manage Users -->
+            <a href="admin_users.html" class="bg-red-600 text-white p-6 rounded-lg text-center hover:bg-red-700">
+                <h3 class="text-xl font-semibold">Manage Users</h3>
+                <p class="mt-2">View, edit, or delete user accounts.</p>
+            </a>
+        </div>
+    </main>
+
+    <script>
+        // Toggle dropdown menu
+        document.getElementById("menuBtn").addEventListener("click", () => {
+            document.getElementById("dropdownMenu").classList.toggle("hidden");
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener("click", (event) => {
+            const menuBtn = document.getElementById("menuBtn");
+            const dropdown = document.getElementById("dropdownMenu");
+
+            if (!menuBtn.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.classList.add("hidden");
+            }
+        });
+    </script>
+
+</body>
+
+</html>

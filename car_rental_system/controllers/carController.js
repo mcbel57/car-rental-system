@@ -1,0 +1,84 @@
+import db from "../config/db.js";
+import Car from "../models/Car.js";
+
+// 🏎️ Add a new car
+export const addCar = async (req, res) => {
+    try {
+        const { name, description, color, vehicleType, hireCostPerDay, imageUrl } = req.body;
+        const newCar = await Car.create({ name, description, color, vehicleType, hireCostPerDay, imageUrl });
+        res.status(201).json({ success: true, message: "Car added successfully!", car: newCar });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Error adding car", error: error.message });
+    }
+};
+
+// 🛠️ Edit a car
+export const editCar = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updatedCar = await Car.update(req.body, { where: { id } });
+        res.status(200).json({ success: true, message: "Car updated successfully!", updatedCar });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Error updating car", error: error.message });
+    }
+};
+
+// ✅ Delete a car
+export const deleteCar = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const car = await Car.findByPk(id);
+
+        if (!car) return res.status(404).json({ error: "Car not found." });
+
+        await car.destroy();
+        res.json({ message: "Car deleted successfully." });
+    } catch (error) {
+        console.error("❌ Error deleting car:", error);
+        res.status(500).json({ error: "Failed to delete car." });
+    }
+};
+
+// 📋 Get all cars
+// 📋 Get all cars (Ensure image is sent as Base64)
+export const getAllCars = async (req, res) => {
+    try {
+        const cars = await Car.findAll();
+        
+        // Convert BLOB to Base64
+        const formattedCars = cars.map(car => ({
+            id: car.id,
+            carName: car.carName,
+            description: car.description,
+            color: car.color,
+            vehicleType: car.vehicleType,
+            costPerDay: car.costPerDay,
+            image: car.image ? `data:image/png;base64,${car.image.toString("base64")}` : null
+        }));
+
+        res.status(200).json({ success: true, cars: formattedCars });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Error retrieving cars", error: error.message });
+    }
+};
+
+// ✅ Get a single car by ID
+export const getCarById = async (req, res) => {
+    try {
+        const carId = parseInt(req.params.id, 10);
+
+        if (isNaN(carId)) {
+            return res.status(400).json({ message: "Invalid Car ID" });
+        }
+
+        const car = await Car.findOne({ where: { id: carId } });
+
+        if (!car) {
+            return res.status(404).json({ message: "Car not found" });
+        }
+
+        res.status(200).json(car);
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};

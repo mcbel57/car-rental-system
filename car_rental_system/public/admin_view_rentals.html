@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin | View Rentals</title>
+
+    <!-- ✅ Tailwind CSS (For Styling) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* ✅ Custom Styles */
+        body {
+            background-color: #f3f4f6;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f1f1f1;
+        }
+
+        button {
+            cursor: pointer;
+        }
+    </style>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", fetchRentals);
+
+        async function fetchRentals() {
+            try {
+                // ✅ Fetch all rentals without authentication checks
+                const response = await fetch("http://localhost:5000/api/rentals", {
+                    method: "GET"
+                });
+
+                if (!response.ok) throw new Error("Failed to fetch rentals");
+
+                const rentals = await response.json();
+                displayRentals(rentals);
+            } catch (error) {
+                console.error("Error fetching rentals:", error);
+                alert("Failed to load rentals.");
+            }
+        }
+
+        // 📌 Display Rentals in Table
+        function displayRentals(rentals) {
+            const rentalsTableBody = document.getElementById("rentalsTableBody");
+            rentalsTableBody.innerHTML = "";
+
+            if (rentals.length === 0) {
+                rentalsTableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4">No rentals found.</td></tr>`;
+                return;
+            }
+
+            rentals.forEach(rental => {
+                const row = document.createElement("tr");
+                row.className = "border-b";
+
+                row.innerHTML = `
+                    <td class="py-3 px-6">${rental.carName}</td>
+                    <td class="py-3 px-6">${rental.fullName}</td>
+                    <td class="py-3 px-6">${rental.idNumber}</td>
+                    <td class="py-3 px-6">${rental.rentalDate}</td>
+                    <td class="py-3 px-6">${rental.rentalDays} days</td>
+                    <td class="py-3 px-6">Ksh ${rental.cost}</td>
+                    <td class="py-3 px-6">
+                        <button onclick="cancelRental(${rental.id})"
+                            class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+                            Cancel
+                        </button>
+                    </td>
+                `;
+
+                rentalsTableBody.appendChild(row);
+            });
+        }
+
+        // 📌 Cancel Rental Function
+        async function cancelRental(rentalId) {
+            if (!confirm("Are you sure you want to cancel this rental?")) return;
+
+            try {
+                const response = await fetch(`http://localhost:5000/api/rentals/${rentalId}`, {
+                    method: "DELETE"
+                });
+
+                if (!response.ok) throw new Error("Failed to cancel rental.");
+
+                alert("Rental canceled successfully.");
+                fetchRentals(); // ✅ Refresh the rentals list
+            } catch (error) {
+                console.error("Error canceling rental:", error);
+                alert("Failed to cancel rental.");
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+    <!-- ✅ Admin Header -->
+    <header class="bg-blue-800 text-white py-4 shadow-lg fixed top-0 w-full z-10">
+        <div class="container mx-auto flex justify-between items-center px-6">
+            <h1 class="text-2xl font-bold">Admin Dashboard</h1>
+            <nav>
+                <ul class="flex space-x-6">
+                    <li><a href="admin_dashboard.html" class="hover:text-gray-300">Dashboard</a></li>
+                    <li><a href="admin_manage_cars.html" class="hover:text-gray-300">Add Cars</a></li>
+                    <li><a href="admin_cars.html" class="hover:text-gray-300">Manage Cars</a></li>
+                    <li><a href="admin_view_rentals.html" class="hover:text-gray-300">View Rentals</a></li>
+                    <li><a href="admin_users.html" class="hover:text-gray-300">Manage Users</a></li>
+                    <li><a href="index.html" class="hover:text-gray-300">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ✅ Main Content -->
+    <div class="container mx-auto mt-20 p-6 bg-white shadow-lg rounded-lg">
+        <h1 class="text-2xl font-bold mb-4">All Rentals</h1>
+
+        <table class="w-full border-collapse border border-gray-300">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th class="border px-4 py-2">Car Name</th>
+                    <th class="border px-4 py-2">Rented By</th>
+                    <th class="border px-4 py-2">ID Number</th>
+                    <th class="border px-4 py-2">Rental Date</th>
+                    <th class="border px-4 py-2">Days</th>
+                    <th class="border px-4 py-2">Total Cost</th>
+                    <th class="border px-4 py-2">Action</th>
+                </tr>
+            </thead>
+            <tbody id="rentalsTableBody">
+                <!-- ✅ Rentals will be dynamically inserted here -->
+            </tbody>
+        </table>
+    </div>
+
+</body>
+
+</html>

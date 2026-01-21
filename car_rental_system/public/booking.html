@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Car | Car Rental</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+    <!-- 🚀 Header -->
+    <header class="fixed top-0 left-0 w-full bg-blue-700 text-white shadow-md z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <a href="index.html" class="text-2xl font-bold">Car Rental System</a>
+                <nav id="navLinks">
+                    <!-- Dynamic Links loaded by JS -->
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- 🚗 Booking Form -->
+    <div class="container mx-auto mt-24 px-6">
+        <h1 class="text-3xl font-bold text-center text-blue-700 mb-6">Book Your Car</h1>
+        <form id="bookingForm" class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md">
+            <input type="hidden" id="carId" name="carId">
+
+            <!-- Car Name -->
+            <div class="mb-4">
+                <label class="block text-gray-700 font-bold">Car Name:</label>
+                <input type="text" id="carName" name="carName" class="w-full border rounded-lg p-2" readonly>
+            </div>
+
+            <!-- User Details -->
+            <div class="mb-4">
+                <label class="block text-gray-700 font-bold">Full Name:</label>
+                <input type="text" id="fullName" name="fullName" class="w-full border rounded-lg p-2" readonly>
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-700 font-bold">ID Number:</label>
+                <input type="text" id="idNumber" name="idNumber" class="w-full border rounded-lg p-2" readonly>
+            </div>
+
+            <!-- Date Picker -->
+            <div class="mb-4">
+                <label class="block text-gray-700 font-bold">Pick a Date:</label>
+                <input type="date" id="rentalDate" name="rentalDate" class="w-full border rounded-lg p-2" required>
+            </div>
+
+            <!-- Rental Duration -->
+            <div class="mb-4">
+                <label class="block text-gray-700 font-bold">Number of Days:</label>
+                <input type="number" id="rentalDays" name="rentalDays" class="w-full border rounded-lg p-2" min="1"
+                    max="30" required>
+            </div>
+
+            <!-- Total Cost (Read-Only) -->
+            <div class="mb-4">
+                <label class="block text-gray-700 font-bold">Total Cost:</label>
+                <input type="text" id="totalCost" name="totalCost" class="w-full border rounded-lg p-2" readonly>
+            </div>
+
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
+                Confirm Booking
+            </button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const token = localStorage.getItem("token");
+            const navLinks = document.getElementById("navLinks");
+            const user = JSON.parse(localStorage.getItem("user"));
+
+            if (!token || !user) {
+                alert("Unauthorized! Please log in.");
+                window.location.href = "login.html";
+                return;
+            }
+
+            let homeLink = user.role === "admin" ? "admin_dashboard.html" : "user_dashboard.html";
+
+            navLinks.innerHTML = `
+                <ul class="flex space-x-6">
+                    <li><a href="${homeLink}" class="hover:underline">Home</a></li>
+                    <li><a href="bookings.html" class="hover:underline">My Bookings</a></li>
+                    <li><a href="#" id="logout" class="hover:underline">Logout</a></li>
+                </ul>
+            `;
+
+            document.getElementById("logout").addEventListener("click", function () {
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
+                window.location.href = "login.html";
+            });
+        });
+
+        // 🚗 Get Car ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const carId = urlParams.get("carId");
+
+        if (!carId) {
+            alert("Car ID is missing. Please select a car first.");
+            window.location.href = "dashboard.html";
+        } else {
+            document.getElementById("carId").value = carId;
+            fetchCarDetails(carId);
+        }
+
+        // 🏷️ Load User Info from Local Storage
+        const userString = localStorage.getItem("user");
+        let user = null;
+        try {
+            user = JSON.parse(userString);
+        } catch (error) {
+            console.error("❌ Error parsing user data:", error);
+        }
+
+        if (!user || !user.id || !user.firstName || !user.lastName || !user.idNumber) {
+            alert("User information is incomplete. Please log in again.");
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            window.location.href = "login.html";
+        } else {
+            document.getElementById("fullName").value = `${user.firstName} ${user.lastName}`;
+            document.getElementById("idNumber").value = user.idNumber;
+        }
+
+        // 📅 Set Date Picker Constraints
+        const today = new Date();
+        today.setDate(today.getDate());
+        const maxDate = new Date();
+        maxDate.setDate(today.getDate() + 30);
+        document.getElementById("rentalDate").min = today.toISOString().split("T")[0];
+        document.getElementById("rentalDate").max = maxDate.toISOString().split("T")[0];
+
+        let rentalCostPerDay = 0;
+
+        // 🔍 Fetch Car Details (Name & Cost)
+        async function fetchCarDetails(carId) {
+            try {
+                const response = await fetch(`http://localhost:5000/api/cars/${carId}`);
+                const car = await response.json();
+                if (response.ok) {
+                    document.getElementById("carName").value = car.carName;
+                    rentalCostPerDay = car.costPerDay;
+                } else {
+                    alert("Error fetching car details: " + car.message);
+                }
+            } catch (error) {
+                console.error("❌ Error fetching car details:", error);
+            }
+        }
+
+        // 🔢 Calculate Total Cost
+        document.getElementById("rentalDays").addEventListener("input", function () {
+            const rentalDays = parseInt(this.value) || 0;
+            document.getElementById("totalCost").value = rentalDays * rentalCostPerDay;
+        });
+
+        // 🚀 Submit Booking
+        document.getElementById("bookingForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const token = localStorage.getItem("token");
+            if (!token) {
+                alert("Unauthorized! Please log in again.");
+                window.location.href = "login.html";
+                return;
+            }
+
+            const rentalDays = parseInt(document.getElementById("rentalDays").value);
+            const totalCost = rentalDays * rentalCostPerDay;
+
+            const rentalData = {
+                carId,
+                userId: user.id,
+                carName: document.getElementById("carName").value,
+                fullName: `${user.firstName} ${user.lastName}`,
+                idNumber: user.idNumber,
+                rentalDate: document.getElementById("rentalDate").value,
+                rentalDays,
+                cost: totalCost
+            };
+
+            try {
+                const response = await fetch("http://localhost:5000/api/bookings", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(rentalData),
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert("Car booked successfully!");
+                    window.location.href = "bookings.html";
+                } else {
+                    alert("Booking failed: " + (result.message || "An error occurred."));
+                }
+            } catch (error) {
+                console.error("❌ Booking Error:", error);
+                alert("Booking failed. Please try again later.");
+            }
+        });
+    </script>
+
+</body>
+
+</html>

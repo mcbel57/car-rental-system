@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Car | Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+    <header class="bg-blue-800 text-white py-4 shadow-lg fixed top-0 w-full z-10">
+        <div class="container mx-auto flex justify-between items-center px-6">
+            <h1 class="text-2xl font-bold">Admin Dashboard</h1>
+            <nav>
+                <ul class="flex space-x-6">
+                    <li><a href="admin_dashboard.html" class="hover:text-gray-300">Dashboard</a></li>
+                    <li><a href="admin_cars.html" class="hover:text-gray-300">Manage Cars</a></li>
+                    <li><a href="admin_view_rentals.html" class="hover:text-gray-300">View Rentals</a></li>
+                    <li><a href="admin_users.html" class="hover:text-gray-300">Manage Users</a></li>
+                    <li><a href="index.html" class="hover:text-gray-300">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <!-- 🌍 Admin Header -->
+    <header class="bg-blue-800 text-white py-4 shadow-lg fixed top-0 w-full z-10">
+        <div class="container mx-auto flex justify-between items-center px-6">
+            <h1 class="text-2xl font-bold">Admin Dashboard</h1>
+            <nav>
+                <ul class="flex space-x-6">
+                    <li><a href="admin_dashboard.html" class="hover:text-gray-300">Dashboard</a></li>
+                    <li><a href="admin_manage_cars.html" class="hover:text-gray-300">Add Cars</a></li>
+                    <li><a href="admin_cars.html" class="hover:text-gray-300">Manage Cars</a></li>
+                    <li><a href="admin_view_rentals.html" class="hover:text-gray-300">View Rentals</a></li>
+                    <li><a href="admin_users.html" class="hover:text-gray-300">Manage Users</a></li>
+                    <li><a href="index.html" class="hover:text-gray-300">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 📌 Add Car Form -->
+    <main class="container mx-auto mt-20 px-6">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">Add a New Car</h2>
+
+        <form id="carForm" enctype="multipart/form-data" class="bg-white p-6 rounded-lg shadow-md">
+            <div class="mb-4">
+                <label for="carName" class="block text-gray-700">Car Name</label>
+                <input type="text" id="carName" name="carName" required class="w-full px-4 py-2 border rounded-lg">
+            </div>
+
+            <div class="mb-4">
+                <label for="description" class="block text-gray-700">Description</label>
+                <textarea id="description" name="description" required
+                    class="w-full px-4 py-2 border rounded-lg"></textarea>
+            </div>
+
+            <div class="mb-4">
+                <label for="color" class="block text-gray-700">Color</label>
+                <input type="text" id="color" name="color" required class="w-full px-4 py-2 border rounded-lg">
+            </div>
+
+            <div class="mb-4">
+                <label for="vehicleType" class="block text-gray-700">Vehicle Type</label>
+                <select id="vehicleType" name="vehicleType" required class="w-full px-4 py-2 border rounded-lg">
+                    <option value="FWD">FWD</option>
+                    <option value="RWD">RWD</option>
+                    <option value="AWD">AWD</option>
+                    <option value="4WD">4WD</option>
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label for="hireCost" class="block text-gray-700">Hiring Cost Per Day ($)</label>
+                <input type="number" id="costPerDay" name="hireCost" required class="w-full px-4 py-2 border rounded-lg">
+            </div>
+
+            <div class="mb-4">
+                <label for="image" class="block text-gray-700">Car Image</label>
+                <input type="file" id="image" name="image" accept="image/*" required
+                    class="w-full px-4 py-2 border rounded-lg">
+            </div>
+
+            <p id="errorMessage" class="text-red-600 text-sm mt-2"></p>
+
+            <button type="submit"
+                class="w-full bg-blue-600 text-white py-2 rounded-lg font-bold mt-4 hover:bg-blue-700">
+                Add Car
+            </button>
+        </form>
+    </main>
+
+    <!-- 🔥 JavaScript for Form Handling -->
+    <script>
+        document.getElementById("carForm").addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+            const errorMessage = document.getElementById("errorMessage");
+
+            errorMessage.innerText = "";
+
+            try {
+                const response = await fetch("http://localhost:5000/api/admin/add-car", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const data = await response.json();
+                console.log("🔥 Server Response:", data);
+
+                if (!response.ok) {
+                    throw new Error(data.error || "Failed to add car");
+                }
+
+                alert("Car added successfully!");
+                this.reset();
+
+            } catch (error) {
+                console.error("❌ Error Adding Car:", error);
+                errorMessage.innerText = error.message;
+            }
+        });
+    </script>
+
+</body>
+
+</html>

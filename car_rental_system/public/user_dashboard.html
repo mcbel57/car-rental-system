@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard | Car Rental</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+    <!-- 🚀 Header -->
+    <header class="fixed top-0 left-0 w-full bg-blue-700 text-white shadow-md z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <a href="user_dashboard.html" class="text-2xl font-bold">Car Rental System</a>
+                <nav>
+                    <ul class="flex space-x-6">
+                        <li><a href="user_dashboard.html" class="hover:underline">Home</a></li>
+                        <li><a href="bookings.html" class="hover:underline">My Bookings</a></li>
+
+                        <li><a href="#" id="logout" class="hover:underline">Logout</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- 🚗 Car Listings Section -->
+    <div class="container mx-auto mt-24 px-6">
+        <h1 class="text-3xl font-bold text-center text-blue-700 mb-6">Available Cars for Rent</h1>
+        <div id="carList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </div>
+
+    <script>
+        // 🔴 Logout Functionality
+        document.getElementById("logout").addEventListener("click", function () {
+            localStorage.removeItem("token");
+            window.location.href = "login.html";
+        });
+
+        // 🚘 Fetch Cars from Backend
+        async function fetchCars() {
+            try {
+                const response = await fetch("http://localhost:5000/cars");
+                if (!response.ok) throw new Error("Failed to load cars");
+                const data = await response.json();
+
+                if (!data.success || !Array.isArray(data.cars)) throw new Error("Invalid API response format");
+
+                const carList = document.getElementById("carList");
+                carList.innerHTML = "";
+
+                for (let car of data.cars) {
+                    // ✅ Check if the car is booked
+                    let isBooked = false;
+                    try {
+                        const bookingResponse = await fetch(`http://localhost:5000/cars/isBooked/${car.id}`);
+                        const bookingData = await bookingResponse.json();
+                        isBooked = bookingData.booked;
+                    } catch (error) {
+                        console.error("Error checking booking status:", error);
+                    }
+
+                    // ✅ Ensure image exists before setting it
+                    const imageSrc = car.image ? car.image : "placeholder.jpg"; // Use placeholder if no image
+
+                    const carCard = document.createElement("div");
+                    carCard.className = "bg-white shadow-lg rounded-lg p-4";
+
+                    carCard.innerHTML = `
+                    <img src="${imageSrc}" alt="${car.carName}" class="w-full h-48 object-cover rounded-md">
+                    <h3 class="text-xl font-bold mt-2">${car.carName}</h3>
+                    <p class="text-gray-600">${car.description}</p>
+                    <p class="text-blue-700 font-bold mt-1">Ksh ${car.costPerDay} per day</p>
+                    <button class="mt-4 w-full text-white py-2 rounded-lg ${isBooked ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}"
+                            ${isBooked ? 'disabled' : `onclick="location.href='booking.html?carId=${car.id}'"`}>
+                        ${isBooked ? "Booked" : "Hire"}
+                    </button>
+                `;
+
+                    carList.appendChild(carCard);
+                }
+            } catch (error) {
+                console.error("Error fetching cars:", error);
+            }
+        }
+
+        // 📌 Fetch Cars on Page Load
+        document.addEventListener("DOMContentLoaded", fetchCars);
+    </script>
+
+
+</body>
+
+</html>

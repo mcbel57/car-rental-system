@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin | Manage Cars</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", fetchCars);
+
+        async function fetchCars() {
+            try {
+                const response = await fetch("http://localhost:5000/api/admin/cars", {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${localStorage.getItem("token")}`
+                    }
+                });
+
+                if (!response.ok) throw new Error("Failed to fetch cars");
+
+                const data = await response.json();
+                if (!data.success || !Array.isArray(data.cars)) throw new Error("Invalid response format");
+
+                displayCars(data.cars);
+            } catch (error) {
+                console.error("❌ Error fetching cars:", error);
+                alert("Failed to load cars.");
+            }
+        }
+
+        function displayCars(cars) {
+            const carTableBody = document.getElementById("carTableBody");
+            carTableBody.innerHTML = "";
+
+            if (cars.length === 0) {
+                carTableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4">No cars found.</td></tr>`;
+                return;
+            }
+
+            cars.forEach(car => {
+                const row = document.createElement("tr");
+                row.className = "border-b text-center";
+
+                // ✅ Convert BLOB image data to Base64 with proper prefix
+                let carImage = "No Image";
+                if (car.image) {
+                    carImage = `<img src="data:image/png;base64,${car.image}" 
+                                    alt="${car.carName}" 
+                                    class="w-24 h-24 object-cover mx-auto rounded-md shadow-md">`;
+                }
+
+                row.innerHTML = `
+                    <td class="py-3 px-4">${carImage}</td>
+                    <td class="py-3 px-4">${car.carName}</td>
+                    <td class="py-3 px-4">${car.description}</td>
+                    <td class="py-3 px-4">${car.color}</td>
+                    <td class="py-3 px-4">${car.vehicleType}</td>
+                    <td class="py-3 px-4">Ksh ${car.costPerDay}</td>
+                    <td class="py-3 px-4">
+                        <button onclick="deleteCar(${car.id})"
+                            class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+                            Delete
+                        </button>
+                    </td>
+                `;
+
+                carTableBody.appendChild(row);
+            });
+        }
+
+        async function deleteCar(carId) {
+            if (!confirm("Are you sure you want to delete this car?")) return;
+
+            try {
+                const response = await fetch(`http://localhost:5000/api/admin/cars/${carId}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Authorization": `Bearer ${localStorage.getItem("token")}`
+                    }
+                });
+
+                if (!response.ok) throw new Error("Failed to delete car.");
+
+                alert("Car deleted successfully.");
+                fetchCars(); // Refresh list
+            } catch (error) {
+                console.error("❌ Error deleting car:", error);
+                alert("Failed to delete car.");
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gray-100">
+    <header class="bg-blue-800 text-white py-4 shadow-lg fixed top-0 w-full z-10">
+        <div class="container mx-auto flex justify-between items-center px-6">
+            <h1 class="text-2xl font-bold">Admin Dashboard</h1>
+            <nav>
+                <ul class="flex space-x-6">
+                    <li><a href="admin_dashboard.html" class="hover:text-gray-300">Dashboard</a></li>
+                    <li><a href="admin_manage_cars.html" class="hover:text-gray-300">Add Cars</a></li>
+                    <li><a href="admin_cars.html" class="hover:text-gray-300">Manage Cars</a></li>
+                    <li><a href="admin_view_rentals.html" class="hover:text-gray-300">View Rentals</a></li>
+                    <li><a href="admin_users.html" class="hover:text-gray-300">Manage Users</a></li>
+                    <li><a href="index.html" class="hover:text-gray-300">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container mx-auto mt-20 p-6 bg-white shadow-lg rounded-lg">
+        <h1 class="text-2xl font-bold mb-4">Manage Cars</h1>
+
+        <table class="w-full border-collapse border border-gray-300">
+            <thead>
+                <tr class="bg-gray-200 text-center">
+                    <th class="border px-4 py-2">Image</th>
+                    <th class="border px-4 py-2">Car Name</th>
+                    <th class="border px-4 py-2">Description</th>
+                    <th class="border px-4 py-2">Color</th>
+                    <th class="border px-4 py-2">Vehicle Type</th>
+                    <th class="border px-4 py-2">Cost/Day</th>
+                    <th class="border px-4 py-2">Action</th>
+                </tr>
+            </thead>
+            <tbody id="carTableBody">
+                <!-- Cars will be dynamically inserted here -->
+            </tbody>
+        </table>
+    </div>
+
+</body>
+
+</html>

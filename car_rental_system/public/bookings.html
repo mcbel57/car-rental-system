@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings | Car Rental</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+    <!-- 🚀 Header -->
+    <header class="fixed top-0 left-0 w-full bg-blue-700 text-white shadow-md z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <a href="user_dashboard.html" class="text-2xl font-bold">Car Rental System</a>
+                <nav>
+                    <ul class="flex space-x-6">
+                        <li><a href="user_dashboard.html" class="hover:underline">Home</a></li>
+                        <li><a href="bookings.html" class="hover:underline">My Bookings</a></li>
+                        <li><a href="#" id="logout" class="hover:underline">Logout</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- 🚗 Booking List -->
+    <div class="container mx-auto mt-24 px-6">
+        <h1 class="text-3xl font-bold text-center text-blue-700 mb-6">My Bookings</h1>
+
+        <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+            <thead class="bg-blue-600 text-white">
+                <tr>
+                    <th class="py-3 px-6 text-left">Car</th>
+                    <th class="py-3 px-6 text-left">Rental Date</th>
+                    <th class="py-3 px-6 text-left">Days</th>
+                    <th class="py-3 px-6 text-left">Cost</th>
+                    <th class="py-3 px-6 text-left">Action</th>
+                </tr>
+            </thead>
+            <tbody id="bookingsTable">
+                <!-- 🚀 Bookings will be dynamically inserted here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // 🔴 Logout Functionality
+        document.getElementById("logout")?.addEventListener("click", function () {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            window.location.href = "login.html";
+        });
+
+        // 🏷️ Load User Data
+        const user = JSON.parse(localStorage.getItem("user"));
+        const token = localStorage.getItem("token");
+
+        if (!user || !token) {
+            alert("Unauthorized! Please log in.");
+            window.location.href = "login.html";
+        }
+
+        // 🚀 Fetch Bookings from the API
+        async function fetchBookings() {
+            try {
+                const response = await fetch(`http://localhost:5000/api/bookings/${user.id}`, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                const bookings = await response.json();
+
+                if (!response.ok) throw new Error(bookings.message || "Failed to load bookings.");
+
+                displayBookings(bookings);
+            } catch (error) {
+                console.error("Error fetching bookings:", error);
+                alert("Error loading bookings.");
+            }
+        }
+
+        // 📌 Display Bookings in Table
+        function displayBookings(bookings) {
+            const bookingsTable = document.getElementById("bookingsTable");
+            bookingsTable.innerHTML = "";
+
+            if (bookings.length === 0) {
+                bookingsTable.innerHTML = `<tr><td colspan="5" class="text-center py-4">No bookings found.</td></tr>`;
+                return;
+            }
+
+            bookings.forEach(booking => {
+                const row = document.createElement("tr");
+                row.className = "border-b";
+
+                row.innerHTML = `
+                    <td class="py-3 px-6">${booking.carName}</td>
+                    <td class="py-3 px-6">${booking.rentalDate}</td>
+                    <td class="py-3 px-6">${booking.rentalDays} days</td>
+                    <td class="py-3 px-6">Ksh ${booking.cost}</td>
+                    <td class="py-3 px-6">
+                        <button onclick="cancelBooking(${booking.id})"
+                            class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+                            Cancel
+                        </button>
+                    </td>
+                `;
+
+                bookingsTable.appendChild(row);
+            });
+        }
+
+        // 🗑️ Cancel Booking
+        async function cancelBooking(bookingId) {
+            try {
+                const token = localStorage.getItem("token"); // Ensure token is retrieved
+                if (!token) throw new Error("User not authenticated.");
+
+                const response = await fetch(`http://localhost:5000/api/bookings/${bookingId}`, {
+                    method: "DELETE",
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+
+                if (!response.ok) throw new Error("Failed to cancel booking.");
+
+                alert("Booking canceled successfully.");
+
+                // ✅ Redirect after alert is acknowledged
+                window.location.href = "bookings.html";
+            } catch (error) {
+                console.error("Error canceling booking:", error);
+                alert("Failed to cancel booking.");
+            }
+        }
+        // 🚀 Load Bookings on Page Load
+        fetchBookings();
+    </script>
+
+</body>
+
+</html>
