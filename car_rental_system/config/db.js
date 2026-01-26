@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import Car from "../models/Car.js";
 import User from "../models/User.js";
 import Rental from "../models/Rental.js";
+import Lease from "../models/Lease.js";
 
 dotenv.config();
 
@@ -21,9 +22,17 @@ sequelize.authenticate()
 Car.init(sequelize);
 User.init(sequelize);
 Rental.init(sequelize);
+Lease.init(sequelize);
+
+// ✅ Define Associations
+User.hasMany(Lease, { foreignKey: "driverId", as: "Leases" });
+Lease.belongsTo(User, { foreignKey: "driverId", as: "Driver" });
+
+Car.hasMany(Lease, { foreignKey: "carId", as: "Leases" });
+Lease.belongsTo(Car, { foreignKey: "carId", as: "Car" });
 
 // ✅ Export Database Object
-const db = { sequelize, Sequelize, Car, User, Rental };
+const db = { sequelize, Sequelize, Car, User, Rental, Lease };
 
 export default db;
 

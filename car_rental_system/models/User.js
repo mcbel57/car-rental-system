@@ -11,11 +11,18 @@ export default class User extends Model {
                 phoneNumber: { type: DataTypes.STRING(15), allowNull: false },
                 idNumber: { type: DataTypes.STRING(9), allowNull: false, unique: true },
                 password: { type: DataTypes.STRING(255), allowNull: false },
+                licenseNumber: { type: DataTypes.STRING(50), allowNull: true },
+                driverStatus: {
+                    type: DataTypes.ENUM("pending", "approved", "rejected"),
+                    allowNull: true,
+                    defaultValue: "pending"
+                },
                 role: {
-                    type: DataTypes.ENUM("admin", "user"),
+                    type: DataTypes.ENUM("admin", "user", "driver"),
                     allowNull: false,
                     defaultValue: "user", // Default role is "user"
                 },
+                notification: { type: DataTypes.TEXT, allowNull: true },
             },
             {
                 sequelize,

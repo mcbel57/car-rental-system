@@ -31,8 +31,16 @@
             const navLinks = document.getElementById("navLinks");
 
             if (token && user) {
-                let dashboardLink = user.role === "admin" ? "admin_dashboard.html" : "user_dashboard.html";
-                let dashboardText = user.role === "admin" ? "Admin Dashboard" : "My Dashboard";
+                let dashboardLink = "user_dashboard.html";
+                let dashboardText = "My Dashboard";
+
+                if (user.role === "admin") {
+                    dashboardLink = "admin_dashboard.html";
+                    dashboardText = "Admin Dashboard";
+                } else if (user.role === "driver") {
+                    dashboardLink = "driver_dashboard.html";
+                    dashboardText = "Driver Dashboard";
+                }
 
                 navLinks.innerHTML = `
                     <a href="#about" class="px-4 hover:underline">About Us</a>
@@ -63,16 +71,59 @@
         </div>
     </section>
 
+    <!-- 🚀 Driver Partner Section -->
+    <section class="bg-blue-800 text-white py-16 px-6">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 mb-8 md:mb-0">
+                <h2 class="text-3xl font-bold mb-4">Drive & Earn Weekly Income</h2>
+                <p class="text-blue-100 text-lg mb-6">Looking for a steady stream of income? Our professional taxi
+                    leasing program allows you to lease high-quality cars for your taxi business with flexible weekly
+                    rates.</p>
+                <div class="flex space-x-4">
+                    <a href="driver_register.html"
+                        class="bg-yellow-500 text-black px-8 py-3 rounded-xl font-bold hover:bg-yellow-600 transition shadow-lg">Apply
+                        as a Driver</a>
+                    <a href="#about"
+                        class="border border-white px-8 py-3 rounded-xl font-bold hover:bg-white hover:text-blue-800 transition">Learn
+                        More</a>
+                </div>
+            </div>
+            <div class="md:w-1/2 flex justify-center">
+                <div class="bg-white/10 p-8 rounded-3xl backdrop-blur-sm border border-white/20">
+                    <ul class="space-y-4">
+                        <li class="flex items-center">
+                            <span
+                                class="bg-yellow-400 text-black rounded-full w-6 h-6 flex items-center justify-center mr-3 font-bold text-sm">✓</span>
+                            Low Weekly Lease Rates
+                        </li>
+                        <li class="flex items-center">
+                            <span
+                                class="bg-yellow-400 text-black rounded-full w-6 h-6 flex items-center justify-center mr-3 font-bold text-sm">✓</span>
+                            Certified Well-Maintained Fleet
+                        </li>
+                        <li class="flex items-center">
+                            <span
+                                class="bg-yellow-400 text-black rounded-full w-6 h-6 flex items-center justify-center mr-3 font-bold text-sm">✓</span>
+                            Full Insurance Coverage Included
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- 🚀 About Us Section -->
     <section id="about" class="max-w-6xl mx-auto my-16 px-6 text-center">
         <h2 class="text-3xl font-bold text-blue-700">About Us</h2>
         <p class="mt-4 text-gray-700">We provide a seamless car rental experience with the best selection of vehicles
             for all your needs.</p>
         <div class="mt-8 flex justify-center space-x-6">
-            <img src="../images/056b4e51-5966-484b-a36e-ee5ace07710e.jpeg" alt="Luxury Car" class="rounded-lg shadow-md">
-            <img src="../images/2021 Mercedes-AMG GLE53 Coupe electrifies (1).jpeg" alt="Sports Car" class="rounded-lg shadow-md">
+            <img src="../images/056b4e51-5966-484b-a36e-ee5ace07710e.jpeg" alt="Luxury Car"
+                class="rounded-lg shadow-md w-1/3">
+            <img src="../images/2021 Mercedes-AMG GLE53 Coupe electrifies (1).jpeg" alt="Sports Car"
+                class="rounded-lg shadow-md w-1/3">
             <img src="../images/913d6994-d570-41bd-9bab-dd0fe876424f.jpeg" alt="Convertible Car"
-                class="rounded-lg shadow-md">
+                class="rounded-lg shadow-md w-1/3">
         </div>
     </section>
 

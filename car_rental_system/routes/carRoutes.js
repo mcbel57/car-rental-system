@@ -9,51 +9,15 @@ import Rental from "../models/Rental.js";
 
 const router = express.Router();
 
-// ✅ Fetch all cars for admin
-router.get("/admin/cars",  getAllCars);
+// ✅ Fetch all cars (Admin and User)
+router.get("/", getAllCars);
 
-// ✅ Add a new car (Admin Only)
-//router.post("/admin/cars", verifyAdminToken, carController.addCar);
+// ✅ Fetch all cars for admin (backward compatibility if needed)
+router.get("/admin/cars", getAllCars);
 
 // ✅ Delete a car (Admin Only)
-router.delete("/admin/cars/:id",  deleteCar);
-
-// ✅ Add a New Car
-router.post("/", verifyToken, verifyAdmin, upload.single("image"), async (req, res) => {
-    try {
-        const { name, description, color, vehicleType, hireCostPerDay } = req.body;
-        const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
-
-        const newCar = await Car.create({ name, description, color, vehicleType, hireCostPerDay, imageUrl });
-
-        res.status(201).json({ message: "Car added successfully", car: newCar });
-    } catch (error) {
-        res.status(500).json({ error: "Error adding car: " + error.message });
-    }
-});
-
-// 📋 Get all cars (Ensure image is sent as Base64)
-router.getAllCars = async (req, res) => {
-    try {
-        const cars = await Car.findAll();
-        
-        // Convert BLOB to Base64
-        const formattedCars = cars.map(car => ({
-            id: car.id,
-            carName: car.carName,
-            description: car.description,
-            color: car.color,
-            vehicleType: car.vehicleType,
-            costPerDay: car.costPerDay,
-            image: car.image ? `data:image/png;base64,${car.image.toString("base64")}` : null
-        }));
-
-        res.status(200).json({ success: true, cars: formattedCars });
-    } catch (error) {
-        res.status(500).json({ success: false, message: "Error retrieving cars", error: error.message });
-    }
-};
-
+router.delete("/admin/cars/:id", verifyToken, verifyAdmin, deleteCar);
+router.delete("/:id", verifyToken, verifyAdmin, deleteCar);
 
 
 // ✅ Edit Car Details
@@ -73,13 +37,25 @@ router.put("/:id", verifyToken, verifyAdmin, upload.single("image"), async (req,
     }
 });
 
-// ✅ Delete Car
-router.delete("/:id", verifyToken, verifyAdmin, async (req, res) => {
+// ✅ Add a New Car (Admin Only)
+router.post("/", verifyToken, verifyAdmin, upload.single("image"), async (req, res) => {
     try {
-        await Car.destroy({ where: { id: req.params.id } });
-        res.json({ message: "Car deleted successfully" });
+        const { carName, description, color, vehicleType, hireCost } = req.body;
+        // In this app, car images are stored as Buffers, but let's handle file upload too if needed
+        let image = req.file ? req.file.buffer : null;
+
+        const newCar = await Car.create({
+            carName,
+            description,
+            color,
+            vehicleType,
+            costPerDay: hireCost,
+            image
+        });
+
+        res.status(201).json({ message: "Car added successfully", car: newCar });
     } catch (error) {
-        res.status(500).json({ error: "Error deleting car: " + error.message });
+        res.status(500).json({ error: "Error adding car: " + error.message });
     }
 });
 

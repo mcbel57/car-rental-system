@@ -15,7 +15,7 @@ export const addCar = async (req, res) => {
             return res.status(400).json({ error: "Image is required" });
         }
 
-        const { carName, description, color, vehicleType, hireCost } = req.body;
+        const { carName, description, color, vehicleType, hireCost, isAvailableForLease, weeklyLeaseCost } = req.body;
 
         if (!carName || !description || !color || !vehicleType || !hireCost) {
             return res.status(400).json({ error: "All fields are required, including the image." });
@@ -27,7 +27,9 @@ export const addCar = async (req, res) => {
             color,
             vehicleType,
             costPerDay: hireCost,
-            image: req.file.buffer // ✅ Store image as buffer in DB
+            image: req.file.buffer, // ✅ Store image as buffer in DB
+            isAvailableForLease: isAvailableForLease === 'true' || isAvailableForLease === 'on' || isAvailableForLease === true,
+            weeklyLeaseCost: weeklyLeaseCost ? parseFloat(weeklyLeaseCost) : null
         });
 
         res.status(201).json({ message: "Car added successfully", car: newCar });

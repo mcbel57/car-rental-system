@@ -7,12 +7,14 @@ export default class Car extends Model {
                 carName: { type: DataTypes.STRING, allowNull: false },
                 description: { type: DataTypes.TEXT, allowNull: false },
                 color: { type: DataTypes.STRING, allowNull: false },
-                vehicleType: { 
-                    type: DataTypes.ENUM("FWD", "RWD", "AWD", "4WD"), 
-                    allowNull: false 
+                vehicleType: {
+                    type: DataTypes.ENUM("FWD", "RWD", "AWD", "4WD"),
+                    allowNull: false
                 },
                 costPerDay: { type: DataTypes.FLOAT, allowNull: false },
                 image: { type: DataTypes.BLOB("long"), allowNull: false },
+                isAvailableForLease: { type: DataTypes.BOOLEAN, defaultValue: false },
+                weeklyLeaseCost: { type: DataTypes.FLOAT, allowNull: true },
             },
             {
                 sequelize, // ✅ Ensure sequelize is passed properly

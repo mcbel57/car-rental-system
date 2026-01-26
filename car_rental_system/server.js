@@ -19,6 +19,7 @@ import carRoutes from "./routes/carRoutes.js";
 import rentalRoutes from "./routes/rentalRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 import userCarRoutes from "./routes/userCarRoutes.js";
+import leaseRoutes from "./routes/leaseRoutes.js";
 
 import { verifyToken } from "./middleware/authMiddleware.js";
 
@@ -41,7 +42,7 @@ app.use(morgan("dev")); // Log all requests (GET, POST, etc.)
 
 // ✅ Serve Static Files (Frontend HTML)
 app.use(express.static(path.join(__dirname, "public")));
-app.use("/images",express.static(path.join(__dirname, "images")));
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 // ✅ Root Route (Loads index.html)
 app.get("/", (req, res) => {
@@ -52,12 +53,10 @@ app.get("/", (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/cars', carRoutes);
+app.use('/api/cars', carRoutes); // Standard route for cars
 app.use('/api/rentals', rentalRoutes);
 app.use("/api/bookings", bookingRoutes);
-app.use("/api", carRoutes);
-app.use('/cars', userCarRoutes);
-app.use("/cars", carRoutes);
+app.use("/api/leases", leaseRoutes);
 
 // ✅ Protected Route Example (User Dashboard)
 app.get("/api/user/dashboard", verifyToken, (req, res) => {

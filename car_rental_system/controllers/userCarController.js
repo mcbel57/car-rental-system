@@ -9,7 +9,17 @@ export const getAllCars = async (req, res) => {
             return res.status(404).json({ success: false, message: "No cars found" });
         }
 
-        // ✅ Convert BLOB image to Base64
+        // ✅ Convert BLOB image to Base64 (or keep if already URL)
+        const formatImage = (image) => {
+            if (!image) return null;
+            if (typeof image === "string" && image.startsWith("http")) return image;
+            try {
+                return `data:image/png;base64,${Buffer.from(image).toString("base64")}`;
+            } catch (e) {
+                return image; // Fallback
+            }
+        };
+
         const formattedCars = cars.map(car => ({
             id: car.id,
             carName: car.carName,
@@ -17,7 +27,9 @@ export const getAllCars = async (req, res) => {
             color: car.color,
             vehicleType: car.vehicleType,
             costPerDay: car.costPerDay,
-            image: car.image ? `data:image/png;base64,${car.image.toString("base64")}` : null
+            isAvailableForLease: car.isAvailableForLease,
+            weeklyLeaseCost: car.weeklyLeaseCost,
+            image: formatImage(car.image)
         }));
 
         res.status(200).json({ success: true, cars: formattedCars });

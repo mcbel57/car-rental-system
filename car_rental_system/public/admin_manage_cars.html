@@ -32,8 +32,8 @@
                     <li><a href="admin_dashboard.html" class="hover:text-gray-300">Dashboard</a></li>
                     <li><a href="admin_manage_cars.html" class="hover:text-gray-300">Add Cars</a></li>
                     <li><a href="admin_cars.html" class="hover:text-gray-300">Manage Cars</a></li>
-                    <li><a href="admin_view_rentals.html" class="hover:text-gray-300">View Rentals</a></li>
-                    <li><a href="admin_users.html" class="hover:text-gray-300">Manage Users</a></li>
+                    <li><a href="admin_view_leases.html" class="hover:text-gray-300">Manage Leases</a></li>
+                    <li><a href="admin_driver_management.html" class="hover:text-gray-300">Manage Drivers</a></li>
                     <li><a href="index.html" class="hover:text-gray-300">Logout</a></li>
                 </ul>
             </nav>
@@ -73,8 +73,36 @@
 
             <div class="mb-4">
                 <label for="hireCost" class="block text-gray-700">Hiring Cost Per Day ($)</label>
-                <input type="number" id="costPerDay" name="hireCost" required class="w-full px-4 py-2 border rounded-lg">
+                <input type="number" id="costPerDay" name="hireCost" required
+                    class="w-full px-4 py-2 border rounded-lg">
             </div>
+
+            <div class="mb-4 bg-gray-50 p-4 rounded border border-gray-200">
+                <label class="flex items-center space-x-2 text-gray-700 font-bold mb-2">
+                    <input type="checkbox" id="isAvailableForLease" name="isAvailableForLease"
+                        class="w-5 h-5 text-blue-600">
+                    <span>Available for Driver/Taxi Lease</span>
+                </label>
+
+                <div id="weeklyCostContainer" class="hidden">
+                    <label for="weeklyLeaseCost" class="block text-gray-700">Weekly Lease Cost (Ksh)</label>
+                    <input type="number" id="weeklyLeaseCost" name="weeklyLeaseCost"
+                        class="w-full px-4 py-2 border rounded-lg mt-1">
+                </div>
+            </div>
+
+            <script>
+                document.getElementById('isAvailableForLease').addEventListener('change', function () {
+                    const container = document.getElementById('weeklyCostContainer');
+                    if (this.checked) {
+                        container.classList.remove('hidden');
+                        document.getElementById('weeklyLeaseCost').required = true;
+                    } else {
+                        container.classList.add('hidden');
+                        document.getElementById('weeklyLeaseCost').required = false;
+                    }
+                });
+            </script>
 
             <div class="mb-4">
                 <label for="image" class="block text-gray-700">Car Image</label>
@@ -102,7 +130,7 @@
             errorMessage.innerText = "";
 
             try {
-                const response = await fetch("http://localhost:5000/api/admin/add-car", {
+                const response = await fetch("/api/admin/add-car", {
                     method: "POST",
                     body: formData
                 });

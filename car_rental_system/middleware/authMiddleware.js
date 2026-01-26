@@ -53,3 +53,16 @@ export const verifyAdminToken = (req, res, next) => {
         return res.status(401).json({ success: false, message: "Invalid token." });
     }
 };
+
+// ✅ Middleware to Verify Driver Access
+export const verifyDriver = (req, res, next) => {
+    try {
+        if (!req.user || (req.user.role !== "driver" && req.user.role !== "admin")) {
+            return res.status(403).json({ error: "Access denied. Drivers only." });
+        }
+        next();
+    } catch (error) {
+        console.error("❌ Driver Verification Error:", error);
+        res.status(500).json({ error: "Server error" });
+    }
+};

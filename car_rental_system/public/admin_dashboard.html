@@ -25,11 +25,11 @@
                 <ul id="dropdownMenu"
                     class="absolute right-0 mt-2 bg-white text-black shadow-lg rounded-md w-48 hidden">
                     <li><a href="admin_dashboard.html" class="block px-4 py-2 hover:bg-gray-200">Dashboard</a></li>
-                    <li><a href="admin_cars.html" class="block px-4 py-2 hover:bg-gray-200">Manage Cars</a></li>
-                    <li><a href="admin_view_rentals.html" class="block px-4 py-2 hover:bg-gray-200">View Rentals</a>
-                    </li>
-                    <li><a href="admin_users.html" class="block px-4 py-2 hover:bg-gray-200">Manage Users</a></li>
-                    <li><a href="index.html" class="block px-4 py-2 text-red-600 hover:bg-gray-200">Logout</a></li>
+                    <li><a href="admin_manage_cars.html" class="hover:underline">Add Cars</a></li>
+                    <li><a href="admin_cars.html" class="hover:underline">Manage Cars</a></li>
+                    <li><a href="admin_view_leases.html" class="hover:underline">Manage Leases</a></li>
+                    <li><a href="admin_driver_management.html" class="hover:underline">Manage Drivers</a></li>
+                    <li><a href="index.html" class="hover:underline text-red-300">Logout</a></li>
                 </ul>
             </div>
         </div>
@@ -41,14 +41,14 @@
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Add Cars -->
-            <a href="admin_manage_cars.html" class="bg-blue-500 text-white p-6 rounded-lg text-center hover:bg-blue-600">
+            <a href="admin_manage_cars.html"
+                class="bg-blue-500 text-white p-6 rounded-lg text-center hover:bg-blue-600">
                 <h3 class="text-xl font-semibold">Add Cars</h3>
                 <p class="mt-2">Register new vehicles into the system.</p>
             </a>
 
             <!-- Manage Cars -->
-            <a href="admin_cars.html"
-                class="bg-blue-600 text-white p-6 rounded-lg text-center hover:bg-blue-700">
+            <a href="admin_cars.html" class="bg-blue-600 text-white p-6 rounded-lg text-center hover:bg-blue-700">
                 <h3 class="text-xl font-semibold">Manage Cars</h3>
                 <p class="mt-2">Edit or remove cars from inventory.</p>
             </a>
@@ -64,6 +64,15 @@
             <a href="admin_users.html" class="bg-red-600 text-white p-6 rounded-lg text-center hover:bg-red-700">
                 <h3 class="text-xl font-semibold">Manage Users</h3>
                 <p class="mt-2">View, edit, or delete user accounts.</p>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+            <!-- Driver Management -->
+            <a href="admin_driver_management.html"
+                class="bg-yellow-600 text-white p-6 rounded-lg text-center hover:bg-yellow-700">
+                <h3 class="text-xl font-semibold">Manage Drivers</h3>
+                <p class="mt-2">Approve drivers and view leases.</p>
             </a>
         </div>
     </main>

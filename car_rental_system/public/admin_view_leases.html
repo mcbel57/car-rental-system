@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Leases | Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 font-sans">
+
+    <!-- 🌍 Admin Header -->
+    <header class="bg-blue-800 text-white py-4 shadow-lg fixed top-0 w-full z-10">
+        <div class="container mx-auto flex justify-between items-center px-6">
+            <h1 class="text-2xl font-bold">Admin Dashboard</h1>
+            <nav>
+                <ul class="flex space-x-6">
+                    <li><a href="admin_dashboard.html" class="hover:text-gray-300">Dashboard</a></li>
+                    <li><a href="admin_manage_cars.html" class="hover:text-gray-300">Add Cars</a></li>
+                    <li><a href="admin_cars.html" class="hover:text-gray-300">Manage Cars</a></li>
+                    <li><a href="index.html" class="hover:text-gray-300">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto mt-24 px-6">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">Active Car Leases</h2>
+
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <table class="min-w-full leading-normal">
+                <thead>
+                    <tr>
+                        <th
+                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            Driver
+                        </th>
+                        <th
+                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            Car
+                        </th>
+                        <th
+                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            Weekly Cost
+                        </th>
+                        <th
+                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            Status
+                        </th>
+                        <th
+                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="leasesTableBody">
+                    <tr>
+                        <td colspan="5" class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                            Loading leases...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        const token = localStorage.getItem("token");
+
+        async function fetchLeases() {
+            try {
+                const response = await fetch("/api/leases/all", {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+
+                if (!response.ok) throw new Error("Failed to fetch leases");
+
+                const leases = await response.json();
+                const tbody = document.getElementById("leasesTableBody");
+                tbody.innerHTML = "";
+
+                if (leases.length === 0) {
+                    tbody.innerHTML = "<tr><td colspan='5' class='px-5 py-5 text-center'>No active leases found.</td></tr>";
+                    return;
+                }
+
+                leases.forEach(lease => {
+                    const driverName = lease.Driver ? `${lease.Driver.firstName} ${lease.Driver.lastName}` : "Unknown Driver";
+                    const carName = lease.Car ? lease.Car.carName : "Unknown Car";
+
+                    let statusClass = "text-gray-700 bg-gray-100";
+                    if (lease.status === "pending") statusClass = "text-yellow-700 bg-yellow-100";
+                    if (lease.status === "active") statusClass = "text-green-700 bg-green-100";
+                    if (lease.status === "terminated") statusClass = "text-red-700 bg-red-100";
+                    if (lease.status === "ended") statusClass = "text-gray-700 bg-gray-200";
+
+
+                    let actionButtons = "";
+                    if (lease.status === "pending") {
+                        actionButtons = `
+                            <button onclick="updateLeaseStatus(${lease.id}, 'active')" class="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700 mr-2">Approve</button>
+                            <button onclick="updateLeaseStatus(${lease.id}, 'terminated')" class="bg-red-500 text-white px-3 py-1 rounded text-xs hover:bg-red-600">Reject</button>
+                        `;
+                    } else if (lease.status === "active") {
+                        actionButtons = `
+                            <button onclick="updateLeaseStatus(${lease.id}, 'ended')" class="bg-gray-600 text-white px-3 py-1 rounded text-xs hover:bg-gray-700">End Lease</button>
+                        `;
+                    }
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <p class="text-gray-900 font-bold">${driverName}</p>
+                                <p class="text-gray-600 text-xs">${lease.Driver ? lease.Driver.email : ""}</p>
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <p class="text-gray-900">${carName}</p>
+                                <p class="text-gray-600 text-xs">Started: ${lease.startDate}</p>
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <p class="text-gray-900 font-bold">Ksh ${lease.weeklyCost}</p>
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <span class="px-2 py-1 font-semibold leading-tight ${statusClass} rounded-full text-xs">
+                                    ${lease.status.toUpperCase()}
+                                </span>
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                ${actionButtons}
+                            </td>
+                        </tr>
+                    `;
+                });
+
+            } catch (error) {
+                console.error("Error fetching leases:", error);
+                document.getElementById("leasesTableBody").innerHTML = "<tr><td colspan='5' class='px-5 py-5 text-center text-red-500'>Failed to load lease data.</td></tr>";
+            }
+        }
+
+        async function updateLeaseStatus(leaseId, status) {
+            if (!confirm(`Are you sure you want to set this lease to ${status}?`)) return;
+
+            try {
+                const response = await fetch("/api/leases/approve-lease", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ leaseId, status })
+                });
+
+                if (response.ok) {
+                    alert(`Lease set to ${status} successfully.`);
+                    fetchLeases();
+                } else {
+                    alert("Failed to update lease status.");
+                }
+            } catch (error) {
+                console.error("Error updating status:", error);
+            }
+        }
+
+        fetchLeases();
+    </script>
+</body>
+
+</html>
