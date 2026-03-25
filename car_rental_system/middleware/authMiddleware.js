@@ -19,6 +19,7 @@ export const verifyToken = (req, res, next) => {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded; // Attach decoded user data to `req.user`
+        req.user.id = decoded.userId; // Backward compatibility for routes using req.user.id
         console.log("✅ Decoded Token Data:", req.user); // Debugging line
         next();
     } catch (error) {

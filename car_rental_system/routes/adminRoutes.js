@@ -1,30 +1,30 @@
 import express from "express";
-import { verifyToken } from "../middleware/authMiddleware.js";
-import User from "../models/User.js"; // Ensure file extension is included
-import multer from "multer";
-import { addCar, uploadMiddleware } from "../controllers/adminController.js";
+import db from "../config/db.js";
+import { verifyToken, verifyAdmin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
+const { Car, User, Rental, Lease } = db;
 
-// Multer Setup for Image Uploads
-const storage = multer.memoryStorage(); // Stores image as Buffer
-const upload = multer({ storage: storage });
+// ✅ GET global statistics for admin
+router.get("/stats", verifyToken, verifyAdmin, async (req, res) => {
+    try {
+        const [totalCars, activeLeases, pendingDrivers, activeRentals] = await Promise.all([
+            Car.count(),
+            Lease.count({ where: { status: "active" } }),
+            Lease.count({ where: { status: "pending" } }),
+            Rental.count({ where: { status: "active" } })
+        ]);
 
-
-// ✅ Ensure Multer Middleware is Applied
-router.post("/add-car", uploadMiddleware, addCar);
-
-
-// Admin: Get All Users
-router.get("/users", verifyToken, async (req, res) => {
-    const users = await User.findAll();
-    res.json(users);
+        res.json({
+            totalCars,
+            activeLeases,
+            pendingDrivers,
+            activeRentals
+        });
+    } catch (error) {
+        console.error("Stats Error:", error);
+        res.status(500).json({ error: "Failed to fetch stats" });
+    }
 });
 
-// Admin: Delete User
-router.delete("/users/:id", verifyToken, async (req, res) => {
-    await User.destroy({ where: { id: req.params.id } });
-    res.json({ message: "User deleted successfully" });
-});
-
-export default router; // ✅ Use ES module export
+export default router;

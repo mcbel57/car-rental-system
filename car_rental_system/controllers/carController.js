@@ -4,8 +4,8 @@ import Car from "../models/Car.js";
 // 🏎️ Add a new car
 export const addCar = async (req, res) => {
     try {
-        const { name, description, color, vehicleType, hireCostPerDay, imageUrl } = req.body;
-        const newCar = await Car.create({ name, description, color, vehicleType, hireCostPerDay, imageUrl });
+        const { carName, description, color, vehicleType, costPerDay, image } = req.body;
+        const newCar = await Car.create({ carName, description, color, vehicleType, costPerDay, image });
         res.status(201).json({ success: true, message: "Car added successfully!", car: newCar });
     } catch (error) {
         res.status(500).json({ success: false, message: "Error adding car", error: error.message });

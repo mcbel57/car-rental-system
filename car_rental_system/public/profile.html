@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Settings | Makbel Car Rentals Premium</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/modern.css">
+    <script src="js/toast.js"></script>
+</head>
+
+<body class="bg-slate-50 min-h-screen">
+
+    <!-- 🚀 Premium Header -->
+    <header class="glass fixed top-0 left-0 w-full z-50 border-b border-slate-200/50">
+        <div class="max-w-7xl mx-auto px-6 lg:px-10 py-5 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <a href="user_dashboard.html" class="flex items-center space-x-2">
+                    <div
+                        class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg transform rotate-12 transition-transform hover:rotate-0">
+                        <i class="fas fa-car text-white"></i>
+                    </div>
+                    <span
+                        class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600 tracking-tight">Makbel Car Rentals</span>
+                </a>
+            </div>
+
+            <nav class="flex items-center space-x-8">
+                <ul class="flex space-x-6 text-slate-500 font-bold text-xs uppercase tracking-widest">
+                    <li><a href="user_dashboard.html" class="hover:text-indigo-600 transition-colors">Fleet</a></li>
+                    <li><a href="bookings.html" class="hover:text-indigo-600 transition-colors">Bookings</a></li>
+                </ul>
+                <button onclick="localStorage.clear(); window.location.href='login.html';"
+                    class="w-10 h-10 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all">
+                    <i class="fas fa-power-off text-xs"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ⚙️ Account Settings Explorer -->
+    <main class="pt-32 pb-20 px-6 max-w-3xl mx-auto animate-fade-in">
+        <div class="mb-12">
+            <span
+                class="inline-block px-4 py-1.5 mb-2 text-[10px] font-black tracking-widest text-indigo-600 uppercase bg-indigo-50 rounded-full border border-indigo-100">
+                Safe Custody
+            </span>
+            <h1 class="text-4xl font-black text-slate-900 tracking-tight">Profile <span
+                    class="text-indigo-600">Command.</span></h1>
+            <p class="text-slate-400 font-medium mt-2">Manage your identity and authentication credentials.</p>
+        </div>
+
+        <div class="glass rounded-[2.5rem] p-10 border-indigo-50 shadow-sm">
+            <form id="profileForm" class="space-y-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">First Name</label>
+                        <input type="text" id="firstName" required
+                            class="w-full px-6 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-indigo-500 focus:bg-white transition-all outline-none font-bold text-slate-700">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Last Name</label>
+                        <input type="text" id="lastName" required
+                            class="w-full px-6 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-indigo-500 focus:bg-white transition-all outline-none font-bold text-slate-700">
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Email Address</label>
+                    <input type="email" id="email" readonly
+                        class="w-full px-6 py-4 bg-slate-100 border-2 border-slate-200 rounded-2xl outline-none font-bold text-slate-400 cursor-not-allowed">
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">ID Number</label>
+                    <input type="text" id="idNumber" required
+                        class="w-full px-6 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-indigo-500 focus:bg-white transition-all outline-none font-bold text-slate-700">
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Phone Number</label>
+                    <input type="text" id="phoneNumber" required
+                        class="w-full px-6 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-indigo-500 focus:bg-white transition-all outline-none font-bold text-slate-700">
+                </div>
+
+                <div class="pt-6">
+                    <button type="submit"
+                        class="w-full py-5 bg-indigo-600 text-white rounded-[1.5rem] font-black uppercase tracking-widest text-xs hover:bg-indigo-700 hover:shadow-xl hover:shadow-indigo-200 transition-all active:scale-[0.98]">
+                        Synchronize Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        const token = localStorage.getItem("token");
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        if (!token || !user) {
+            window.location.href = "login.html";
+        }
+
+        // Populate fields
+        document.getElementById("firstName").value = user.firstName || "";
+        document.getElementById("lastName").value = user.lastName || "";
+        document.getElementById("email").value = user.email || "";
+        document.getElementById("idNumber").value = user.idNumber || "";
+        document.getElementById("phoneNumber").value = user.phoneNumber || "";
+
+        document.getElementById("profileForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            
+            const updatedData = {
+                firstName: document.getElementById("firstName").value,
+                lastName: document.getElementById("lastName").value,
+                idNumber: document.getElementById("idNumber").value,
+                phoneNumber: document.getElementById("phoneNumber").value,
+            };
+
+            try {
+                Toast.info("Synchronizing data...");
+                const response = await fetch("/api/user/profile", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify(updatedData)
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    // Update localStorage
+                    const newUserObj = { ...user, ...updatedData };
+                    localStorage.setItem("user", JSON.stringify(newUserObj));
+                    Toast.success("Profile updated successfully");
+                } else {
+                    const error = await response.json();
+                    Toast.error(error.error || "Update failed");
+                }
+            } catch (error) {
+                Toast.error("System connection failure");
+            }
+        });
+    </script>
+</body>
+
+</html>

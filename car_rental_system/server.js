@@ -18,8 +18,9 @@ import userRoutes from "./routes/userRoutes.js";
 import carRoutes from "./routes/carRoutes.js";
 import rentalRoutes from "./routes/rentalRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
-import userCarRoutes from "./routes/userCarRoutes.js";
 import leaseRoutes from "./routes/leaseRoutes.js";
+import inquiryRoutes from "./routes/inquiryRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
 
 import { verifyToken } from "./middleware/authMiddleware.js";
 
@@ -53,20 +54,22 @@ app.get("/", (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/cars', carRoutes); // Standard route for cars
+app.use('/api/cars', carRoutes);
 app.use('/api/rentals', rentalRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/leases", leaseRoutes);
+app.use("/api/inquiries", inquiryRoutes);
+app.use("/api/payment", paymentRoutes);
 
 // ✅ Protected Route Example (User Dashboard)
 app.get("/api/user/dashboard", verifyToken, (req, res) => {
     res.json({ message: `Welcome, user ID: ${req.user.userId}` });
 });
 
-// ✅ Sync Database using `db.sequelize`
-db.sequelize.sync({ alter: true }) // ✅ Updates tables based on model changes
-    .then(() => console.log("✅ Database synchronized"))
-    .catch(err => console.error("❌ Error syncing database:", err));
+// ✅ Authenticate Database Connection (Skip auto-alter to prevent hangs)
+db.sequelize.authenticate()
+    .then(() => console.log("✅ Database connected successfully"))
+    .catch(err => console.error("❌ Database connection error:", err));
 
 // ✅ Start Server
 app.listen(PORT, () => {

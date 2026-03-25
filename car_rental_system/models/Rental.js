@@ -6,11 +6,23 @@ export default class Rental extends Model {
             {
                 carId: { type: DataTypes.INTEGER, allowNull: false },
                 userId: { type: DataTypes.INTEGER, allowNull: false },
-                carName: { type: DataTypes.STRING, allowNull: false },
-                fullName: { type: DataTypes.STRING, allowNull: false },
-                idNumber: { type: DataTypes.STRING, allowNull: false },
+                carName: { type: DataTypes.STRING, allowNull: true },
+                fullName: { type: DataTypes.STRING, allowNull: true },
+                idNumber: { type: DataTypes.STRING, allowNull: true },
                 rentalDate: { type: DataTypes.DATEONLY, allowNull: false },
                 rentalDays: { type: DataTypes.INTEGER, allowNull: false },
+                status: {
+                    type: DataTypes.ENUM("active", "completed", "cancelled"),
+                    defaultValue: "active",
+                },
+                paymentStatus: {
+                    type: DataTypes.ENUM("pending", "partial", "paid"),
+                    defaultValue: "pending",
+                },
+                depositPaid: {
+                    type: DataTypes.FLOAT,
+                    defaultValue: 0,
+                },
                 cost: { type: DataTypes.FLOAT, allowNull: false },
             },
             {

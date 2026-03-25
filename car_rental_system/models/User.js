@@ -9,7 +9,7 @@ export default class User extends Model {
                 lastName: { type: DataTypes.STRING(50), allowNull: false },
                 email: { type: DataTypes.STRING(100), allowNull: false, unique: true },
                 phoneNumber: { type: DataTypes.STRING(15), allowNull: false },
-                idNumber: { type: DataTypes.STRING(9), allowNull: false, unique: true },
+                idNumber: { type: DataTypes.STRING(20), allowNull: false, unique: true },
                 password: { type: DataTypes.STRING(255), allowNull: false },
                 licenseNumber: { type: DataTypes.STRING(50), allowNull: true },
                 driverStatus: {

@@ -4,40 +4,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard | Car Rental</title>
+    <title>Dashboard | Makbel Car Rentals Premium</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/modern.css">
+    <script src="js/toast.js"></script>
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-slate-50 min-h-screen">
 
-    <!-- 🚀 Header -->
-    <header class="fixed top-0 left-0 w-full bg-blue-700 text-white shadow-md z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center py-4">
-                <a href="user_dashboard.html" class="text-2xl font-bold">Car Rental System</a>
-                <nav>
-                    <ul class="flex space-x-6">
-                        <li><a href="user_dashboard.html" class="hover:underline">Home</a></li>
-                        <li><a href="bookings.html" class="hover:underline">My Bookings</a></li>
-
-                        <li><a href="#" id="logout" class="hover:underline">Logout</a></li>
-                    </ul>
-                </nav>
+    <!-- 🚀 Premium Header -->
+    <header class="glass fixed top-0 left-0 w-full z-50 border-b border-slate-200/50">
+        <div class="max-w-7xl mx-auto px-6 lg:px-10 py-5 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <a href="user_dashboard.html" class="flex items-center space-x-2">
+                    <div
+                        class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg transform rotate-12 transition-transform hover:rotate-0">
+                        <i class="fas fa-car text-white"></i>
+                    </div>
+                    <span
+                        class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600 tracking-tight">Makbel Car Rentals</span>
+                </a>
             </div>
+
+            <nav class="hidden md:flex items-center space-x-10">
+                <ul class="flex space-x-8 text-slate-500 font-bold text-sm uppercase tracking-widest">
+                    <li><a href="user_dashboard.html"
+                            class="text-indigo-600 border-b-2 border-indigo-600 pb-1">Fleet</a></li>
+                    <li><a href="bookings.html" class="hover:text-indigo-600 transition-colors">My Bookings</a></li>
+                    <li><a href="profile.html" class="hover:text-indigo-600 transition-colors">Settings</a></li>
+                </ul>
+                <button id="logoutBtn"
+                    class="px-6 py-2.5 bg-slate-900 text-white rounded-full text-xs font-bold hover:bg-red-600 transition-all active:scale-95 shadow-lg shadow-slate-100">
+                    Sign Out
+                </button>
+            </nav>
         </div>
     </header>
 
-    <!-- 🚗 Car Listings Section -->
-    <div class="container mx-auto mt-24 px-6">
-        <h1 class="text-3xl font-bold text-center text-blue-700 mb-6">Available Cars for Rent</h1>
-        <div id="carList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-    </div>
+    <!-- 🚗 Main Content -->
+    <main class="pt-32 pb-20 px-6 max-w-7xl mx-auto animate-fade-in text-center md:text-left">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+            <div>
+                <span
+                    class="inline-block px-4 py-1.5 mb-2 text-[10px] font-black tracking-widest text-indigo-600 uppercase bg-indigo-50 rounded-full border border-indigo-100">
+                    Premium Selections
+                </span>
+                <h1 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">Find Your <span
+                        class="text-indigo-600">Next Adventure.</span></h1>
+            </div>
+
+            <div class="relative group">
+                <i
+                    class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors"></i>
+                <input type="text" id="carSearch" placeholder="Search by name or model..."
+                    class="pl-14 pr-8 py-4 bg-white border border-slate-200 rounded-[2rem] w-full md:w-96 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all shadow-sm font-medium">
+            </div>
+        </div>
+
+        <!-- 🚀 Filter Chips -->
+        <div class="flex flex-wrap gap-3 mb-12">
+            <button
+                class="px-6 py-3 bg-indigo-600 text-white rounded-2xl font-bold shadow-lg shadow-indigo-100 border border-indigo-600 transition-all">All
+                Vehicles</button>
+            <button
+                class="px-6 py-3 bg-white text-slate-500 rounded-2xl font-bold border border-slate-200 hover:border-indigo-300 hover:text-indigo-600 transition-all">Luxury</button>
+            <button
+                class="px-6 py-3 bg-white text-slate-500 rounded-2xl font-bold border border-slate-200 hover:border-indigo-300 hover:text-indigo-600 transition-all">Sports</button>
+            <button
+                class="px-6 py-3 bg-white text-slate-500 rounded-2xl font-bold border border-slate-200 hover:border-indigo-300 hover:text-indigo-600 transition-all">Convertible</button>
+        </div>
+
+        <h2 class="text-3xl font-black text-slate-800 tracking-tight mb-8 text-left">Available Cars</h2>
+
+        <div id="carList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            <!-- Loader Skeletons -->
+            <div class="bg-slate-100 h-96 rounded-[2.5rem] animate-pulse"></div>
+            <div class="bg-slate-100 h-96 rounded-[2.5rem] animate-pulse"></div>
+            <div class="bg-slate-100 h-96 rounded-[2.5rem] animate-pulse"></div>
+        </div>
+    </main>
 
     <script>
-        // 👤 Role-based Redirection Guard
         const user = JSON.parse(localStorage.getItem("user"));
         const token = localStorage.getItem("token");
 
+        // Role guard
         if (!token || !user) {
             window.location.href = "login.html";
         } else if (user.role === "admin") {
@@ -46,64 +98,90 @@
             window.location.href = "driver_dashboard.html";
         }
 
-        // 🔴 Logout Functionality
-        document.getElementById("logout").addEventListener("click", function () {
+        document.getElementById("logoutBtn").addEventListener("click", function () {
             localStorage.clear();
-            window.location.href = "login.html";
+            Toast.success("Successfully logged out");
+            setTimeout(() => window.location.href = "login.html", 1000);
         });
 
-        // 🚘 Fetch Cars from Backend
         async function fetchCars() {
             try {
                 const response = await fetch("/api/cars");
                 if (!response.ok) throw new Error("Failed to load cars");
                 const data = await response.json();
 
-                if (!data.success || !Array.isArray(data.cars)) throw new Error("Invalid API response format");
+                if (!data.success || !Array.isArray(data.cars)) throw new Error("Invalid response format");
 
-                const carList = document.getElementById("carList");
-                carList.innerHTML = "";
+                const allCars = data.cars;
+                renderCars(allCars);
 
-                for (let car of data.cars) {
-                    // ✅ Check if the car is booked
-                    let isBooked = false;
-                    try {
-                        const bookingResponse = await fetch(`/api/cars/isBooked/${car.id}`);
-                        const bookingData = await bookingResponse.json();
-                        isBooked = bookingData.booked;
-                    } catch (error) {
-                        console.error("Error checking booking status:", error);
-                    }
+                // Search handler
+                document.getElementById('carSearch').addEventListener('input', (e) => {
+                    const q = e.target.value.toLowerCase();
+                    const filtered = allCars.filter(c => c.carName.toLowerCase().includes(q) || c.description.toLowerCase().includes(q));
+                    renderCars(filtered);
+                });
 
-                    // ✅ Ensure image exists before setting it
-                    const imageSrc = car.image ? car.image : "placeholder.jpg"; // Use placeholder if no image
-
-                    const carCard = document.createElement("div");
-                    carCard.className = "bg-white shadow-lg rounded-lg p-4";
-
-                    carCard.innerHTML = `
-                    <img src="${imageSrc}" alt="${car.carName}" class="w-full h-48 object-cover rounded-md">
-                    <h3 class="text-xl font-bold mt-2">${car.carName}</h3>
-                    <p class="text-gray-600">${car.description}</p>
-                    <p class="text-blue-700 font-bold mt-1">Ksh ${car.costPerDay} per day</p>
-                    <button class="mt-4 w-full text-white py-2 rounded-lg ${isBooked ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}"
-                            ${isBooked ? 'disabled' : `onclick="location.href='booking.html?carId=${car.id}'"`}>
-                        ${isBooked ? "Booked" : "Hire"}
-                    </button>
-                `;
-
-                    carList.appendChild(carCard);
-                }
             } catch (error) {
-                console.error("Error fetching cars:", error);
+                console.error("Dashboard Sync Error:", error);
+                Toast.error("Failed to load vehicle catalog");
+                document.getElementById("carList").innerHTML = `<div class="col-span-full py-20 text-center text-red-500 font-bold glass rounded-3xl">Unable to sync fleet data. Please try again.</div>`;
             }
         }
 
-        // 📌 Fetch Cars on Page Load
+        function renderCars(cars) {
+            const carList = document.getElementById("carList");
+            if (cars.length === 0) {
+                carList.innerHTML = `<div class="col-span-full py-20 text-center text-slate-400 font-bold border-2 border-dashed border-slate-200 rounded-[3rem]">No vehicles found. Try adjusting your search.</div>`;
+                return;
+            }
+
+            carList.innerHTML = "";
+
+            cars.forEach(car => {
+                const isBooked = car.isAvailableForLease === false; // Simplified availability check
+
+                const card = document.createElement("div");
+                card.className = "glass h-full group rounded-[2.5rem] overflow-hidden border-slate-100 hover:border-indigo-200 hover:-translate-y-3 transition-all duration-500 shadow-sm hover:shadow-2xl relative";
+
+                card.innerHTML = `
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="${car.image || 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80'}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" onerror="this.src='https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                        <div class="absolute top-6 right-6 px-4 py-1.5 bg-white/95 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest text-indigo-600 shadow-lg border border-indigo-50">
+                            ${car.vehicleType}
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-2xl font-black text-slate-800 tracking-tight">${car.carName}</h3>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+                                    <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">${car.color}</span>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Daily Rate</p>
+                                <p class="text-indigo-600 font-black text-2xl leading-none">Ksh ${car.costPerDay.toLocaleString()}</p>
+                            </div>
+                        </div>
+                        <p class="text-slate-500 text-sm mb-8 leading-relaxed line-clamp-2 min-h-[40px]">${car.description}</p>
+                        <button class="w-full py-4 rounded-2xl font-black shadow-lg transition-all active:scale-95 flex items-center justify-center space-x-3 
+                                    ${isBooked ? 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200' : 'bg-slate-900 text-white hover:bg-indigo-600 shadow-slate-100'}"
+                                ${isBooked ? 'disabled' : `onclick="location.href='booking.html?carId=${car.id}'"`}>
+                            <i class="fas ${isBooked ? 'fa-lock' : 'fa-key'} text-xs opacity-50"></i>
+                            <span class="uppercase tracking-widest text-xs">${isBooked ? "Reserved" : "Lease Vehicle"}</span>
+                        </button>
+                    </div>
+                `;
+
+                carList.appendChild(card);
+            });
+        }
+
         document.addEventListener("DOMContentLoaded", fetchCars);
     </script>
-
-
 </body>
 
 </html>

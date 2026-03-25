@@ -4,139 +4,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Bookings | Car Rental</title>
+    <title>My Reservations | Makbel Car Rentals Premium</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/modern.css">
+    <script src="js/toast.js"></script>
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-slate-50 min-h-screen">
 
-    <!-- 🚀 Header -->
-    <header class="fixed top-0 left-0 w-full bg-blue-700 text-white shadow-md z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center py-4">
-                <a href="user_dashboard.html" class="text-2xl font-bold">Car Rental System</a>
-                <nav>
-                    <ul class="flex space-x-6">
-                        <li><a href="user_dashboard.html" class="hover:underline">Home</a></li>
-                        <li><a href="bookings.html" class="hover:underline">My Bookings</a></li>
-                        <li><a href="#" id="logout" class="hover:underline">Logout</a></li>
-                    </ul>
-                </nav>
+    <!-- 🚀 Premium Header -->
+    <header class="glass fixed top-0 left-0 w-full z-50 border-b border-slate-200/50">
+        <div class="max-w-7xl mx-auto px-6 lg:px-10 py-5 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <a href="user_dashboard.html" class="flex items-center space-x-2">
+                    <div
+                        class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg transform rotate-12 transition-transform hover:rotate-0">
+                        <i class="fas fa-car text-white"></i>
+                    </div>
+                    <span
+                        class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600 tracking-tight">Makbel Car Rentals</span>
+                </a>
             </div>
+
+            <nav class="flex items-center space-x-8">
+                <ul class="flex space-x-6 text-slate-500 font-bold text-xs uppercase tracking-widest">
+                    <li><a href="user_dashboard.html" class="hover:text-indigo-600 transition-colors">Fleet</a></li>
+                    <li><a href="bookings.html" class="text-indigo-600 border-b-2 border-indigo-600 pb-1">Bookings</a>
+                    </li>
+                </ul>
+                <button onclick="localStorage.clear(); window.location.href='login.html';"
+                    class="w-10 h-10 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all">
+                    <i class="fas fa-power-off text-xs"></i>
+                </button>
+            </nav>
         </div>
     </header>
 
-    <!-- 🚗 Booking List -->
-    <div class="container mx-auto mt-24 px-6">
-        <h1 class="text-3xl font-bold text-center text-blue-700 mb-6">My Bookings</h1>
+    <!-- 📋 Booking Ledger -->
+    <main class="pt-32 pb-20 px-6 max-w-7xl mx-auto animate-fade-in">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+            <div>
+                <span
+                    class="inline-block px-4 py-1.5 mb-2 text-[10px] font-black tracking-widest text-indigo-600 uppercase bg-indigo-50 rounded-full border border-indigo-100">
+                    Active Ledger
+                </span>
+                <h1 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">Your <span
+                        class="text-indigo-600">Reservations.</span></h1>
+            </div>
+        </div>
 
-        <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
-            <thead class="bg-blue-600 text-white">
-                <tr>
-                    <th class="py-3 px-6 text-left">Car</th>
-                    <th class="py-3 px-6 text-left">Rental Date</th>
-                    <th class="py-3 px-6 text-left">Days</th>
-                    <th class="py-3 px-6 text-left">Cost</th>
-                    <th class="py-3 px-6 text-left">Action</th>
-                </tr>
-            </thead>
-            <tbody id="bookingsTable">
-                <!-- 🚀 Bookings will be dynamically inserted here -->
-            </tbody>
-        </table>
-    </div>
+        <div class="glass rounded-[2.5rem] overflow-hidden border-indigo-50 shadow-sm relative overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr
+                        class="bg-indigo-900/5 text-slate-500 uppercase text-[10px] font-black tracking-widest text-center">
+                        <th class="px-10 py-6 text-left">Selected Vehicle</th>
+                        <th class="px-10 py-6">Commencement</th>
+                        <th class="px-10 py-6">Duration</th>
+                        <th class="px-10 py-6">Total Investment</th>
+                        <th class="px-10 py-6">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="bookingsTable" class="divide-y divide-indigo-50">
+                    <tr>
+                        <td colspan="5" class="py-24 text-center">
+                            <i class="fas fa-circle-notch fa-spin text-indigo-500 text-3xl mb-4"></i>
+                            <p class="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Accessing Secure
+                                Ledger...</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
 
     <script>
-        // 🔴 Logout Functionality
-        document.getElementById("logout")?.addEventListener("click", function () {
-            localStorage.removeItem("token");
-            localStorage.removeItem("user");
-            window.location.href = "login.html";
-        });
-
-        // 🏷️ Load User Data
         const user = JSON.parse(localStorage.getItem("user"));
         const token = localStorage.getItem("token");
 
         if (!user || !token) {
-            alert("Unauthorized! Please log in.");
             window.location.href = "login.html";
         }
 
-        // 🚀 Fetch Bookings from the API
         async function fetchBookings() {
             try {
-                const response = await fetch(`http://localhost:5000/api/bookings/${user.id}`, {
+                const response = await fetch(`/api/bookings/${user.id}`, {
                     headers: { "Authorization": `Bearer ${token}` }
                 });
+
+                if (!response.ok) throw new Error("Sync failed");
+
                 const bookings = await response.json();
-
-                if (!response.ok) throw new Error(bookings.message || "Failed to load bookings.");
-
-                displayBookings(bookings);
+                renderBookings(bookings);
             } catch (error) {
-                console.error("Error fetching bookings:", error);
-                alert("Error loading bookings.");
+                console.error("Ledger Sync Error:", error);
+                Toast.error("Failed to load reservation history");
             }
         }
 
-        // 📌 Display Bookings in Table
-        function displayBookings(bookings) {
-            const bookingsTable = document.getElementById("bookingsTable");
-            bookingsTable.innerHTML = "";
+        function renderBookings(bookings) {
+            const table = document.getElementById("bookingsTable");
+            table.innerHTML = "";
 
             if (bookings.length === 0) {
-                bookingsTable.innerHTML = `<tr><td colspan="5" class="text-center py-4">No bookings found.</td></tr>`;
+                table.innerHTML = `<tr><td colspan="5" class="py-24 text-center text-slate-400 font-bold border-2 border-dashed border-indigo-50 rounded-[3rem] m-8 uppercase tracking-widest text-xs">No active reservations found. Visit fleet to start.</td></tr>`;
                 return;
             }
 
             bookings.forEach(booking => {
                 const row = document.createElement("tr");
-                row.className = "border-b";
+                row.className = "group hover:bg-white transition-colors duration-300";
 
                 row.innerHTML = `
-                    <td class="py-3 px-6">${booking.carName}</td>
-                    <td class="py-3 px-6">${booking.rentalDate}</td>
-                    <td class="py-3 px-6">${booking.rentalDays} days</td>
-                    <td class="py-3 px-6">Ksh ${booking.cost}</td>
-                    <td class="py-3 px-6">
-                        <button onclick="cancelBooking(${booking.id})"
-                            class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
-                            Cancel
+                    <td class="px-10 py-8">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-car-side"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-base font-black text-slate-800 tracking-tight">${booking.carName}</h4>
+                                <p class="text-[9px] text-slate-400 font-black uppercase tracking-widest mt-0.5">Reservation #${booking.id}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-10 py-8 text-center">
+                        <span class="text-sm font-bold text-slate-600">${booking.rentalDate}</span>
+                    </td>
+                    <td class="px-10 py-8 text-center">
+                        <span class="px-3 py-1 bg-slate-100 text-slate-500 rounded-lg text-[10px] font-black uppercase tracking-widest border border-slate-200">${booking.rentalDays} Days</span>
+                    </td>
+                    <td class="px-10 py-8 text-center">
+                        <div class="space-y-1">
+                            <p class="text-lg font-black text-indigo-600 leading-none">Ksh ${booking.cost.toLocaleString()}</p>
+                            <div class="flex items-center justify-center space-x-2">
+                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Paid: Ksh ${booking.depositPaid || 0}</span>
+                                <span class="px-2 py-0.5 bg-emerald-50 text-emerald-600 rounded text-[8px] font-black uppercase tracking-widest border border-emerald-100">${booking.paymentStatus}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-10 py-8 text-center">
+                        <button onclick="cancelBooking(${booking.id})" class="px-5 py-2.5 bg-rose-50 text-rose-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-rose-100 hover:bg-rose-500 hover:text-white transition-all active:scale-95 shadow-sm">
+                            Terminate
                         </button>
                     </td>
                 `;
 
-                bookingsTable.appendChild(row);
+                table.appendChild(row);
             });
         }
 
-        // 🗑️ Cancel Booking
         async function cancelBooking(bookingId) {
-            try {
-                const token = localStorage.getItem("token"); // Ensure token is retrieved
-                if (!token) throw new Error("User not authenticated.");
+            if (!confirm("Are you sure you want to terminate this reservation? Access will be revoked immediately.")) return;
 
-                const response = await fetch(`http://localhost:5000/api/bookings/${bookingId}`, {
+            try {
+                Toast.info("Executing termination...");
+                const response = await fetch(`/api/bookings/${bookingId}`, {
                     method: "DELETE",
                     headers: { "Authorization": `Bearer ${token}` }
                 });
 
-                if (!response.ok) throw new Error("Failed to cancel booking.");
-
-                alert("Booking canceled successfully.");
-
-                // ✅ Redirect after alert is acknowledged
-                window.location.href = "bookings.html";
+                if (response.ok) {
+                    Toast.success("Reservation terminated successfully");
+                    fetchBookings();
+                } else {
+                    Toast.error("Termination failed");
+                }
             } catch (error) {
-                console.error("Error canceling booking:", error);
-                alert("Failed to cancel booking.");
+                console.error("Cancel Error:", error);
+                Toast.error("Connection integrity failed");
             }
         }
-        // 🚀 Load Bookings on Page Load
+
         fetchBookings();
     </script>
-
 </body>
 
 </html>

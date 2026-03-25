@@ -21,10 +21,23 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ error: "Passwords do not match" });
     }
 
-    // 🔎 Check if email already exists
-    const existingUser = await User.findOne({ where: { email } });
+    // 🔎 Check if email or ID Number already exists
+    const existingUser = await User.findOne({ 
+      where: { 
+        [Op.or]: [
+          { email },
+          { idNumber }
+        ]
+      } 
+    });
+
     if (existingUser) {
-      return res.status(400).json({ error: "Email is already registered" });
+      if (existingUser.email === email) {
+        return res.status(400).json({ error: "Email is already registered" });
+      }
+      if (existingUser.idNumber === idNumber) {
+        return res.status(400).json({ error: "ID Number is already registered" });
+      }
     }
 
     // 🏷️ Determine User Role
@@ -69,6 +82,20 @@ export const registerUser = async (req, res) => {
 
   } catch (error) {
     console.error("❌ Registration Error:", error);
+    
+    // 🛑 Specific handling for Sequelize Validation/Unique Errors
+    if (error.name === "SequelizeUniqueConstraintError") {
+      const field = error.errors[0].path;
+      const message = field === "email" ? "Email is already registered" : 
+                      field === "idNumber" ? "ID Number is already registered" : 
+                      "Record already exists";
+      return res.status(400).json({ error: message });
+    }
+
+    if (error.name === "SequelizeValidationError") {
+      return res.status(400).json({ error: error.errors[0].message });
+    }
+
     res.status(500).json({ error: "Server error, please try again" });
   }
 };

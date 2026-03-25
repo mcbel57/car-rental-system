@@ -74,24 +74,26 @@ router.post("/approve-driver", verifyToken, verifyAdmin, async (req, res) => {
 // ✅ Create a Lease (Driver)
 router.post("/create", verifyToken, verifyDriver, async (req, res) => {
     try {
-        const { carId } = req.body;
-        const car = await Car.findByPk(carId);
+        const { carId, startDate, depositPaid, paymentStatus } = req.body;
+        const userId = req.user.id;
 
-        if (!car) return res.status(404).json({ error: "Car not found" });
+        // Fetch car to get weekly cost
+        const car = await Car.findByPk(carId);
+        if (!car) return res.status(404).json({ message: "Car not found" });
         if (!car.isAvailableForLease) return res.status(400).json({ error: "Car not available for lease" });
 
-        const startDate = new Date();
-        const weeklyCost = car.weeklyLeaseCost;
-
+        // ✅ Create Lease Application
         const lease = await Lease.create({
-            driverId: req.user.userId,
             carId,
-            startDate,
-            weeklyCost,
-            status: "active"
+            driverId: userId,
+            startDate: startDate || new Date(),
+            weeklyCost: car.weeklyLeaseCost,
+            depositPaid: depositPaid || 0,
+            paymentStatus: paymentStatus || 'pending',
+            status: "pending"
         });
 
-        res.json({ message: "Lease created successfully", lease });
+        res.json({ message: "Lease application submitted successfully", lease });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Error creating lease" });

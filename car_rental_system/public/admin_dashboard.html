@@ -4,94 +4,260 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | Car Rental System</title>
+    <title>Admin Dashboard | Makbel Car Rentals Control</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/modern.css">
+    <script src="js/toast.js"></script>
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-slate-50 font-sans">
 
-    <!-- 🌍 Admin Header -->
-    <header class="bg-blue-800 text-white py-4 shadow-lg fixed top-0 w-full z-10">
-        <div class="container mx-auto flex justify-between items-center px-6">
-            <h1 class="text-2xl font-bold">Admin Dashboard</h1>
-
-            <!-- Dropdown Menu -->
-            <div class="relative">
-                <button id="menuBtn" class="hover:text-gray-300 focus:outline-none">
-                    Menu ▼
-                </button>
-
-                <!-- Dropdown Content -->
-                <ul id="dropdownMenu"
-                    class="absolute right-0 mt-2 bg-white text-black shadow-lg rounded-md w-48 hidden">
-                    <li><a href="admin_dashboard.html" class="block px-4 py-2 hover:bg-gray-200">Dashboard</a></li>
-                    <li><a href="admin_manage_cars.html" class="hover:underline">Add Cars</a></li>
-                    <li><a href="admin_cars.html" class="hover:underline">Manage Cars</a></li>
-                    <li><a href="admin_view_leases.html" class="hover:underline">Manage Leases</a></li>
-                    <li><a href="admin_driver_management.html" class="hover:underline">Manage Drivers</a></li>
-                    <li><a href="index.html" class="hover:underline text-red-300">Logout</a></li>
-                </ul>
+    <div class="flex h-screen overflow-hidden">
+        <!-- 🚀 Modern Sidebar -->
+        <aside class="w-72 bg-slate-900 text-white flex flex-col shadow-2xl relative z-20">
+            <div class="p-8 flex items-center space-x-3">
+                <div
+                    class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg transform rotate-12 transition-transform hover:rotate-0">
+                    <i class="fas fa-shield-halved text-white text-lg"></i>
+                </div>
+                <h1 class="text-2xl font-black tracking-tight">Makbel Car Rentals <span class="text-indigo-500">HQ</span></h1>
             </div>
-        </div>
-    </header>
 
-    <!-- 📌 Admin Dashboard Content -->
-    <main class="container mx-auto mt-20 px-6">
-        <h2 class="text-3xl font-bold text-gray-800 mb-6">Welcome, Admin</h2>
+            <nav class="flex-1 px-4 space-y-1.5 mt-4">
+                <a href="admin_dashboard.html"
+                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl bg-indigo-600/10 text-indigo-400 font-bold border border-indigo-500/20 transition-all">
+                    <i class="fas fa-th-large text-lg"></i>
+                    <span>Overview</span>
+                </a>
+                <div class="pt-6 pb-2 px-4 uppercase text-[10px] font-black tracking-widest text-slate-500">Management
+                </div>
+                <a href="admin_cars.html"
+                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
+                    <i class="fas fa-car-side text-lg"></i>
+                    <span>Fleet Control</span>
+                </a>
+                <a href="admin_manage_cars.html"
+                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
+                    <i class="fas fa-plus-circle text-lg"></i>
+                    <span>Add New Vehicle</span>
+                </a>
+                <a href="admin_view_leases.html"
+                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
+                    <i class="fas fa-file-contract text-lg"></i>
+                    <span>Lease Pipeline</span>
+                </a>
+                <a href="admin_driver_management.html"
+                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
+                    <i class="fas fa-id-card text-lg"></i>
+                    <span>Driver Vetting</span>
+                </a>
+                <a href="admin_view_rentals.html"
+                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
+                    <i class="fas fa-clock-rotate-left text-lg"></i>
+                    <span>Rental History</span>
+                </a>
+            </nav>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Add Cars -->
-            <a href="admin_manage_cars.html"
-                class="bg-blue-500 text-white p-6 rounded-lg text-center hover:bg-blue-600">
-                <h3 class="text-xl font-semibold">Add Cars</h3>
-                <p class="mt-2">Register new vehicles into the system.</p>
-            </a>
+            <div class="p-6">
+                <button id="logoutBtn"
+                    class="w-full flex items-center justify-center space-x-3 py-4 bg-red-500/10 text-red-400 rounded-2xl font-bold hover:bg-red-500 hover:text-white transition-all border border-red-500/20 active:scale-95">
+                    <i class="fas fa-link-slash"></i>
+                    <span>Deauthorize</span>
+                </button>
+            </div>
+        </aside>
 
-            <!-- Manage Cars -->
-            <a href="admin_cars.html" class="bg-blue-600 text-white p-6 rounded-lg text-center hover:bg-blue-700">
-                <h3 class="text-xl font-semibold">Manage Cars</h3>
-                <p class="mt-2">Edit or remove cars from inventory.</p>
-            </a>
+        <!-- 🏢 Main Dashboard -->
+        <main class="flex-1 overflow-y-auto bg-slate-50 relative">
+            <!-- Header -->
+            <header
+                class="sticky top-0 glass z-10 px-10 py-6 flex justify-between items-center border-b border-slate-200/50">
+                <div class="animate-fade-in">
+                    <h1 class="text-2xl font-black text-slate-800 tracking-tighter">Admin Dashboard</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="index.html"
+                        class="text-sm font-bold text-slate-400 hover:text-indigo-600 transition-colors">View Website
+                        <i class="fas fa-arrow-up-right-from-square ml-1 text-[10px]"></i></a>
+                </div>
+            </header>
 
-            <!-- View Rentals -->
-            <a href="admin_view_rentals.html"
-                class="bg-green-600 text-white p-6 rounded-lg text-center hover:bg-green-700">
-                <h3 class="text-xl font-semibold">View Rentals</h3>
-                <p class="mt-2">See current and past rentals.</p>
-            </a>
+            <div class="px-10 py-10 space-y-12 animate-fade-in">
+                <!-- 📊 Stats Overview -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div
+                        class="glass p-8 rounded-[2rem] border-indigo-50 shadow-sm transition-all hover:shadow-xl group">
+                        <div
+                            class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
+                            <i class="fas fa-car text-xl"></i>
+                        </div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Fleet</p>
+                        <h4 class="text-3xl font-black text-slate-800 tracking-tighter" id="totalCars">--</h4>
+                    </div>
+                    <div
+                        class="glass p-8 rounded-[2rem] border-emerald-50 shadow-sm transition-all hover:shadow-xl group">
+                        <div
+                            class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
+                            <i class="fas fa-hand-holding-dollar text-xl"></i>
+                        </div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Active Leases
+                        </p>
+                        <h4 class="text-3xl font-black text-slate-800 tracking-tighter" id="activeLeases">--</h4>
+                    </div>
+                    <div
+                        class="glass p-8 rounded-[2rem] border-amber-50 shadow-sm transition-all hover:shadow-xl group">
+                        <div
+                            class="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
+                            <i class="fas fa-user-clock text-xl"></i>
+                        </div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Pending Vetting
+                        </p>
+                        <h4 class="text-3xl font-black text-slate-800 tracking-tighter" id="pendingDrivers">--</h4>
+                    </div>
+                    <div
+                        class="glass p-8 rounded-[2rem] border-violet-50 shadow-sm transition-all hover:shadow-xl group">
+                        <div
+                            class="w-12 h-12 bg-violet-100 text-violet-600 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
+                            <i class="fas fa-calendar-check text-xl"></i>
+                        </div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Active Rentals
+                        </p>
+                        <h4 class="text-3xl font-black text-slate-800 tracking-tighter" id="activeRentals">--</h4>
+                    </div>
+                </div>
 
-            <!-- Manage Users -->
-            <a href="admin_users.html" class="bg-red-600 text-white p-6 rounded-lg text-center hover:bg-red-700">
-                <h3 class="text-xl font-semibold">Manage Users</h3>
-                <p class="mt-2">View, edit, or delete user accounts.</p>
-            </a>
-        </div>
+                <!-- 📩 Customer Inquiries Feed -->
+                <section class="mb-12">
+                    <div class="flex items-center justify-between mb-8">
+                        <h3 class="text-xl font-bold text-slate-800 tracking-tight">Recent Inquiries</h3>
+                        <span id="inquiryCount" class="bg-indigo-600 text-white text-[10px] font-black px-2.5 py-1 rounded-full shadow-lg shadow-indigo-100 italic">-- New</span>
+                    </div>
+                    <div id="inquiriesGrid" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- Loading Skeletons -->
+                        <div class="glass p-8 rounded-[2rem] animate-pulse h-40"></div>
+                        <div class="glass p-8 rounded-[2rem] animate-pulse h-40"></div>
+                    </div>
+                </section>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-            <!-- Driver Management -->
-            <a href="admin_driver_management.html"
-                class="bg-yellow-600 text-white p-6 rounded-lg text-center hover:bg-yellow-700">
-                <h3 class="text-xl font-semibold">Manage Drivers</h3>
-                <p class="mt-2">Approve drivers and view leases.</p>
-            </a>
-        </div>
-    </main>
+                <!-- 🚀 Quick Action Command Center -->
+                <section>
+                    <h3 class="text-xl font-bold text-slate-800 mb-8 tracking-tight">Quick Actions</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <a href="admin_manage_cars.html"
+                            class="glass group p-8 rounded-[2.5rem] border-blue-50 hover:border-blue-400 transition-all hover:-translate-y-2 shadow-sm hover:shadow-2xl">
+                            <div
+                                class="w-14 h-14 bg-blue-600 text-white rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-blue-100 group-hover:rotate-12 transition-transform">
+                                <i class="fas fa-plus text-2xl"></i>
+                            </div>
+                            <h4 class="text-2xl font-black text-slate-800 mb-2">Manage Fleet</h4>
+                            <p class="text-slate-500 font-medium leading-relaxed">Expand the fleet with new premium
+                                selections and set leasing parameters.</p>
+                        </a>
+
+                        <a href="admin_view_leases.html"
+                            class="glass group p-8 rounded-[2.5rem] border-indigo-50 hover:border-indigo-400 transition-all hover:-translate-y-2 shadow-sm hover:shadow-2xl">
+                            <div
+                                class="w-14 h-14 bg-indigo-600 text-white rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-indigo-100 group-hover:rotate-12 transition-transform">
+                                <i class="fas fa-stamp text-2xl"></i>
+                            </div>
+                            <h4 class="text-2xl font-black text-slate-800 mb-2">Lease Approval</h4>
+                            <p class="text-slate-500 font-medium leading-relaxed">Review and authorize pending driver
+                                lease requests from the pipeline.</p>
+                        </a>
+
+                        <a href="admin_driver_management.html"
+                            class="glass group p-8 rounded-[2.5rem] border-amber-50 hover:border-amber-400 transition-all hover:-translate-y-2 shadow-sm hover:shadow-2xl">
+                            <div
+                                class="w-14 h-14 bg-amber-500 text-white rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-amber-100 group-hover:rotate-12 transition-transform">
+                                <i class="fas fa-user-shield text-2xl"></i>
+                            </div>
+                            <h4 class="text-2xl font-black text-slate-800 mb-2">Partner Vetting</h4>
+                            <p class="text-slate-500 font-medium leading-relaxed">Verify driver licenses and background
+                                checks for system onboarding.</p>
+                        </a>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
 
     <script>
-        // Toggle dropdown menu
-        document.getElementById("menuBtn").addEventListener("click", () => {
-            document.getElementById("dropdownMenu").classList.toggle("hidden");
+        const token = localStorage.getItem("token");
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        if (!token || !user || user.role !== "admin") {
+            window.location.href = "login.html";
+        }
+
+        document.getElementById("logoutBtn").addEventListener("click", () => {
+            localStorage.clear();
+            Toast.success("Session terminated safely");
+            setTimeout(() => window.location.href = "login.html", 1000);
         });
 
-        // Close dropdown when clicking outside
-        document.addEventListener("click", (event) => {
-            const menuBtn = document.getElementById("menuBtn");
-            const dropdown = document.getElementById("dropdownMenu");
+        async function fetchDashboardData() {
+            try {
+                // 1. Fetch Stats
+                const statsResponse = await fetch("/api/admin/stats", {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                if (statsResponse.ok) {
+                    const stats = await statsResponse.json();
+                    document.getElementById("totalCars").innerText = stats.totalCars || 0;
+                    document.getElementById("activeLeases").innerText = stats.activeLeases || 0;
+                    document.getElementById("pendingDrivers").innerText = stats.pendingDrivers || 0;
+                    document.getElementById("activeRentals").innerText = stats.activeRentals || 0;
+                }
 
-            if (!menuBtn.contains(event.target) && !dropdown.contains(event.target)) {
-                dropdown.classList.add("hidden");
+                // 2. Fetch Inquiries
+                const inquiryRes = await fetch("/api/inquiries", {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                if (inquiryRes.ok) {
+                    const inquiries = await inquiryRes.json();
+                    renderInquiries(inquiries);
+                }
+
+            } catch (error) {
+                console.error("Dashboard Sync Error:", error);
+                Toast.error("Failed to sync dashboard data");
             }
-        });
+        }
+
+        function renderInquiries(inquiries) {
+            const grid = document.getElementById("inquiriesGrid");
+            const countBadge = document.getElementById("inquiryCount");
+            
+            if (inquiries.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-12 text-center text-slate-400 font-medium">No inquiries found.</div>`;
+                countBadge.innerText = "0 New";
+                return;
+            }
+
+            countBadge.innerText = `${inquiries.filter(i => i.status === 'new').length} New`;
+            
+            grid.innerHTML = inquiries.slice(0, 4).map(inv => `
+                <div class="glass p-8 rounded-[2rem] border-slate-100 hover:border-indigo-200 transition-all group relative overflow-hidden">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center font-black text-xs uppercase">${inv.fullName[0]}</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">${inv.fullName}</h4>
+                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">${inv.email}</p>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 ${inv.status === 'new' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-500'} rounded-full text-[9px] font-black uppercase tracking-widest">${inv.status}</span>
+                    </div>
+                    <p class="text-sm text-slate-600 line-clamp-2 italic leading-relaxed">"${inv.message}"</p>
+                    <div class="mt-6 flex justify-end">
+                        <button class="text-[10px] font-black uppercase tracking-widest text-indigo-600 hover:text-indigo-800 transition-colors">Mark as Read <i class="fas fa-check ml-1"></i></button>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        fetchDashboardData();
     </script>
 
 </body>

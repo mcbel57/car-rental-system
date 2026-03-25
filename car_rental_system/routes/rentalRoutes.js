@@ -42,31 +42,33 @@ router.get("/admin", verifyToken, verifyAdmin, async (req, res) => {
     try {
         const rentals = await Rental.findAll({
             include: [
-                { model: Car, attributes: ["name", "imageUrl"] },
-                { model: User, attributes: ["firstName", "lastName", "email"] }
+                { model: Car, as: "Car", attributes: ["carName"] },
+                { model: User, as: "User", attributes: ["firstName", "lastName", "email"] }
             ]
         });
 
-        res.json(rentals);
+        const formattedRentals = rentals.map(r => ({
+            id: r.id,
+            carName: r.Car ? r.Car.carName : r.carName,
+            fullName: r.User ? `${r.User.firstName} ${r.User.lastName}` : r.fullName,
+            email: r.User ? r.User.email : "",
+            idNumber: r.idNumber,
+            rentalDate: r.rentalDate,
+            rentalDays: r.rentalDays,
+            cost: r.cost
+        }));
+
+        res.json(formattedRentals);
     } catch (error) {
+        console.error("❌ Admin Rentals Fetch Error:", error);
         res.status(500).json({ error: "Error fetching rental history: " + error.message });
     }
 });
 
-// ✅ Cancel rental
-router.put("/:id/cancel", verifyToken, async (req, res) => {
+// ✅ Get all rentals for general admin use (backward compatibility)
+router.get("/", verifyToken, verifyAdmin, async (req, res) => {
     try {
-        await Rental.update({ status: "Canceled" }, { where: { id: req.params.id, userId: req.user.id } });
-        res.json({ message: "Rental canceled successfully" });
-    } catch (error) {
-        res.status(500).json({ error: "Error canceling rental: " + error.message });
-    }
-});
-
-// 📌 Get All Rentals (Admin Only)
-router.get("/", async (req, res) => {
-    try {
-        const rentals = await db.Rental.findAll();
+        const rentals = await Rental.findAll();
         res.json(rentals);
     } catch (error) {
         console.error("❌ Error fetching rentals:", error);
@@ -74,11 +76,11 @@ router.get("/", async (req, res) => {
     }
 });
 
-// 📌 Cancel Rental (Admin Only)
-router.delete("/:id",  async (req, res) => {
+// ✅ Cancel rental
+router.delete("/:id", verifyToken, verifyAdmin, async (req, res) => {
     try {
         const { id } = req.params;
-        const rental = await db.Rental.findByPk(id);
+        const rental = await Rental.findByPk(id);
         if (!rental) return res.status(404).json({ success: false, message: "Rental not found." });
 
         await rental.destroy();
@@ -89,12 +91,5 @@ router.delete("/:id",  async (req, res) => {
     }
 });
 
-// ✅ Fetch all rentals
-router.get("/", rentalController.getAllRentals);
-
-// ✅ Delete a rental by ID
-router.delete("/:id", rentalController.deleteRental);
-
-// ✅ Use ES6 Export
 export default router;
 

@@ -10,7 +10,7 @@ const router = express.Router();
 // 🚀 Create a Booking (with Car Details Fetching & User Authentication)
 router.post("/", verifyToken, async (req, res) => {
     try {
-        const { carId, rentalDate, rentalDays } = req.body;
+        const { carId, rentalDate, rentalDays, depositPaid, paymentStatus } = req.body;
         const userId = req.user.userId;
 
         // 🛑 Validate required fields
@@ -54,8 +54,8 @@ router.post("/", verifyToken, async (req, res) => {
         const idNumber = user.idNumber;
         const totalCost = car.costPerDay * rentalDays;
 
-        // 📝 Insert booking into database
-        await Rental.create({
+        // ✅ Create Booking
+        const rental = await Rental.create({
             carId,
             userId,
             carName: car.carName,
@@ -63,10 +63,13 @@ router.post("/", verifyToken, async (req, res) => {
             idNumber,
             rentalDate,
             rentalDays,
-            cost: totalCost
+            cost: totalCost,
+            depositPaid,
+            paymentStatus: paymentStatus || 'pending',
+            status: "active",
         });
 
-        res.status(201).json({ success: true, message: "Car booked successfully!" });
+        res.status(201).json({ success: true, message: "Car booked successfully!", rentalId: rental.id });
 
     } catch (error) {
         console.error("❌ Booking Error:", error);

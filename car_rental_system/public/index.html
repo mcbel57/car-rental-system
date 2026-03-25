@@ -5,21 +5,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Car Rental System</title>
+    <title>Makbel Car Rentals | Premium Car Rental & Leasing</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/modern.css">
+    <script src="js/toast.js"></script>
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-slate-50 font-sans">
 
-    <!-- 🚀 Navigation Bar (Stationary Header) -->
-    <header class="bg-blue-700 text-white fixed top-0 left-0 w-full shadow-lg z-10">
-        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-            <h1 class="text-2xl font-bold">Car Rental</h1>
-            <nav id="navLinks">
-                <a href="#about" class="px-4 hover:underline">About Us</a>
-                <a href="#contact" class="px-4 hover:underline">Contact Us</a>
-                <a href="user_form.html" class="px-4 hover:underline">Sign Up</a>
-                <a href="login.html" class="px-4 hover:underline">Sign In</a>
+    <!-- 🚀 Navigation Bar -->
+    <header class="glass fixed top-0 left-0 w-full z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div
+                    class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg transform rotate-12">
+                    <i class="fas fa-car text-white"></i>
+                </div>
+                <h1
+                    class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600">
+                    Makbel Car Rentals</h1>
+            </div>
+            <nav id="navLinks" class="hidden md:flex items-center space-x-8 text-slate-600 font-semibold">
+                <a href="#about" class="hover:text-indigo-600 transition-colors">About</a>
+                <a href="#contact" class="hover:text-indigo-600 transition-colors">Contact</a>
+                <a href="user_form.html" class="px-4 py-2 text-slate-700 hover:text-indigo-600 transition-colors">Sign
+                    Up</a>
+                <a href="login.html"
+                    class="px-6 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-all shadow-md active:scale-95">Sign
+                    In</a>
             </nav>
         </div>
     </header>
@@ -32,115 +46,213 @@
 
             if (token && user) {
                 let dashboardLink = "user_dashboard.html";
-                let dashboardText = "My Dashboard";
+                let dashboardText = "Dashboard";
 
-                if (user.role === "admin") {
-                    dashboardLink = "admin_dashboard.html";
-                    dashboardText = "Admin Dashboard";
-                } else if (user.role === "driver") {
-                    dashboardLink = "driver_dashboard.html";
-                    dashboardText = "Driver Dashboard";
-                }
+                if (user.role === "admin") dashboardLink = "admin_dashboard.html";
+                else if (user.role === "driver") dashboardLink = "driver_dashboard.html";
 
                 navLinks.innerHTML = `
-                    <a href="#about" class="px-4 hover:underline">About Us</a>
-                    <a href="#contact" class="px-4 hover:underline">Contact Us</a>
-                    <a href="${dashboardLink}" class="px-4 hover:underline font-bold text-yellow-300">${dashboardText}</a>
-                    <a href="#" id="logoutBtn" class="px-4 hover:underline text-red-300">Logout</a>
+                    <a href="#about" class="hover:text-indigo-600 transition-colors">About</a>
+                    <a href="#contact" class="hover:text-indigo-600 transition-colors">Contact</a>
+                    <a href="${dashboardLink}" class="px-6 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-all animate-pulse shadow-indigo-200 shadow-lg">${dashboardText}</a>
+                    <a href="#" id="logoutBtn" class="text-slate-400 hover:text-red-500 transition-colors ml-4 text-sm">Logout</a>
                 `;
 
                 document.getElementById("logoutBtn").addEventListener("click", () => {
-                    localStorage.removeItem("token");
-                    localStorage.removeItem("user");
-                    window.location.reload();
+                    localStorage.clear();
+                    Toast.info("Successfully logged out");
+                    setTimeout(() => window.location.reload(), 1000);
                 });
             }
         });
     </script>
 
     <!-- 🚀 Hero Section -->
-    <section class="h-screen flex items-center justify-center text-center bg-cover bg-center relative"
-        style="background-image: url('');">
-        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
-        <div class="relative text-white p-8 rounded-lg z-10">
-            <h2 class="text-4xl font-bold mb-4">Rent Your Dream Car Today</h2>
-            <p class="text-lg mb-6">Experience top-quality car rentals with flexible pricing and luxury vehicles.</p>
-            <a href="user_form.html"
-                class="mt-4 inline-block bg-yellow-500 px-6 py-2 text-black rounded-lg font-bold hover:bg-yellow-600">Get
-                Started</a>
+    <section class="min-h-screen flex items-center justify-center relative overflow-hidden bg-slate-900">
+        <!-- Animated Background Blobs -->
+        <div
+            class="absolute top-0 -left-4 w-72 h-72 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob">
+        </div>
+        <div
+            class="absolute top-0 -right-4 w-72 h-72 bg-violet-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000">
+        </div>
+        <div
+            class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000">
+        </div>
+
+        <div class="relative z-10 max-w-5xl mx-auto px-6 text-center animate-fade-in">
+            <span
+                class="inline-block px-4 py-1.5 mb-6 text-sm font-semibold tracking-wider text-indigo-400 uppercase bg-indigo-400/10 rounded-full border border-indigo-400/20">
+                Premium Car Rental Experience
+            </span>
+            <h2 class="text-6xl md:text-7xl font-bold text-white mb-8 tracking-tight">
+                Beyond Driving, <br />
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-violet-400">Pure
+                    Freedom.</span>
+            </h2>
+            <p class="text-xl text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+                Unlock the door to luxury and adventure. Whether it's a weekend getaway or a business sprint, we bring
+                the keys to your aspirations.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+                <a href="user_form.html" class="btn-premium px-10 py-4 rounded-full text-lg font-bold w-full sm:w-auto">
+                    Get Started Now
+                </a>
+                <a href="#about"
+                    class="px-10 py-4 rounded-full text-lg font-bold text-white border border-slate-700 hover:bg-slate-800 transition-all w-full sm:w-auto">
+                    View Fleet
+                </a>
+            </div>
         </div>
     </section>
 
     <!-- 🚀 Driver Partner Section -->
-    <section class="bg-blue-800 text-white py-16 px-6">
-        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center">
-            <div class="md:w-1/2 mb-8 md:mb-0">
-                <h2 class="text-3xl font-bold mb-4">Drive & Earn Weekly Income</h2>
-                <p class="text-blue-100 text-lg mb-6">Looking for a steady stream of income? Our professional taxi
-                    leasing program allows you to lease high-quality cars for your taxi business with flexible weekly
-                    rates.</p>
-                <div class="flex space-x-4">
-                    <a href="driver_register.html"
-                        class="bg-yellow-500 text-black px-8 py-3 rounded-xl font-bold hover:bg-yellow-600 transition shadow-lg">Apply
-                        as a Driver</a>
-                    <a href="#about"
-                        class="border border-white px-8 py-3 rounded-xl font-bold hover:bg-white hover:text-blue-800 transition">Learn
-                        More</a>
+    <section class="py-24 bg-slate-100 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div class="animate-fade-in">
+                    <h2 class="text-4xl font-bold text-slate-900 mb-6 tracking-tight">Drive & Own Your <span
+                            class="text-indigo-600">Future.</span></h2>
+                    <p class="text-slate-600 text-lg mb-8 leading-relaxed">
+                        Join our exclusive driver ecosystem. Our taxi leasing program provides premium, well-maintained
+                        vehicles with flexible weekly rates designed to maximize your earnings.
+                    </p>
+                    <div class="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
+                        <a href="driver_register.html" class="btn-premium px-8 py-4 rounded-2xl font-bold text-center">
+                            Apply to Lease
+                        </a>
+                        <a href="#about"
+                            class="px-8 py-4 bg-white text-slate-700 rounded-2xl font-bold text-center border border-slate-200 hover:border-indigo-300 transition-all">
+                            Program Details
+                        </a>
+                    </div>
                 </div>
-            </div>
-            <div class="md:w-1/2 flex justify-center">
-                <div class="bg-white/10 p-8 rounded-3xl backdrop-blur-sm border border-white/20">
-                    <ul class="space-y-4">
-                        <li class="flex items-center">
-                            <span
-                                class="bg-yellow-400 text-black rounded-full w-6 h-6 flex items-center justify-center mr-3 font-bold text-sm">✓</span>
-                            Low Weekly Lease Rates
-                        </li>
-                        <li class="flex items-center">
-                            <span
-                                class="bg-yellow-400 text-black rounded-full w-6 h-6 flex items-center justify-center mr-3 font-bold text-sm">✓</span>
-                            Certified Well-Maintained Fleet
-                        </li>
-                        <li class="flex items-center">
-                            <span
-                                class="bg-yellow-400 text-black rounded-full w-6 h-6 flex items-center justify-center mr-3 font-bold text-sm">✓</span>
-                            Full Insurance Coverage Included
-                        </li>
-                    </ul>
+                <div class="grid grid-cols-1 gap-6">
+                    <div
+                        class="glass p-8 rounded-3xl border-indigo-100 transform hover:-translate-y-2 transition-all duration-300">
+                        <div
+                            class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mb-6">
+                            <i class="fas fa-hand-holding-dollar text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">High Earnings</h3>
+                        <p class="text-slate-500">Industry-leading weekly rates ensuring you keep more of what you earn.
+                        </p>
+                    </div>
+                    <div
+                        class="glass p-8 rounded-3xl border-emerald-100 transform hover:-translate-y-2 transition-all duration-300">
+                        <div
+                            class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mb-6">
+                            <i class="fas fa-shield-halved text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Comprehensive Cover</h3>
+                        <p class="text-slate-500">Don't sweat the small stuff. Insurance and maintenance are on us.</p>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 🚀 About Us Section -->
-    <section id="about" class="max-w-6xl mx-auto my-16 px-6 text-center">
-        <h2 class="text-3xl font-bold text-blue-700">About Us</h2>
-        <p class="mt-4 text-gray-700">We provide a seamless car rental experience with the best selection of vehicles
-            for all your needs.</p>
-        <div class="mt-8 flex justify-center space-x-6">
-            <img src="../images/056b4e51-5966-484b-a36e-ee5ace07710e.jpeg" alt="Luxury Car"
-                class="rounded-lg shadow-md w-1/3">
-            <img src="../images/2021 Mercedes-AMG GLE53 Coupe electrifies (1).jpeg" alt="Sports Car"
-                class="rounded-lg shadow-md w-1/3">
-            <img src="../images/913d6994-d570-41bd-9bab-dd0fe876424f.jpeg" alt="Convertible Car"
-                class="rounded-lg shadow-md w-1/3">
+    <!-- 🚀 Featured Fleet Section -->
+    <section id="about" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <h2 class="text-4xl font-bold text-slate-900 mb-4 tracking-tight">Our <span
+                    class="text-indigo-600">Cars</span></h2>
+            <p class="text-slate-500 max-w-2xl mx-auto text-lg mb-16">Elegance, performance, and reliability. Choose the
+                perfect companion for your journey.</p>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div
+                    class="group relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500">
+                    <img src="images/056b4e51-5966-484b-a36e-ee5ace07710e.jpeg" alt="Luxury"
+                        class="w-full h-[450px] object-cover group-hover:scale-110 transition-transform duration-700">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-8 text-left">
+                        <h3 class="text-white text-2xl font-bold">Luxury Collection</h3>
+                        <p class="text-slate-300 text-sm">Sophistication redefine.</p>
+                    </div>
+                </div>
+                <div
+                    class="group relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500">
+                    <img src="images/2021 Mercedes-AMG GLE53 Coupe electrifies (1).jpeg" alt="AMG"
+                        class="w-full h-[450px] object-cover group-hover:scale-110 transition-transform duration-700">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-8 text-left">
+                        <h3 class="text-white text-2xl font-bold">Performance Series</h3>
+                        <p class="text-slate-300 text-sm">Adrenaline guaranteed.</p>
+                    </div>
+                </div>
+                <div
+                    class="group relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500">
+                    <img src="images/913d6994-d570-41bd-9bab-dd0fe876424f.jpeg" alt="Convertible"
+                        class="w-full h-[450px] object-cover group-hover:scale-110 transition-transform duration-700">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-8 text-left">
+                        <h3 class="text-white text-2xl font-bold">Open Air Freedom</h3>
+                        <p class="text-slate-300 text-sm">Feel the horizon.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
     <!-- 🚀 Contact Us Section -->
-    <section id="contact" class="max-w-6xl mx-auto my-16 px-6 text-center">
-        <h2 class="text-3xl font-bold text-blue-700">Contact Us</h2>
-        <p class="mt-4 text-gray-700">Have questions? Reach out to us via the form below and we'll get back to you as
-            soon as possible!</p>
+    <section id="contact" class="py-24 bg-slate-50">
+        <div class="max-w-xl mx-auto px-6 text-center">
+            <h2 class="text-3xl font-bold text-slate-900 mb-6">Experience Makbel Car Rentals</h2>
+            <p class="text-slate-500 mb-10">Have questions? Our concierge team is ready to assist you 24/7.</p>
 
-        <form class="mt-6 bg-white shadow-lg rounded-lg p-6 max-w-lg mx-auto">
-            <input type="text" placeholder="Your Name" class="w-full p-2 border rounded mb-2" required>
-            <input type="email" placeholder="Your Email" class="w-full p-2 border rounded mb-2" required>
-            <textarea placeholder="Your Message" class="w-full p-2 border rounded mb-2"></textarea>
-            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Send
-                Message</button>
-        </form>
+            <form id="contactForm" class="glass p-8 rounded-3xl text-left space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Full Name</label>
+                    <input type="text" placeholder="John Doe"
+                        class="w-full px-4 py-3 rounded-xl border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
+                        required>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Email Address</label>
+                    <input type="email" placeholder="john@example.com"
+                        class="w-full px-4 py-3 rounded-xl border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
+                        required>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Message</label>
+                    <textarea rows="4" placeholder="How can we help you?"
+                        class="w-full px-4 py-3 rounded-xl border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"></textarea>
+                </div>
+                <button type="submit" class="w-full btn-premium py-4 rounded-xl font-bold shadow-lg shadow-indigo-100">
+                    Submit Inquiry
+                </button>
+            </form>
+        </div>
     </section>
+
+    <script>
+        document.getElementById('contactForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const fullName = form.querySelector('input[type="text"]').value;
+            const email = form.querySelector('input[type="email"]').value;
+            const message = form.querySelector('textarea').value;
+
+            try {
+                const response = await fetch('/api/inquiries', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ fullName, email, message })
+                });
+
+                if (response.ok) {
+                    Toast.success("Inquiry sent successfully!");
+                    form.reset();
+                } else {
+                    Toast.error("Failed to send inquiry. Please try again.");
+                }
+            } catch (error) {
+                console.error("Inquiry Error:", error);
+                Toast.error("Connection error. Please check your internet.");
+            }
+        });
+    </script>
 
     <!-- 🚀 Footer -->
     <footer class="bg-gray-900 text-gray-300 text-center py-6 mt-10">

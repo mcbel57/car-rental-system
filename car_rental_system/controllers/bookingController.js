@@ -6,8 +6,6 @@ export const getUserBookings = async (req, res) => {
         const userId = req.params.userId;
         const bookings = await Rental.findAll({ where: { userId } });
 
-        if (!bookings.length) return res.status(404).json({ message: "No bookings found." });
-
         res.status(200).json(bookings);
     } catch (error) {
         console.error("Error fetching bookings:", error);

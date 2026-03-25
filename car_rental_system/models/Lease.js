@@ -8,9 +8,17 @@ export default class Lease extends Model {
                 carId: { type: DataTypes.INTEGER, allowNull: false },
                 startDate: { type: DataTypes.DATEONLY, allowNull: false },
                 status: {
-                    type: DataTypes.ENUM("pending", "active", "ended", "terminated"),
+                    type: DataTypes.ENUM("pending", "active", "completed", "cancelled"),
                     allowNull: false,
                     defaultValue: "pending"
+                },
+                paymentStatus: {
+                    type: DataTypes.ENUM("pending", "partial", "paid"),
+                    defaultValue: "pending",
+                },
+                depositPaid: {
+                    type: DataTypes.FLOAT,
+                    defaultValue: 0,
                 },
                 weeklyCost: { type: DataTypes.FLOAT, allowNull: false },
             },

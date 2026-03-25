@@ -4,158 +4,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin | View Rentals</title>
-
-    <!-- ✅ Tailwind CSS (For Styling) -->
+    <title>Rental History | Makbel Car Rentals Control</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/modern.css">
+    <script src="js/toast.js"></script>
+</head>
 
-    <style>
-        /* ✅ Custom Styles */
-        body {
-            background-color: #f3f4f6;
-            font-family: Arial, sans-serif;
-        }
+<body class="bg-slate-50 font-sans">
 
-        .container {
-            max-width: 900px;
-            margin: auto;
-        }
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="w-72 bg-slate-900 text-white flex flex-col shadow-2xl relative z-20">
+            <div class="p-8 flex items-center space-x-3">
+                <div
+                    class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg transform rotate-12">
+                    <i class="fas fa-shield-halved text-white text-lg"></i>
+                </div>
+                <h1 class="text-2xl font-black tracking-tight">Makbel Car Rentals <span class="text-indigo-500">HQ</span></h1>
+            </div>
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+            <nav class="flex-1 px-4 space-y-1.5 mt-4">
+                <a href="admin_dashboard.html"
+                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
+                    <i class="fas fa-th-large text-lg"></i>
+                    <span>Overview</span>
+                </a>
+                <div class="pt-6 pb-2 px-4 uppercase text-[10px] font-black tracking-widest text-slate-500">Management
+                </div>
+                <a href="admin_cars.html"
+                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
+                    <i class="fas fa-car-side text-lg"></i>
+                    <span>Fleet Control</span>
+                </a>
+                <a href="admin_manage_cars.html"
+                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
+                    <i class="fas fa-plus-circle text-lg"></i>
+                    <span>Add New Vehicle</span>
+                </a>
+                <a href="admin_view_leases.html"
+                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
+                    <i class="fas fa-file-contract text-lg"></i>
+                    <span>Lease Pipeline</span>
+                </a>
+                <a href="admin_driver_management.html"
+                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
+                    <i class="fas fa-id-card text-lg"></i>
+                    <span>Driver Vetting</span>
+                </a>
+                <a href="admin_view_rentals.html"
+                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl bg-indigo-600/10 text-indigo-400 font-bold border border-indigo-500/20 transition-all font-semibold">
+                    <i class="fas fa-clock-rotate-left text-lg"></i>
+                    <span>Rental History</span>
+                </a>
+            </nav>
 
-        th,
-        td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-        }
+            <div class="p-6">
+                <button id="logoutBtn"
+                    class="w-full flex items-center justify-center space-x-3 py-4 bg-red-500/10 text-red-400 rounded-2xl font-bold hover:bg-red-500 hover:text-white transition-all border border-red-500/20 active:scale-95">
+                    <i class="fas fa-link-slash"></i>
+                    <span>Deauthorize</span>
+                </button>
+            </div>
+        </aside>
 
-        th {
-            background-color: #f1f1f1;
-        }
+        <!-- 📊 Rental History Explorer -->
+        <main class="flex-1 overflow-y-auto bg-slate-50 relative">
+            <header class="sticky top-0 glass z-10 px-10 py-6 border-b border-slate-200/50">
+                <div class="animate-fade-in">
+                    <h2 class="text-3xl font-black text-slate-900 tracking-tight">Rental <span
+                            class="text-indigo-600">Archives</span></h2>
+                </div>
+            </header>
 
-        button {
-            cursor: pointer;
-        }
-    </style>
+            <div class="px-10 py-10 animate-fade-in">
+                <div class="glass rounded-[2rem] overflow-hidden border-slate-100 shadow-sm">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr
+                                class="bg-slate-900/5 text-slate-500 uppercase text-[10px] font-black tracking-widest text-center">
+                                <th class="px-8 py-5 text-left">Customer Information</th>
+                                <th class="px-8 py-5 text-left">Asset Details</th>
+                                <th class="px-8 py-5">Duration</th>
+                                <th class="px-8 py-5">Accounting</th>
+                                <th class="px-8 py-5">Operations</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rentalsTableBody" class="divide-y divide-slate-100">
+                            <tr>
+                                <td colspan="5" class="py-24 text-center">
+                                    <i class="fas fa-database fa-spin text-indigo-500 text-3xl mb-4"></i>
+                                    <p class="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Accessing
+                                        Historical Data...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", fetchRentals);
+        const token = localStorage.getItem("token");
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        if (!token || !user || user.role !== "admin") {
+            window.location.href = "login.html";
+        }
+
+        document.getElementById("logoutBtn").addEventListener("click", () => {
+            localStorage.clear();
+            Toast.success("Session closed");
+            setTimeout(() => window.location.href = "login.html", 1000);
+        });
 
         async function fetchRentals() {
             try {
-                // ✅ Fetch all rentals without authentication checks
-                const response = await fetch("http://localhost:5000/api/rentals", {
-                    method: "GET"
+                const response = await fetch("/api/rentals", {
+                    method: "GET",
+                    headers: { "Authorization": `Bearer ${token}` }
                 });
 
-                if (!response.ok) throw new Error("Failed to fetch rentals");
+                if (!response.ok) throw new Error("Sync failed");
 
                 const rentals = await response.json();
-                displayRentals(rentals);
+                renderRentals(rentals);
             } catch (error) {
-                console.error("Error fetching rentals:", error);
-                alert("Failed to load rentals.");
+                console.error("Rental Archive Sync Error:", error);
+                Toast.error("Failed to load rental history");
             }
         }
 
-        // 📌 Display Rentals in Table
-        function displayRentals(rentals) {
-            const rentalsTableBody = document.getElementById("rentalsTableBody");
-            rentalsTableBody.innerHTML = "";
-
+        function renderRentals(rentals) {
+            const body = document.getElementById("rentalsTableBody");
             if (rentals.length === 0) {
-                rentalsTableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4">No rentals found.</td></tr>`;
+                body.innerHTML = `<tr><td colspan="5" class="py-20 text-center text-slate-400 font-bold">No rental records found in archives.</td></tr>`;
                 return;
             }
 
-            rentals.forEach(rental => {
-                const row = document.createElement("tr");
-                row.className = "border-b";
-
-                row.innerHTML = `
-                    <td class="py-3 px-6">${rental.carName}</td>
-                    <td class="py-3 px-6">${rental.fullName}</td>
-                    <td class="py-3 px-6">${rental.idNumber}</td>
-                    <td class="py-3 px-6">${rental.rentalDate}</td>
-                    <td class="py-3 px-6">${rental.rentalDays} days</td>
-                    <td class="py-3 px-6">Ksh ${rental.cost}</td>
-                    <td class="py-3 px-6">
-                        <button onclick="cancelRental(${rental.id})"
-                            class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
-                            Cancel
-                        </button>
+            body.innerHTML = rentals.map(rental => `
+                <tr class="group hover:bg-slate-50/50 transition-colors">
+                    <td class="px-8 py-6">
+                        <div>
+                            <p class="text-sm font-black text-slate-800">${rental.fullName}</p>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">ID: ${rental.idNumber}</p>
+                        </div>
                     </td>
-                `;
-
-                rentalsTableBody.appendChild(row);
-            });
+                    <td class="px-8 py-6">
+                        <div>
+                            <p class="text-sm font-bold text-slate-800">${rental.carName}</p>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Date: ${rental.rentalDate}</p>
+                        </div>
+                    </td>
+                    <td class="px-8 py-6 text-center">
+                        <span class="px-2 py-1 bg-slate-100 text-slate-600 rounded-lg text-xs font-black uppercase tracking-tight">${rental.rentalDays} Days</span>
+                    </td>
+                    <td class="px-8 py-6 text-center">
+                        <p class="text-sm font-black text-indigo-600">Ksh ${rental.cost}</p>
+                    </td>
+                    <td class="px-8 py-6 text-center">
+                        <button onclick="cancelRental(${rental.id})" class="px-4 py-2 bg-rose-50 text-rose-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-rose-100 hover:bg-rose-500 hover:text-white transition-all active:scale-95">Purge</button>
+                    </td>
+                </tr>
+            `).join("");
         }
 
-        // 📌 Cancel Rental Function
         async function cancelRental(rentalId) {
-            if (!confirm("Are you sure you want to cancel this rental?")) return;
+            if (!confirm("Are you sure you want to permanently purge this rental record?")) return;
 
             try {
-                const response = await fetch(`http://localhost:5000/api/rentals/${rentalId}`, {
-                    method: "DELETE"
+                Toast.info("Executing purge...");
+                const response = await fetch(`/api/rentals/${rentalId}`, {
+                    method: "DELETE",
+                    headers: { "Authorization": `Bearer ${token}` }
                 });
 
-                if (!response.ok) throw new Error("Failed to cancel rental.");
-
-                alert("Rental canceled successfully.");
-                fetchRentals(); // ✅ Refresh the rentals list
+                if (response.ok) {
+                    Toast.success("Record successfully deleted");
+                    fetchRentals();
+                } else {
+                    Toast.error("Purge failed");
+                }
             } catch (error) {
-                console.error("Error canceling rental:", error);
-                alert("Failed to cancel rental.");
+                Toast.error(error.message);
             }
         }
+
+        fetchRentals();
     </script>
-</head>
-
-<body>
-
-    <!-- ✅ Admin Header -->
-    <header class="bg-blue-800 text-white py-4 shadow-lg fixed top-0 w-full z-10">
-        <div class="container mx-auto flex justify-between items-center px-6">
-            <h1 class="text-2xl font-bold">Admin Dashboard</h1>
-            <nav>
-                <ul class="flex space-x-6">
-                    <li><a href="admin_dashboard.html" class="hover:text-gray-300">Dashboard</a></li>
-                    <li><a href="admin_manage_cars.html" class="hover:text-gray-300">Add Cars</a></li>
-                    <li><a href="admin_cars.html" class="hover:text-gray-300">Manage Cars</a></li>
-                    <li><a href="admin_view_leases.html" class="hover:text-gray-300">Manage Leases</a></li>
-                    <li><a href="admin_driver_management.html" class="hover:text-gray-300">Manage Drivers</a></li>
-                    <li><a href="index.html" class="hover:text-gray-300">Logout</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-
-    <!-- ✅ Main Content -->
-    <div class="container mx-auto mt-20 p-6 bg-white shadow-lg rounded-lg">
-        <h1 class="text-2xl font-bold mb-4">All Rentals</h1>
-
-        <table class="w-full border-collapse border border-gray-300">
-            <thead>
-                <tr class="bg-gray-200">
-                    <th class="border px-4 py-2">Car Name</th>
-                    <th class="border px-4 py-2">Rented By</th>
-                    <th class="border px-4 py-2">ID Number</th>
-                    <th class="border px-4 py-2">Rental Date</th>
-                    <th class="border px-4 py-2">Days</th>
-                    <th class="border px-4 py-2">Total Cost</th>
-                    <th class="border px-4 py-2">Action</th>
-                </tr>
-            </thead>
-            <tbody id="rentalsTableBody">
-                <!-- ✅ Rentals will be dynamically inserted here -->
-            </tbody>
-        </table>
-    </div>
 
 </body>
 
