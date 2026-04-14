@@ -1,41 +1,30 @@
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import db from "./config/db.js";
-import dotenv from "dotenv";
-dotenv.config();
+import db from './config/db.js';
+import bcrypt from 'bcryptjs';
 
-const simulateLogin = async (email, password) => {
+async function simulateLogin() {
     try {
-        const user = await db.User.findOne({ where: { email } });
+        console.log("🔍 Simulating login for a test user...");
+        
+        // Find any user
+        const user = await db.User.findOne();
         if (!user) {
-            console.log("User not found");
-            return;
+            console.log("ℹ️ No users found to test login.");
+            process.exit(0);
         }
 
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            console.log("Password mismatch");
-            return;
-        }
-
-        const role = user.role || "user";
-        let redirectTo = "user_dashboard.html";
-        if (role === "admin") {
-            redirectTo = "admin_dashboard.html";
-        } else if (role === "driver") {
-            redirectTo = "driver_dashboard.html";
-        }
-
-        console.log(`Email: ${email}`);
-        console.log(`Role in DB: "${user.role}"`);
-        console.log(`Normalized Role: "${role}"`);
-        console.log(`Redirect Path: "${redirectTo}"`);
+        console.log("✅ User found in DB:", user.email);
+        console.log("🎉 User object keys:", Object.keys(user.toJSON()));
+        
+        // Test bcrypt just in case
+        const isMatch = await bcrypt.compare("anypassword", user.password);
+        console.log("🔐 Bcrypt test completed (match result doesn't matter):", isMatch);
 
         process.exit(0);
     } catch (error) {
-        console.error(error);
+        console.error("❌ SIMULATED LOGIN ERROR:", error.message);
+        console.error("📋 STACK TRACE:", error.stack);
         process.exit(1);
     }
-};
+}
 
-simulateLogin("greenfam255@gmail.com", "mahrin001");
+simulateLogin();

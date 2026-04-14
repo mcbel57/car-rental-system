@@ -8,6 +8,7 @@
     <title>Makbel Car Rentals | Premium Car Rental & Leasing</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="css/modern.css">
     <script src="js/toast.js"></script>
 </head>
@@ -98,11 +99,25 @@
                 <a href="user_form.html" class="btn-premium px-10 py-4 rounded-full text-lg font-bold w-full sm:w-auto">
                     Get Started Now
                 </a>
-                <a href="#about"
+                <a href="#fleet"
                     class="px-10 py-4 rounded-full text-lg font-bold text-white border border-slate-700 hover:bg-slate-800 transition-all w-full sm:w-auto">
                     View Fleet
                 </a>
             </div>
+        </div>
+    </section>
+
+    <!-- 🚀 About Summary Section -->
+    <section id="about" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <h2 class="text-4xl font-bold text-slate-900 mb-6 tracking-tight">About <span class="text-indigo-600">Makbel Car Rentals</span></h2>
+            <p class="text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed">
+                Welcome to Makbel Car Rentals, your trusted partner in premium transportation. 
+                Our mission is to redefine your travel experience by offering a meticulously curated fleet 
+                of luxury, performance, and comfortable vehicles. Whether you're traveling for business, 
+                planning a weekend getaway, or seeking a reliable long-term lease, we are dedicated to providing 
+                exceptional service, unbeatable flexibility, and journeys you'll never forget.
+            </p>
         </div>
     </section>
 
@@ -121,7 +136,7 @@
                         <a href="driver_register.html" class="btn-premium px-8 py-4 rounded-2xl font-bold text-center">
                             Apply to Lease
                         </a>
-                        <a href="#about"
+                        <a href="#program"
                             class="px-8 py-4 bg-white text-slate-700 rounded-2xl font-bold text-center border border-slate-200 hover:border-indigo-300 transition-all">
                             Program Details
                         </a>
@@ -152,45 +167,74 @@
         </div>
     </section>
 
+    <!-- 🚀 Driver Program Details Section -->
+    <section id="program" class="py-24 bg-slate-50 border-t border-slate-200">
+        <div class="max-w-5xl mx-auto px-6 text-center">
+            <h2 class="text-4xl font-bold text-slate-900 mb-6 tracking-tight">Taxi Leasing <span class="text-indigo-600">Program Details</span></h2>
+            <p class="text-lg text-slate-600 leading-relaxed mb-8">
+                Our leasing program is built specifically for gig-economy drivers who want to elevate their earning potential. We provide top-tier, fuel-efficient vehicles on flexible weekly plans. 
+                With zero upfront maintenance costs and comprehensive insurance included, you can focus on the road ahead. Our partners enjoy priority support and performance-based bonuses!
+            </p>
+            <a href="driver_register.html" class="btn-premium px-10 py-4 rounded-full text-lg font-bold">Start Your Journey Today</a>
+        </div>
+    </section>
+
     <!-- 🚀 Featured Fleet Section -->
-    <section id="about" class="py-24 bg-white">
+    <section id="fleet" class="py-24 bg-white">
         <div class="max-w-7xl mx-auto px-6 text-center">
             <h2 class="text-4xl font-bold text-slate-900 mb-4 tracking-tight">Our <span
                     class="text-indigo-600">Cars</span></h2>
-            <p class="text-slate-500 max-w-2xl mx-auto text-lg mb-16">Elegance, performance, and reliability. Choose the
+            <p class="text-slate-500 max-w-2xl mx-auto text-lg mb-12">Elegance, performance, and reliability. Choose the
                 perfect companion for your journey.</p>
 
-            <div class="grid md:grid-cols-3 gap-8">
-                <div
-                    class="group relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500">
-                    <img src="images/056b4e51-5966-484b-a36e-ee5ace07710e.jpeg" alt="Luxury"
-                        class="w-full h-[450px] object-cover group-hover:scale-110 transition-transform duration-700">
-                    <div
-                        class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-8 text-left">
-                        <h3 class="text-white text-2xl font-bold">Luxury Collection</h3>
-                        <p class="text-slate-300 text-sm">Sophistication redefine.</p>
+            <div class="swiper fleetSwiper pb-16 px-4">
+                <div class="swiper-wrapper">
+                    <!-- Slide 1 -->
+                    <div class="swiper-slide">
+                        <div class="group relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500">
+                            <img src="images/056b4e51-5966-484b-a36e-ee5ace07710e.jpeg" alt="Luxury" class="w-full h-[450px] object-cover group-hover:scale-110 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-8 text-left">
+                                <h3 class="text-white text-2xl font-bold">Luxury Collection</h3>
+                                <p class="text-slate-300 text-sm">Sophistication redefine.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Slide 2 -->
+                    <div class="swiper-slide">
+                        <div class="group relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500">
+                            <img src="images/2021 Mercedes-AMG GLE53 Coupe electrifies (1).jpeg" alt="AMG" class="w-full h-[450px] object-cover group-hover:scale-110 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-8 text-left">
+                                <h3 class="text-white text-2xl font-bold">Performance Series</h3>
+                                <p class="text-slate-300 text-sm">Adrenaline guaranteed.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Slide 3 -->
+                    <div class="swiper-slide">
+                        <div class="group relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500">
+                            <img src="images/913d6994-d570-41bd-9bab-dd0fe876424f.jpeg" alt="Convertible" class="w-full h-[450px] object-cover group-hover:scale-110 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-8 text-left">
+                                <h3 class="text-white text-2xl font-bold">Open Air Freedom</h3>
+                                <p class="text-slate-300 text-sm">Feel the horizon.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Slide 4: Extra dummy slide -->
+                    <div class="swiper-slide">
+                        <div class="group relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500">
+                            <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=800&q=80" alt="Electric SUV" class="w-full h-[450px] object-cover group-hover:scale-110 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-8 text-left">
+                                <h3 class="text-white text-2xl font-bold">Eco-Friendly Future</h3>
+                                <p class="text-slate-300 text-sm">Drive the change without compromise.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div
-                    class="group relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500">
-                    <img src="images/2021 Mercedes-AMG GLE53 Coupe electrifies (1).jpeg" alt="AMG"
-                        class="w-full h-[450px] object-cover group-hover:scale-110 transition-transform duration-700">
-                    <div
-                        class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-8 text-left">
-                        <h3 class="text-white text-2xl font-bold">Performance Series</h3>
-                        <p class="text-slate-300 text-sm">Adrenaline guaranteed.</p>
-                    </div>
-                </div>
-                <div
-                    class="group relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500">
-                    <img src="images/913d6994-d570-41bd-9bab-dd0fe876424f.jpeg" alt="Convertible"
-                        class="w-full h-[450px] object-cover group-hover:scale-110 transition-transform duration-700">
-                    <div
-                        class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-8 text-left">
-                        <h3 class="text-white text-2xl font-bold">Open Air Freedom</h3>
-                        <p class="text-slate-300 text-sm">Feel the horizon.</p>
-                    </div>
-                </div>
+                <!-- Pagination & Nav -->
+                <div class="swiper-pagination"></div>
+                <!-- Hidden on mobile, shown on md+ -->
+                <div class="swiper-button-prev hidden md:flex !text-indigo-600 bg-white/80 !w-12 !h-12 rounded-full shadow hover:bg-white hover:scale-110 transition-all after:!text-lg !left-0"></div>
+                <div class="swiper-button-next hidden md:flex !text-indigo-600 bg-white/80 !w-12 !h-12 rounded-full shadow hover:bg-white hover:scale-110 transition-all after:!text-lg !right-0"></div>
             </div>
         </div>
     </section>
@@ -268,6 +312,35 @@
         </div>
     </footer>
 
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            new Swiper(".fleetSwiper", {
+                slidesPerView: 1,
+                spaceBetween: 30,
+                loop: true,
+                autoplay: {
+                    delay: 3500,
+                    disableOnInteraction: false,
+                },
+                pagination: {
+                    el: ".swiper-pagination",
+                    clickable: true,
+                    dynamicBullets: true,
+                },
+                navigation: {
+                    nextEl: ".swiper-button-next",
+                    prevEl: ".swiper-button-prev",
+                },
+                breakpoints: {
+                    640: { slidesPerView: 1, spaceBetween: 20 },
+                    768: { slidesPerView: 2, spaceBetween: 30 },
+                    1024: { slidesPerView: 3, spaceBetween: 30 },
+                },
+            });
+        });
+    </script>
 </body>
 
 </html>

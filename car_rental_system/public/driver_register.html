@@ -120,11 +120,16 @@
                     </div>
 
                     <div class="bg-indigo-50 p-6 rounded-3xl border border-indigo-100 space-y-3">
-                        <label class="block text-sm font-bold text-indigo-900 px-1">Professional License</label>
+                        <label class="block text-sm font-bold text-indigo-900 px-1">Professional License Number</label>
                         <input type="text" name="licenseNumber" placeholder="DL-XXXXXXX" required
-                            class="w-full px-5 py-3.5 bg-white border border-indigo-200 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none shadow-sm">
-                        <p class="text-[10px] text-indigo-600 font-bold uppercase tracking-widest ml-1">Verification
-                            happens post-submission</p>
+                            class="w-full px-5 py-3.5 bg-white border border-indigo-200 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none shadow-sm mb-3">
+                        
+                        <label class="block text-sm font-bold text-indigo-900 px-1">Upload License Photo</label>
+                        <div class="relative group">
+                            <input type="file" name="licensePhoto" required accept="image/*"
+                                class="w-full px-5 py-3.5 bg-white border border-indigo-200 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none shadow-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                        </div>
+                        <p class="text-[10px] text-indigo-600 font-bold uppercase tracking-widest ml-1">AI-assisted verification happens instantly</p>
                     </div>
 
                     <div class="grid grid-cols-2 gap-5">
@@ -163,13 +168,9 @@
         document.getElementById("driverRegistrationForm").addEventListener("submit", async function (event) {
             event.preventDefault();
 
-            const formData = new FormData(event.target);
-            const jsonData = {};
-            formData.forEach((value, key) => {
-                jsonData[key] = value;
-            });
+            const formData = new FormData(this);
 
-            if (jsonData.password !== jsonData.confirmPassword) {
+            if (formData.get("password") !== formData.get("confirmPassword")) {
                 Toast.error("Passwords do not match");
                 return;
             }
@@ -177,13 +178,13 @@
             try {
                 const btn = event.target.querySelector('button[type="submit"]');
                 const originalText = btn.innerText;
-                btn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> Processing...';
+                btn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> Processing OCR...';
                 btn.disabled = true;
 
                 const response = await fetch("/api/auth/register", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(jsonData),
+                    // Headers: Content-Type is automatically set to multipart/form-data with boundary
+                    body: formData,
                 });
 
                 const data = await response.json();
@@ -192,7 +193,7 @@
                     throw new Error(data.error || "Failed to register");
                 }
 
-                Toast.success("Application received! Reviewing in progress.");
+                Toast.success("Application received! AI scan initiated.");
 
                 setTimeout(() => {
                     window.location.href = "login.html";

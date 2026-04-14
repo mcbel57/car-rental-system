@@ -2,11 +2,12 @@ import express from "express";
 import { registerUser, loginUser, getUserProfile } from "../controllers/authController.js";
 import { verifyToken } from "../middleware/authMiddleware.js"; // Middleware to protect routes
 import User from "../models/User.js"; 
+import upload from "../middleware/upload.js";
 
 const router = express.Router();
 
 // ✅ User Registration Route
-router.post("/register", registerUser);
+router.post("/register", upload.single("licensePhoto"), registerUser);
 
 // ✅ User Login Route
 router.post("/login", loginUser);

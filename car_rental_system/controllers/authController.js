@@ -3,21 +3,24 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js"; // Ensure you have a User model
 import dotenv from "dotenv";
 import { Op } from "sequelize";
-
+import Tesseract from "tesseract.js";
+import path from "path";
+import fs from "fs";
 
 dotenv.config();
 
 console.log("🔑 JWT_SECRET:", process.env.JWT_SECRET);
 
-
 export const registerUser = async (req, res) => {
   try {
     console.log("🔥 Incoming Registration Request:", req.body);
+    console.log("📷 Incoming File:", req.file);
 
     const { firstName, lastName, email, phoneNumber, idNumber, password, confirmPassword, role: requestedRole, licenseNumber } = req.body;
 
     // 🛑 Check if passwords match
     if (password !== confirmPassword) {
+      if (req.file) fs.unlinkSync(req.file.path); // Remove uploaded file if validation fails
       return res.status(400).json({ error: "Passwords do not match" });
     }
 
@@ -32,6 +35,7 @@ export const registerUser = async (req, res) => {
     });
 
     if (existingUser) {
+      if (req.file) fs.unlinkSync(req.file.path);
       if (existingUser.email === email) {
         return res.status(400).json({ error: "Email is already registered" });
       }
@@ -41,23 +45,45 @@ export const registerUser = async (req, res) => {
     }
 
     // 🏷️ Determine User Role
-    // If requestedRole is 'driver', we use that. Otherwise fallback to email check or 'user'
     let role = "user";
     let driverStatus = null;
+    let licensePhoto = null;
+    let ocrFlag = null;
+    let verificationNotes = null;
+
     if (requestedRole === "driver") {
-      role = "user"; // Originally I thought 'driver', but maybe we keep them as 'user' until approved? 
-      // Wait, the plan said "Add a new role: "driver"". So we should save it as pending or something.
-      // But if we save as 'driver' immediately, they can login as driver.
-      // Let's check the plan: "Add driverStatus (ENUM: 'pending', 'approved'...)".
-      // If we save 'role' as 'driver' immediately, they might access driver routes.
-      // But verifyDriver checks `req.user.role !== "driver"`.
-      // So if `driverStatus` is pending, maybe we should still be 'user' role until approved?
-      // "If status === "approved" updateData.role = "driver";" from my leaseRoutes code.
-      // So initially role should be "user" or maybe "driver_applicant"?
-      // Let's stick to the plan in leaseRoutes: "If status === 'approved' updateData.role = 'driver'".
-      // So initially role is 'user', but we save `driverStatus: 'pending'` and `licenseNumber`.
-      role = "user";
+      role = "user"; // Kept as user until approved
       driverStatus = "pending";
+      
+      if (req.file) {
+        licensePhoto = `/uploads/${req.file.filename}`;
+        
+        // 🤖 OCR Processing (Tesseract.js)
+        try {
+          console.log("🤖 Starting OCR on:", req.file.path);
+          const { data: { text } } = await Tesseract.recognize(req.file.path, 'eng');
+          verificationNotes = text.substring(0, 1000); // Save first 1000 chars
+
+          const lowerText = text.toLowerCase();
+          const keywords = ["driving", "licence", "license", "republic", "kenya", "birth", "class"];
+          const matches = keywords.filter(k => lowerText.includes(k));
+
+          if (matches.length >= 2) {
+            ocrFlag = "Legitimate";
+          } else if (text.trim().length > 10) {
+            ocrFlag = "Suspicious";
+          } else {
+            ocrFlag = "Not Found";
+          }
+          console.log("✅ OCR Completed. Flag:", ocrFlag);
+        } catch (ocrErr) {
+          console.error("❌ OCR Error:", ocrErr);
+          ocrFlag = "Not Found";
+          verificationNotes = "OCR Failed: " + ocrErr.message;
+        }
+      } else {
+        return res.status(400).json({ error: "Driving License photo is required for driver applications." });
+      }
     } else if (email.endsWith("@rentify.com")) {
       role = "admin";
     }
@@ -75,25 +101,24 @@ export const registerUser = async (req, res) => {
       password: hashedPassword,
       role,
       licenseNumber: licenseNumber || null,
-      driverStatus: driverStatus || null,
+      licensePhoto,
+      driverStatus,
+      ocrFlag,
+      verificationNotes
     });
 
     res.status(201).json({ message: "User registered successfully!", user: newUser });
 
   } catch (error) {
     console.error("❌ Registration Error:", error);
+    if (req.file) fs.unlinkSync(req.file.path);
     
-    // 🛑 Specific handling for Sequelize Validation/Unique Errors
     if (error.name === "SequelizeUniqueConstraintError") {
       const field = error.errors[0].path;
       const message = field === "email" ? "Email is already registered" : 
                       field === "idNumber" ? "ID Number is already registered" : 
                       "Record already exists";
       return res.status(400).json({ error: message });
-    }
-
-    if (error.name === "SequelizeValidationError") {
-      return res.status(400).json({ error: error.errors[0].message });
     }
 
     res.status(500).json({ error: "Server error, please try again" });

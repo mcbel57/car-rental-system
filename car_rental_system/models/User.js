@@ -12,11 +12,17 @@ export default class User extends Model {
                 idNumber: { type: DataTypes.STRING(20), allowNull: false, unique: true },
                 password: { type: DataTypes.STRING(255), allowNull: false },
                 licenseNumber: { type: DataTypes.STRING(50), allowNull: true },
+                licensePhoto: { type: DataTypes.STRING, allowNull: true },
                 driverStatus: {
                     type: DataTypes.ENUM("pending", "approved", "rejected"),
                     allowNull: true,
                     defaultValue: "pending"
                 },
+                ocrFlag: {
+                    type: DataTypes.ENUM("Legitimate", "Suspicious", "Not Found"),
+                    allowNull: true
+                },
+                verificationNotes: { type: DataTypes.TEXT, allowNull: true },
                 role: {
                     type: DataTypes.ENUM("admin", "user", "driver"),
                     allowNull: false,

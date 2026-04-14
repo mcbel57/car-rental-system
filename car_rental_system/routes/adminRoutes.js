@@ -1,9 +1,14 @@
 import express from "express";
 import db from "../config/db.js";
 import { verifyToken, verifyAdmin } from "../middleware/authMiddleware.js";
+import { getPendingDrivers, verifyDriver } from "../controllers/adminController.js";
 
 const router = express.Router();
 const { Car, User, Rental, Lease } = db;
+
+// ✅ Verification Routes
+router.get("/pending-drivers", verifyToken, verifyAdmin, getPendingDrivers);
+router.post("/verify-driver", verifyToken, verifyAdmin, verifyDriver);
 
 // ✅ GET global statistics for admin
 router.get("/stats", verifyToken, verifyAdmin, async (req, res) => {
