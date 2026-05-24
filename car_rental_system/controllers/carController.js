@@ -40,8 +40,7 @@ export const deleteCar = async (req, res) => {
     }
 };
 
-// 📋 Get all cars
-// 📋 Get all cars (Ensure image is sent as Base64)
+// 📋 Get all cars (with booked dates)
 export const getAllCars = async (req, res) => {
     try {
         const cars = await Car.findAll();
@@ -58,8 +57,24 @@ export const getAllCars = async (req, res) => {
         };
 
         const formattedCars = await Promise.all(cars.map(async (car) => {
-            const activeRental = await db.Rental.findOne({ 
-                where: { carId: car.id, status: "active" } 
+            // Get all non-cancelled rentals for this car
+            const rentals = await db.Rental.findAll({ 
+                where: { 
+                    carId: car.id, 
+                    status: { [db.Sequelize.Op.not]: "cancelled" }
+                },
+                attributes: ["rentalDate", "rentalDays"]
+            });
+
+            // Build list of booked dates
+            const bookedDates = [];
+            rentals.forEach(rental => {
+                const startDate = new Date(rental.rentalDate);
+                for (let i = 0; i < rental.rentalDays; i++) {
+                    const date = new Date(startDate);
+                    date.setDate(date.getDate() + i);
+                    bookedDates.push(date.toISOString().split("T")[0]);
+                }
             });
 
             return {
@@ -70,7 +85,7 @@ export const getAllCars = async (req, res) => {
                 vehicleType: car.vehicleType,
                 costPerDay: car.costPerDay,
                 image: formatImage(car.image),
-                isReserved: !!activeRental
+                bookedDates: bookedDates
             };
         }));
 

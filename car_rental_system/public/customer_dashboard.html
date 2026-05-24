@@ -187,7 +187,7 @@
             carList.innerHTML = "";
 
             cars.forEach(car => {
-                const isReserved = car.isReserved === true;
+                const hasBookings = car.bookedDates && car.bookedDates.length > 0;
 
                 const card = document.createElement("div");
                 card.className = "glass h-full group rounded-[2.5rem] overflow-hidden border-slate-100 hover:border-indigo-200 hover:-translate-y-3 transition-all duration-500 shadow-sm hover:shadow-2xl relative";
@@ -199,6 +199,7 @@
                         <div class="absolute top-6 right-6 px-4 py-1.5 bg-white/95 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest text-indigo-600 shadow-lg border border-indigo-50">
                             ${car.vehicleType}
                         </div>
+                        ${hasBookings ? `<div class="absolute top-6 left-6 px-3 py-1 bg-amber-400/90 text-slate-900 rounded-full text-[9px] font-black uppercase tracking-widest shadow-lg">Some dates booked</div>` : ''}
                     </div>
                     <div class="p-8">
                         <div class="flex justify-between items-start mb-4">
@@ -215,11 +216,10 @@
                             </div>
                         </div>
                         <p class="text-slate-500 text-sm mb-8 leading-relaxed line-clamp-2 min-h-[40px]">${car.description}</p>
-                        <button class="w-full py-4 rounded-2xl font-black shadow-lg transition-all active:scale-95 flex items-center justify-center space-x-3 
-                                    ${isReserved ? 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200' : 'bg-slate-900 text-white hover:bg-indigo-600 shadow-slate-100'}"
-                                ${isReserved ? 'disabled' : `onclick="location.href='booking.html?carId=${car.id}'"`}>
-                            <i class="fas ${isReserved ? 'fa-lock' : 'fa-key'} text-xs opacity-50"></i>
-                            <span class="uppercase tracking-widest text-xs">${isReserved ? "Reserved" : "Rent Vehicle"}</span>
+                        <button class="w-full py-4 rounded-2xl font-black shadow-lg transition-all active:scale-95 flex items-center justify-center space-x-3 bg-slate-900 text-white hover:bg-indigo-600 shadow-slate-100"
+                                onclick="location.href='booking.html?carId=${car.id}'">
+                            <i class="fas fa-key text-xs opacity-50"></i>
+                            <span class="uppercase tracking-widest text-xs">Rent Vehicle</span>
                         </button>
                     </div>
                 `;
