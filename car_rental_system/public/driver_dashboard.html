@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,517 +9,84 @@
     <link rel="stylesheet" href="css/modern.css">
     <script src="js/toast.js"></script>
 </head>
-
 <body class="bg-slate-50 font-sans">
-
     <div class="flex h-screen overflow-hidden">
         <!-- Sidebar -->
         <aside class="w-72 bg-slate-900 text-white flex flex-col shadow-2xl relative z-20">
             <div class="p-8 flex items-center space-x-3">
-                <div
-                    class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg transform rotate-12">
+                <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg transform rotate-12">
                     <i class="fas fa-car text-white"></i>
                 </div>
                 <h1 class="text-2xl font-bold tracking-tight">Makbel Car Rentals</h1>
             </div>
-
             <nav class="flex-1 px-4 space-y-2 mt-4">
-                <a href="#"
-                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl bg-indigo-600/10 text-indigo-400 font-semibold border border-indigo-500/20 transition-all">
+                <a href="#" class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl bg-indigo-600/10 text-indigo-400 font-semibold border border-indigo-500/20 transition-all">
                     <i class="fas fa-chart-line text-lg"></i>
                     <span>Overview</span>
                 </a>
-                <a href="index.html"
-                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all">
-                    <i class="fas fa-globe text-lg"></i>
-                    <span>Public Site</span>
+                <a href="index.html" class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all">
+                    <i class="fas fa-home text-lg"></i>
+                    <span>Back to Home</span>
                 </a>
                 <div class="pt-6 pb-2 px-4 uppercase text-[10px] font-bold tracking-widest text-slate-500">Account</div>
-                <a href="#"
-                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all">
+                <a href="#" class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all">
                     <i class="fas fa-user-circle text-lg"></i>
                     <span>My Profile</span>
-                    <span
-                        class="ml-auto bg-indigo-500/20 text-indigo-400 text-[10px] px-2 py-0.5 rounded-full">Pro</span>
+                    <span class="ml-auto bg-indigo-500/20 text-indigo-400 text-[10px] px-2 py-0.5 rounded-full">Pro</span>
                 </a>
             </nav>
-
             <div class="p-6">
-                <button id="logoutBtn"
-                    class="w-full flex items-center justify-center space-x-3 py-4 bg-red-500/10 text-red-400 rounded-2xl font-bold hover:bg-red-500 hover:text-white transition-all border border-red-500/20 active:scale-95">
+                <button id="logoutBtn" class="w-full flex items-center justify-center space-x-3 py-4 bg-red-500/10 text-red-400 rounded-2xl font-bold hover:bg-red-500 hover:text-white transition-all border border-red-500/20 active:scale-95">
                     <i class="fas fa-power-off"></i>
                     <span>Sign Out</span>
                 </button>
             </div>
         </aside>
-
         <!-- Main Content -->
         <main class="flex-1 overflow-y-auto bg-slate-50 relative">
-            <!-- Header -->
-            <header
-                class="sticky top-0 glass z-10 px-10 py-6 flex justify-between items-center border-b border-slate-200/50">
+            <header class="sticky top-0 glass z-10 px-10 py-6 border-b border-slate-200/50">
                 <div class="animate-fade-in">
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Welcome back</p>
-                    <h2 class="text-3xl font-bold text-slate-800 tracking-tight">Hey, <span id="driverName"
-                            class="text-indigo-600">Partner</span>!</h2>
-                </div>
-                <div class="flex items-center space-x-6">
-                    <div id="currentDate"
-                        class="hidden md:block py-2 px-4 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-500 shadow-sm">
-                    </div>
-                    <div
-                        class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center shadow-inner">
-                        <i class="fas fa-bell"></i>
-                    </div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Notice</p>
+                    <h2 class="text-3xl font-bold text-slate-800 tracking-tight">Driver Dashboard Retired</h2>
+                    <p class="text-slate-500 mt-2">The driver leasing program is no longer supported. Please use the customer or admin rental workflow instead.</p>
                 </div>
             </header>
-
-            <div class="px-10 py-8 animate-fade-in" style="animation-delay: 0.1s">
-                <!-- Status Alert / Notification -->
-                <div id="statusAlert" class="hidden mb-8 p-6 rounded-3xl border-l-[6px] shadow-sm animate-fade-in">
+            <div class="px-10 py-16 animate-fade-in">
+                <div class="glass rounded-[2rem] p-16 text-center border-slate-100 shadow-sm">
+                    <i class="fas fa-ban text-indigo-600 text-6xl mb-6"></i>
+                    <h3 class="text-3xl font-bold text-slate-900 mb-4">This page is deprecated.</h3>
+                    <p class="text-slate-500 max-w-2xl mx-auto mb-8">Driver leasing features have been removed from the system. Please return to the home page or log in as a customer for rental operations.</p>
+                    <a href="index.html" class="inline-flex items-center justify-center px-8 py-4 bg-indigo-600 text-white rounded-full font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all">Back to Home</a>
                 </div>
-
-                <!-- Active Lease Section -->
-                <section class="mb-12">
-                    <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-xl font-bold text-slate-800 tracking-tight">Your Active Lease</h3>
-                        <span
-                            class="text-xs font-bold text-indigo-600 uppercase tracking-widest bg-indigo-50 px-3 py-1 rounded-full">Live
-                            Status</span>
-                    </div>
-                    <div id="activeLeaseContainer"
-                        class="glass p-8 rounded-[2rem] border-indigo-50 min-h-[160px] flex items-center justify-center relative overflow-hidden transition-all duration-500">
-                        <div class="animate-pulse text-slate-400 font-medium">Syncing lease data...</div>
-                    </div>
-                </section>
-
-                <!-- Search & Filters -->
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                    <h3 class="text-xl font-bold text-slate-800 tracking-tight">Available Cars</h3>
-                    <div class="relative group">
-                        <i
-                            class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors"></i>
-                        <input type="text" id="carSearch" placeholder="Search available cars..."
-                            class="pl-12 pr-6 py-3 bg-white border border-slate-200 rounded-2xl w-full md:w-80 focus:ring-2 focus:ring-indigo-500 outline-none transition-all shadow-sm">
-                    </div>
-                </div>
-
-                <!-- Available Cars for Lease Section -->
-                <section>
-                    <div id="carsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        <!-- Skeletons loader -->
-                        <div class="bg-slate-200 h-80 rounded-3xl animate-pulse"></div>
-                        <div class="bg-slate-200 h-80 rounded-3xl animate-pulse"></div>
-                        <div class="bg-slate-200 h-80 rounded-3xl animate-pulse"></div>
-                    </div>
-                </section>
             </div>
         </main>
     </div>
-
-    <!-- 📲 M-Pesa Simulation Modal -->
-    <div id="mpesaModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-6 bg-slate-950/80 backdrop-blur-sm animate-fade-in">
-        <div class="bg-white w-full max-w-sm rounded-[2.5rem] overflow-hidden shadow-2xl transform transition-all scale-95 opacity-0 duration-300" id="mpesaModalContent">
-            <div class="bg-[#4cad4d] p-8 text-white text-center">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/1/15/M-PESA_LOGO-01.svg" class="h-10 mx-auto mb-6 brightness-0 invert">
-                <h3 class="text-2xl font-black tracking-tight">STK Push</h3>
-                <p class="text-[10px] font-bold uppercase tracking-widest opacity-80 mt-1">Lease Commitment Fee (50%)</p>
-            </div>
-            <div class="p-10 space-y-8">
-                <div class="text-center">
-                    <p class="text-slate-500 font-medium mb-1">Enter M-Pesa PIN for</p>
-                    <p class="text-xl font-black text-slate-800">Makbel Car Rentals</p>
-                    <p class="text-2xl font-black text-emerald-600 mt-4">Ksh <span id="modalAmount">--</span></p>
-                </div>
-                
-                <div class="flex justify-center space-x-3">
-                    <input type="password" maxlength="1" class="pin-input w-12 h-14 bg-slate-100 border border-slate-200 rounded-2xl text-center text-2xl font-black focus:ring-2 focus:ring-[#4cad4d] outline-none">
-                    <input type="password" maxlength="1" class="pin-input w-12 h-14 bg-slate-100 border border-slate-200 rounded-2xl text-center text-2xl font-black focus:ring-2 focus:ring-[#4cad4d] outline-none">
-                    <input type="password" maxlength="1" class="pin-input w-12 h-14 bg-slate-100 border border-slate-200 rounded-2xl text-center text-2xl font-black focus:ring-2 focus:ring-[#4cad4d] outline-none">
-                    <input type="password" maxlength="1" class="pin-input w-12 h-14 bg-slate-100 border border-slate-200 rounded-2xl text-center text-2xl font-black focus:ring-2 focus:ring-[#4cad4d] outline-none">
-                </div>
-
-                <div class="flex flex-col space-y-3">
-                    <button id="confirmPayment" class="w-full py-4 bg-[#4cad4d] text-white rounded-2xl font-black shadow-lg shadow-emerald-100 hover:brightness-105 active:scale-95 transition-all">
-                        Complete Transaction
-                    </button>
-                    <button id="cancelPayment" class="w-full py-3 text-slate-400 font-bold text-xs uppercase tracking-widest hover:text-slate-600 transition-colors">
-                        Cancel
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Driver Dashboard | Makbel Car Rentals</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/modern.css">
-    <script src="js/toast.js"></script>
-</head>
-
-<body class="bg-slate-50 font-sans">
-
-    <div class="flex h-screen overflow-hidden">
-        <!-- Sidebar -->
-        <aside class="w-72 bg-slate-900 text-white flex flex-col shadow-2xl relative z-20">
-            <div class="p-8 flex items-center space-x-3">
-                <div
-                    class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg transform rotate-12">
-                    <i class="fas fa-car text-white"></i>
-                </div>
-                <h1 class="text-2xl font-bold tracking-tight">Makbel Car Rentals</h1>
-            </div>
-
-            <nav class="flex-1 px-4 space-y-2 mt-4">
-                <a href="#"
-                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl bg-indigo-600/10 text-indigo-400 font-semibold border border-indigo-500/20 transition-all">
-                    <i class="fas fa-chart-line text-lg"></i>
-                    <span>Overview</span>
-                </a>
-                <a href="index.html"
-                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all">
-                    <i class="fas fa-globe text-lg"></i>
-                    <span>Public Site</span>
-                </a>
-                <div class="pt-6 pb-2 px-4 uppercase text-[10px] font-bold tracking-widest text-slate-500">Account</div>
-                <a href="#"
-                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all">
-                    <i class="fas fa-user-circle text-lg"></i>
-                    <span>My Profile</span>
-                    <span
-                        class="ml-auto bg-indigo-500/20 text-indigo-400 text-[10px] px-2 py-0.5 rounded-full">Pro</span>
-                </a>
-            </nav>
-
-            <div class="p-6">
-                <button id="logoutBtn"
-                    class="w-full flex items-center justify-center space-x-3 py-4 bg-red-500/10 text-red-400 rounded-2xl font-bold hover:bg-red-500 hover:text-white transition-all border border-red-500/20 active:scale-95">
-                    <i class="fas fa-power-off"></i>
-                    <span>Sign Out</span>
-                </button>
-            </div>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="flex-1 overflow-y-auto bg-slate-50 relative">
-            <!-- Header -->
-            <header
-                class="sticky top-0 glass z-10 px-10 py-6 flex justify-between items-center border-b border-slate-200/50">
-                <div class="animate-fade-in">
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Welcome back</p>
-                    <h2 class="text-3xl font-bold text-slate-800 tracking-tight">Hey, <span id="driverName"
-                            class="text-indigo-600">Partner</span>!</h2>
-                </div>
-                <div class="flex items-center space-x-6">
-                    <div id="currentDate"
-                        class="hidden md:block py-2 px-4 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-500 shadow-sm">
-                    </div>
-                    <div
-                        class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center shadow-inner">
-                        <i class="fas fa-bell"></i>
-                    </div>
-                </div>
-            </header>
-
-            <div class="px-10 py-8 animate-fade-in" style="animation-delay: 0.1s">
-                <!-- Status Alert / Notification -->
-                <div id="statusAlert" class="hidden mb-8 p-6 rounded-3xl border-l-[6px] shadow-sm animate-fade-in">
-                </div>
-
-                <!-- Active Lease Section -->
-                <section class="mb-12">
-                    <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-xl font-bold text-slate-800 tracking-tight">Your Active Lease</h3>
-                        <span
-                            class="text-xs font-bold text-indigo-600 uppercase tracking-widest bg-indigo-50 px-3 py-1 rounded-full">Live
-                            Status</span>
-                    </div>
-                    <div id="activeLeaseContainer"
-                        class="glass p-8 rounded-[2rem] border-indigo-50 min-h-[160px] flex items-center justify-center relative overflow-hidden transition-all duration-500">
-                        <div class="animate-pulse text-slate-400 font-medium">Syncing lease data...</div>
-                    </div>
-                </section>
-
-                <!-- Search & Filters -->
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                    <h3 class="text-xl font-bold text-slate-800 tracking-tight">Available Cars</h3>
-                    <div class="relative group">
-                        <i
-                            class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors"></i>
-                        <input type="text" id="carSearch" placeholder="Search available cars..."
-                            class="pl-12 pr-6 py-3 bg-white border border-slate-200 rounded-2xl w-full md:w-80 focus:ring-2 focus:ring-indigo-500 outline-none transition-all shadow-sm">
-                    </div>
-                </div>
-
-                <!-- Available Cars for Lease Section -->
-                <section>
-                    <div id="carsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        <!-- Skeletons loader -->
-                        <div class="bg-slate-200 h-80 rounded-3xl animate-pulse"></div>
-                        <div class="bg-slate-200 h-80 rounded-3xl animate-pulse"></div>
-                        <div class="bg-slate-200 h-80 rounded-3xl animate-pulse"></div>
-                    </div>
-                </section>
-            </div>
-        </main>
-    </div>
-
-    <!-- 📲 M-Pesa Simulation Modal -->
-    <div id="mpesaModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-6 bg-slate-950/80 backdrop-blur-sm animate-fade-in">
-        <div class="bg-white w-full max-w-sm rounded-[2.5rem] overflow-hidden shadow-2xl transform transition-all scale-95 opacity-0 duration-300" id="mpesaModalContent">
-            <div class="bg-[#4cad4d] p-8 text-white text-center">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/1/15/M-PESA_LOGO-01.svg" class="h-10 mx-auto mb-6 brightness-0 invert">
-                <h3 class="text-2xl font-black tracking-tight">STK Push</h3>
-                <p class="text-[10px] font-bold uppercase tracking-widest opacity-80 mt-1">Lease Commitment Fee (50%)</p>
-            </div>
-            <div class="p-10 space-y-8">
-                <div class="text-center">
-                    <p class="text-slate-500 font-medium mb-1">Enter M-Pesa PIN for</p>
-                    <p class="text-xl font-black text-slate-800">Makbel Car Rentals</p>
-                    <p class="text-2xl font-black text-emerald-600 mt-4">Ksh <span id="modalAmount">--</span></p>
-                </div>
-                
-                <div class="flex justify-center space-x-3">
-                    <input type="password" maxlength="1" class="pin-input w-12 h-14 bg-slate-100 border border-slate-200 rounded-2xl text-center text-2xl font-black focus:ring-2 focus:ring-[#4cad4d] outline-none">
-                    <input type="password" maxlength="1" class="pin-input w-12 h-14 bg-slate-100 border border-slate-200 rounded-2xl text-center text-2xl font-black focus:ring-2 focus:ring-[#4cad4d] outline-none">
-                    <input type="password" maxlength="1" class="pin-input w-12 h-14 bg-slate-100 border border-slate-200 rounded-2xl text-center text-2xl font-black focus:ring-2 focus:ring-[#4cad4d] outline-none">
-                    <input type="password" maxlength="1" class="pin-input w-12 h-14 bg-slate-100 border border-slate-200 rounded-2xl text-center text-2xl font-black focus:ring-2 focus:ring-[#4cad4d] outline-none">
-                </div>
-
-                <div class="flex flex-col space-y-3">
-                    <button id="confirmPayment" class="w-full py-4 bg-[#4cad4d] text-white rounded-2xl font-black shadow-lg shadow-emerald-100 hover:brightness-105 active:scale-95 transition-all">
-                        Complete Transaction
-                    </button>
-                    <button id="cancelPayment" class="w-full py-3 text-slate-400 font-bold text-xs uppercase tracking-widest hover:text-slate-600 transition-colors">
-                        Cancel
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
+    (function(){
         const token = localStorage.getItem("token");
         const user = JSON.parse(localStorage.getItem("user"));
-
-        // Auth Guard
+        console.log("🔑 Token from storage:", token);
+        // Redirect if not authenticated
         if (!token || !user) {
             window.location.href = "login.html";
+            return;
         } else if (user.role === "admin") {
             window.location.href = "admin_dashboard.html";
-        } else if (user.role === "user") {
-            window.location.href = "user_dashboard.html";
+            return;
+        } else if (user.role === "customer") {
+            window.location.href = "customer_dashboard.html";
+            return;
         }
-
-        document.getElementById("currentDate").innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        document.getElementById("driverName").innerText = user.firstName;
-
-        // 🔔 Display Notifications via Toast & Alert Box
-        if (user.notification) {
-            const statusAlert = document.getElementById("statusAlert");
-            statusAlert.innerText = user.notification;
-            statusAlert.classList.remove("hidden");
-            statusAlert.classList.add("bg-indigo-50", "text-indigo-800", "border-indigo-400", "font-medium");
-            Toast.info("New notification from admin");
-        }
-
-        document.getElementById("logoutBtn").addEventListener("click", () => {
-            localStorage.clear();
-            Toast.success("Successfully signed out");
-            setTimeout(() => window.location.href = "login.html", 1000);
-        });
-
-        async function fetchDashboardData() {
-            try {
-                // 1. Fetch Active Lease
-                const leaseRes = await fetch("/api/leases/my-lease", {
-                    headers: { "Authorization": `Bearer ${token}` }
-                });
-
-                const activeLeaseContainer = document.getElementById("activeLeaseContainer");
-                activeLeaseContainer.innerHTML = ""; // Clear loader
-
-                if (leaseRes.ok) {
-                    const lease = await leaseRes.json();
-                    if (lease) {
-                        let statusClass = "bg-emerald-100 text-emerald-700";
-                        if (lease.status === "pending") statusClass = "bg-amber-100 text-amber-700";
-
-                        activeLeaseContainer.innerHTML = `
-                            <div class="flex flex-col md:flex-row md:items-center w-full gap-8">
-                                <div class="w-full md:w-48 h-32 bg-slate-100 rounded-3xl overflow-hidden shadow-inner">
-                                    <img src="${lease.Car ? lease.Car.image : ''}" class="w-full h-full object-cover grayscale-[20%]">
-                                </div>
-                                <div class="flex-1 space-y-2">
-                                    <div class="flex items-center space-x-3">
-                                        <h4 class="text-2xl font-bold text-slate-800">${lease.Car ? lease.Car.carName : 'Leased Vehicle'}</h4>
-                                        <span class="px-3 py-1 ${statusClass} rounded-full text-[10px] font-black uppercase tracking-widest border border-current opacity-80">${lease.status}</span>
-                                    </div>
-                                    <div class="grid grid-cols-2 gap-4 pt-2">
-                                        <div>
-                                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Signed On</p>
-                                            <p class="text-slate-700 font-semibold">${lease.startDate}</p>
-                                        </div>
-                                        <div>
-                                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Rate</p>
-                                            <p class="text-indigo-600 font-bold">Ksh ${lease.weeklyCost}/wk</p>
-                                        </div>
-                                    </div>
-                                    <div class="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between">
-                                        <div class="flex items-center space-x-2">
-                                            <i class="fas fa-wallet text-emerald-500 text-xs"></i>
-                                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Deposit: Ksh ${lease.depositPaid || 0}</span>
-                                        </div>
-                                        <span class="px-2 py-0.5 bg-emerald-50 text-emerald-600 rounded text-[9px] font-black uppercase tracking-widest border border-emerald-100">${lease.paymentStatus}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    } else {
-                        activeLeaseContainer.innerHTML = `
-                            <div class="text-center py-4">
-                                <div class="w-16 h-16 bg-slate-100 text-slate-300 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <i class="fas fa-file-contract text-2xl"></i>
-                                </div>
-                                <p class="text-slate-500 font-medium">No active lease found. Explore the fleet below to apply.</p>
-                            </div>
-                        `;
-                    }
-                }
-
-                // 2. Fetch Available Fleet
-                const carsRes = await fetch("/api/cars");
-                const carsData = await carsRes.json();
-                const allCars = (carsData.cars || []).filter(car => car.isAvailableForLease);
-                renderCars(allCars);
-
-                // Search filtering
-                document.getElementById('carSearch').addEventListener('input', (e) => {
-                    const query = e.target.value.toLowerCase();
-                    const filtered = allCars.filter(c => c.carName.toLowerCase().includes(query) || c.vehicleType.toLowerCase().includes(query));
-                    renderCars(filtered);
-                });
-
-            } catch (error) {
-                console.error("Dashboard Sync Error:", error);
-                Toast.error("Failed to sync dashboard data");
-            }
-        }
-
-        function renderCars(cars) {
-            const grid = document.getElementById("carsGrid");
-            if (cars.length === 0) {
-                grid.innerHTML = `<div class="col-span-full py-20 text-center text-slate-400 font-medium border-2 border-dashed border-slate-200 rounded-[2.5rem]">No vehicles matching your criteria.</div>`;
-                return;
-            }
-
-            grid.innerHTML = cars.map(car => `
-                <div class="glass group rounded-[2.5rem] overflow-hidden border-slate-100 hover:border-indigo-200 hover:-translate-y-2 transition-all duration-500 shadow-sm hover:shadow-xl">
-                    <div class="relative h-56 overflow-hidden">
-                        <img src="${car.image || ''}" alt="${car.carName}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                        <div class="absolute top-4 right-4 px-3 py-1 bg-white/90 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-wider text-indigo-600 shadow-sm">
-                            ${car.vehicleType}
-                        </div>
-                    </div>
-                    <div class="p-8">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <h3 class="text-xl font-bold text-slate-800">${car.carName}</h3>
-                                <p class="text-xs text-slate-400 font-bold uppercase tracking-widest mt-0.5">${car.color}</p>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Rate</p>
-                                <p class="text-indigo-600 font-black text-xl leading-none">Ksh ${car.weeklyLeaseCost}</p>
-                                <p class="text-[10px] text-slate-400 font-bold">/ week</p>
-                            </div>
-                        </div>
-                        <p class="text-slate-500 text-sm line-clamp-2 min-h-[40px] mb-6 leading-relaxed">${car.description}</p>
-                        <button onclick="applyForLease(${car.id}, ${car.weeklyLeaseCost})" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold hover:bg-indigo-600 active:scale-95 transition-all shadow-lg shadow-slate-100 flex items-center justify-center space-x-2">
-                           <i class="fas fa-file-signature text-xs opacity-50"></i>
-                           <span>Initiate Application</span>
-                        </button>
-                    </div>
-                </div>
-            `).join("");
-        }
-
-        const mpesaModal = document.getElementById('mpesaModal');
-        const mpesaModalContent = document.getElementById('mpesaModalContent');
-
-        function toggleModal(show) {
-            if (show) {
-                mpesaModal.classList.remove('hidden');
-                setTimeout(() => {
-                    mpesaModalContent.classList.remove('scale-95', 'opacity-0');
-                }, 10);
-            } else {
-                mpesaModalContent.classList.add('scale-95', 'opacity-0');
-                setTimeout(() => mpesaModal.classList.add('hidden'), 300);
-            }
-        }
-
-        document.getElementById('cancelPayment').addEventListener('click', () => toggleModal(false));
-
-        // PIN Input Auto-focus
-        const pinInputs = document.querySelectorAll('.pin-input');
-        pinInputs.forEach((input, index) => {
-            input.addEventListener('input', (e) => {
-                if (e.target.value.length === 1 && index < pinInputs.length - 1) {
-                    pinInputs[index + 1].focus();
-                }
+        // Continue only if driver role
+        const logoutBtn = document.getElementById("logoutBtn");
+        if (logoutBtn) {
+            logoutBtn.addEventListener("click", () => {
+                localStorage.clear();
+                Toast.success("Successfully signed out");
+                setTimeout(() => window.location.href = "login.html", 1000);
             });
-        });
-
-        async function applyForLease(carId, weeklyCost) {
-            const deposit = weeklyCost * 0.5;
-            document.getElementById('modalAmount').innerText = deposit.toLocaleString();
-            
-            // Store current application context
-            window.currentLeaseApp = { carId, weeklyCost, deposit };
-            toggleModal(true);
         }
-
-        document.getElementById('confirmPayment').addEventListener('click', async () => {
-            if (!window.currentLeaseApp) return;
-            const { carId, weeklyCost, deposit } = window.currentLeaseApp;
-
-            try {
-                const btn = document.getElementById('confirmPayment');
-                btn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> Processing...';
-                btn.disabled = true;
-
-                const response = await fetch("/api/leases/apply", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ 
-                        carId, 
-                        startDate: new Date().toISOString().split('T')[0],
-                        depositPaid: deposit,
-                        paymentStatus: 'partial'
-                    })
-                });
-
-                if (response.ok) {
-                    toggleModal(false);
-                    Toast.success("Commitment Fee Paid! Application Submitted.");
-                    fetchDashboardData();
-                } else {
-                    const error = await response.json();
-                    Toast.error(error.message || "Lease application failed");
-                    btn.innerHTML = 'Complete Transaction';
-                    btn.disabled = false;
-                }
-            } catch (error) {
-                console.error("Lease Error:", error);
-                Toast.error("Payment sync failed");
-            }
-        });
-        fetchDashboardData();
+    })();
     </script>
 </body>
-
 </html>

@@ -13,10 +13,10 @@
 
 <body class="bg-slate-50 font-sans">
 
-    <div class="flex h-screen overflow-hidden">
+    <div class="flex min-h-screen">
         <!-- 🚀 Modern Sidebar -->
-        <aside class="w-72 bg-slate-900 text-white flex flex-col shadow-2xl relative z-20">
-            <div class="p-8 flex items-center space-x-3">
+        <aside class="w-72 bg-slate-900 text-white flex flex-col shadow-2xl fixed top-0 left-0 h-screen z-20 overflow-y-auto custom-scrollbar">
+            <div class="p-8 flex items-center space-x-3 flex-shrink-0">
                 <div
                     class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg transform rotate-12 transition-transform hover:rotate-0">
                     <i class="fas fa-shield-halved text-white text-lg"></i>
@@ -24,33 +24,23 @@
                 <h1 class="text-2xl font-black tracking-tight">Makbel Car Rentals <span class="text-indigo-500">HQ</span></h1>
             </div>
 
-            <nav class="flex-1 px-4 space-y-1.5 mt-4">
+            
+            <nav class="flex-1 px-4 space-y-1.5 mt-4 overflow-y-auto custom-scrollbar">
                 <a href="admin_dashboard.html"
-                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl bg-indigo-600/10 text-indigo-400 font-bold border border-indigo-500/20 transition-all">
+                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl bg-indigo-600/10 text-indigo-400 font-bold border border-indigo-500/20 transition-all font-semibold">
                     <i class="fas fa-th-large text-lg"></i>
                     <span>Overview</span>
                 </a>
-                <div class="pt-6 pb-2 px-4 uppercase text-[10px] font-black tracking-widest text-slate-500">Management
-                </div>
+                <div class="pt-6 pb-2 px-4 uppercase text-[10px] font-black tracking-widest text-slate-500">Management</div>
+                <a href="admin_customers.html"
+                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
+                    <i class="fas fa-users text-lg"></i>
+                    <span>Customer Directory</span>
+                </a>
                 <a href="admin_cars.html"
                     class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
                     <i class="fas fa-car-side text-lg"></i>
                     <span>Fleet Control</span>
-                </a>
-                <a href="admin_manage_cars.html"
-                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
-                    <i class="fas fa-plus-circle text-lg"></i>
-                    <span>Add New Vehicle</span>
-                </a>
-                <a href="admin_view_leases.html"
-                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
-                    <i class="fas fa-file-contract text-lg"></i>
-                    <span>Lease Pipeline</span>
-                </a>
-                <a href="admin_verifications.html"
-                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
-                    <i class="fas fa-id-card text-lg"></i>
-                    <span>Driver Vetting</span>
                 </a>
                 <a href="admin_view_rentals.html"
                     class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
@@ -59,7 +49,8 @@
                 </a>
             </nav>
 
-            <div class="p-6">
+
+            <div class="p-6 flex-shrink-0">
                 <button id="logoutBtn"
                     class="w-full flex items-center justify-center space-x-3 py-4 bg-red-500/10 text-red-400 rounded-2xl font-bold hover:bg-red-500 hover:text-white transition-all border border-red-500/20 active:scale-95">
                     <i class="fas fa-link-slash"></i>
@@ -69,7 +60,7 @@
         </aside>
 
         <!-- 🏢 Main Dashboard -->
-        <main class="flex-1 overflow-y-auto bg-slate-50 relative">
+        <main class="ml-72 flex-1 bg-slate-50 relative min-h-screen">
             <!-- Header -->
             <header
                 class="sticky top-0 glass z-10 px-10 py-6 flex justify-between items-center border-b border-slate-200/50">
@@ -94,26 +85,6 @@
                         </div>
                         <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Fleet</p>
                         <h4 class="text-3xl font-black text-slate-800 tracking-tighter" id="totalCars">--</h4>
-                    </div>
-                    <div
-                        class="glass p-8 rounded-[2rem] border-emerald-50 shadow-sm transition-all hover:shadow-xl group">
-                        <div
-                            class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
-                            <i class="fas fa-hand-holding-dollar text-xl"></i>
-                        </div>
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Active Leases
-                        </p>
-                        <h4 class="text-3xl font-black text-slate-800 tracking-tighter" id="activeLeases">--</h4>
-                    </div>
-                    <div
-                        class="glass p-8 rounded-[2rem] border-amber-50 shadow-sm transition-all hover:shadow-xl group">
-                        <div
-                            class="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
-                            <i class="fas fa-user-clock text-xl"></i>
-                        </div>
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Pending Vetting
-                        </p>
-                        <h4 class="text-3xl font-black text-slate-800 tracking-tighter" id="pendingDrivers">--</h4>
                     </div>
                     <div
                         class="glass p-8 rounded-[2rem] border-violet-50 shadow-sm transition-all hover:shadow-xl group">
@@ -152,29 +123,9 @@
                             </div>
                             <h4 class="text-2xl font-black text-slate-800 mb-2">Manage Fleet</h4>
                             <p class="text-slate-500 font-medium leading-relaxed">Expand the fleet with new premium
-                                selections and set leasing parameters.</p>
+                                selections.</p>
                         </a>
 
-                        <a href="admin_view_leases.html"
-                            class="glass group p-8 rounded-[2.5rem] border-indigo-50 hover:border-indigo-400 transition-all hover:-translate-y-2 shadow-sm hover:shadow-2xl">
-                            <div
-                                class="w-14 h-14 bg-indigo-600 text-white rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-indigo-100 group-hover:rotate-12 transition-transform">
-                                <i class="fas fa-stamp text-2xl"></i>
-                            </div>
-                            <h4 class="text-2xl font-black text-slate-800 mb-2">Lease Approval</h4>
-                            <p class="text-slate-500 font-medium leading-relaxed">Review and authorize pending driver
-                                lease requests from the pipeline.</p>
-                        </a>
-
-                        <a href="admin_verifications.html"
-                            class="glass group p-8 rounded-[2.5rem] border-amber-50 hover:border-amber-400 transition-all hover:-translate-y-2 shadow-sm hover:shadow-2xl">
-                            <div
-                                class="w-14 h-14 bg-amber-500 text-white rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-amber-100 group-hover:rotate-12 transition-transform">
-                                <i class="fas fa-user-shield text-2xl"></i>
-                            </div>
-                            <h4 class="text-2xl font-black text-slate-800 mb-2">Partner Vetting</h4>
-                            <p class="text-slate-500 font-medium leading-relaxed">Verify driver licenses using AI-assisted OCR and manual review.</p>
-                        </a>
                     </div>
                 </section>
             </div>
@@ -201,11 +152,16 @@
                 const statsResponse = await fetch("/api/admin/stats", {
                     headers: { "Authorization": `Bearer ${token}` }
                 });
+
+                if (statsResponse.status === 401 || statsResponse.status === 403) {
+                    localStorage.clear();
+                    window.location.href = "login.html";
+                    return;
+                }
+
                 if (statsResponse.ok) {
                     const stats = await statsResponse.json();
                     document.getElementById("totalCars").innerText = stats.totalCars || 0;
-                    document.getElementById("activeLeases").innerText = stats.activeLeases || 0;
-                    document.getElementById("pendingDrivers").innerText = stats.pendingDrivers || 0;
                     document.getElementById("activeRentals").innerText = stats.activeRentals || 0;
                 }
 

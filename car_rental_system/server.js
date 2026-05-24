@@ -18,7 +18,6 @@ import userRoutes from "./routes/userRoutes.js";
 import carRoutes from "./routes/carRoutes.js";
 import rentalRoutes from "./routes/rentalRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
-import leaseRoutes from "./routes/leaseRoutes.js";
 import inquiryRoutes from "./routes/inquiryRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 
@@ -30,7 +29,7 @@ const __dirname = path.dirname(__filename);
 
 // ✅ Initialize Express app
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = 5002;
 
 // ✅ Multer Configuration (for handling file uploads)
 const upload = multer({ dest: "uploads/" });
@@ -57,9 +56,26 @@ app.use('/api/users', userRoutes);
 app.use('/api/cars', carRoutes);
 app.use('/api/rentals', rentalRoutes);
 app.use("/api/bookings", bookingRoutes);
-app.use("/api/leases", leaseRoutes);
+
 app.use("/api/inquiries", inquiryRoutes);
 app.use("/api/payment", paymentRoutes);
+
+// ✅ Global Error Handler (Ensures all errors return JSON)
+app.use((err, req, res, next) => {
+    console.error("❌ Global Error:", err.message);
+    
+    // Handle Multer Errors
+    if (err instanceof multer.MulterError) {
+        return res.status(400).json({ error: "Upload Error: " + err.message });
+    }
+    
+    // Handle Custom Errors (like from fileFilter)
+    if (err.message && (err.message.includes("formats allowed") || err.message.includes("required"))) {
+        return res.status(400).json({ error: err.message });
+    }
+
+    res.status(500).json({ error: err.message || "Internal Server Error" });
+});
 
 // ✅ Protected Route Example (User Dashboard)
 app.get("/api/user/dashboard", verifyToken, (req, res) => {
@@ -68,11 +84,27 @@ app.get("/api/user/dashboard", verifyToken, (req, res) => {
 
 // ✅ Authenticate Database Connection (Skip auto-alter to prevent hangs)
 db.sequelize.authenticate()
-    .then(() => console.log("✅ Database connected successfully"))
+    .then(() => console.log("✅ SQLite connected successfully"))
     .catch(err => console.error("❌ Database connection error:", err));
 
+// ✅ Sync Database Tables
+db.syncDatabase()
+    .then(() => console.log("✅ Database ready for use"))
+    .catch(err => console.error("❌ Database sync failed:", err));
+
 // ✅ Start Server
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
+});
+
+// ✅ Crash Reporting
+process.on('uncaughtException', err => {
+    console.error('❌ Uncaught exception - shutting down:', err);
+    server.close(() => process.exit(1));
+});
+
+process.on('unhandledRejection', reason => {
+    console.error('❌ Unhandled promise rejection - shutting down:', reason);
+    server.close(() => process.exit(1));
 });
 

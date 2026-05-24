@@ -17,7 +17,7 @@
     <header class="glass fixed top-0 left-0 w-full z-50 border-b border-slate-200/50">
         <div class="max-w-7xl mx-auto px-6 lg:px-10 py-5 flex justify-between items-center">
             <div class="flex items-center space-x-2">
-                <a href="user_dashboard.html" class="flex items-center space-x-2">
+                <a href="customer_dashboard.html" class="flex items-center space-x-2">
                     <div
                         class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg transform rotate-12 transition-transform hover:rotate-0">
                         <i class="fas fa-car text-white"></i>
@@ -29,7 +29,8 @@
 
             <nav class="hidden md:flex items-center space-x-10">
                 <ul class="flex space-x-8 text-slate-500 font-bold text-sm uppercase tracking-widest">
-                    <li><a href="user_dashboard.html"
+                    <li><a href="index.html" class="hover:text-indigo-600 transition-colors">Home</a></li>
+                    <li><a href="customer_dashboard.html"
                             class="text-indigo-600 border-b-2 border-indigo-600 pb-1">Fleet</a></li>
                     <li><a href="bookings.html" class="hover:text-indigo-600 transition-colors">My Bookings</a></li>
                     <li><a href="profile.html" class="hover:text-indigo-600 transition-colors">Settings</a></li>
@@ -63,16 +64,16 @@
         </div>
 
         <!-- 🚀 Filter Chips -->
-        <div class="flex flex-wrap gap-3 mb-12">
-            <button
-                class="px-6 py-3 bg-indigo-600 text-white rounded-2xl font-bold shadow-lg shadow-indigo-100 border border-indigo-600 transition-all">All
+        <div class="flex flex-wrap gap-3 mb-12" id="filterContainer">
+            <button id="filter-all" onclick="setCategory('all')"
+                class="filter-btn px-6 py-3 bg-indigo-600 text-white rounded-2xl font-bold shadow-lg shadow-indigo-100 border border-indigo-600 transition-all">All
                 Vehicles</button>
-            <button
-                class="px-6 py-3 bg-white text-slate-500 rounded-2xl font-bold border border-slate-200 hover:border-indigo-300 hover:text-indigo-600 transition-all">Luxury</button>
-            <button
-                class="px-6 py-3 bg-white text-slate-500 rounded-2xl font-bold border border-slate-200 hover:border-indigo-300 hover:text-indigo-600 transition-all">Sports</button>
-            <button
-                class="px-6 py-3 bg-white text-slate-500 rounded-2xl font-bold border border-slate-200 hover:border-indigo-300 hover:text-indigo-600 transition-all">Convertible</button>
+            <button id="filter-luxury" onclick="setCategory('luxury')"
+                class="filter-btn px-6 py-3 bg-white text-slate-500 rounded-2xl font-bold border border-slate-200 hover:border-indigo-300 hover:text-indigo-600 transition-all">Luxury</button>
+            <button id="filter-sports" onclick="setCategory('sports')"
+                class="filter-btn px-6 py-3 bg-white text-slate-500 rounded-2xl font-bold border border-slate-200 hover:border-indigo-300 hover:text-indigo-600 transition-all">Sports</button>
+            <button id="filter-convertible" onclick="setCategory('convertible')"
+                class="filter-btn px-6 py-3 bg-white text-slate-500 rounded-2xl font-bold border border-slate-200 hover:border-indigo-300 hover:text-indigo-600 transition-all">Convertible</button>
         </div>
 
         <h2 class="text-3xl font-black text-slate-800 tracking-tight mb-8 text-left">Available Cars</h2>
@@ -88,14 +89,14 @@
     <script>
         const user = JSON.parse(localStorage.getItem("user"));
         const token = localStorage.getItem("token");
+        let allCars = [];
+        let currentCategory = 'all';
 
         // Role guard
         if (!token || !user) {
             window.location.href = "login.html";
         } else if (user.role === "admin") {
             window.location.href = "admin_dashboard.html";
-        } else if (user.role === "driver") {
-            window.location.href = "driver_dashboard.html";
         }
 
         document.getElementById("logoutBtn").addEventListener("click", function () {
@@ -112,14 +113,12 @@
 
                 if (!data.success || !Array.isArray(data.cars)) throw new Error("Invalid response format");
 
-                const allCars = data.cars;
-                renderCars(allCars);
+                allCars = data.cars;
+                applyFilters();
 
                 // Search handler
-                document.getElementById('carSearch').addEventListener('input', (e) => {
-                    const q = e.target.value.toLowerCase();
-                    const filtered = allCars.filter(c => c.carName.toLowerCase().includes(q) || c.description.toLowerCase().includes(q));
-                    renderCars(filtered);
+                document.getElementById('carSearch').addEventListener('input', () => {
+                    applyFilters();
                 });
 
             } catch (error) {
@@ -129,17 +128,66 @@
             }
         }
 
+        function setCategory(category) {
+            currentCategory = category;
+            
+            // Update UI
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-lg', 'shadow-indigo-100', 'border-indigo-600');
+                btn.classList.add('bg-white', 'text-slate-500', 'border-slate-200');
+            });
+
+            const activeBtn = document.getElementById(`filter-${category}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-white', 'text-slate-500', 'border-slate-200');
+                activeBtn.classList.add('bg-indigo-600', 'text-white', 'shadow-lg', 'shadow-indigo-100', 'border-indigo-600');
+            }
+
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const query = document.getElementById('carSearch').value.toLowerCase();
+            
+            let filtered = allCars;
+
+            // Category filter
+            if (currentCategory !== 'all') {
+                const keywords = {
+                    luxury: ["luxurious", "premium", "classy", "luxury", "v8", "v12", "leather"],
+                    sports: ["sports", "performance", "turbo", "m3", "speed", "fast"],
+                    convertible: ["convertible", "cabriolet", "open top", "soft top"]
+                };
+                
+                const targetKeywords = keywords[currentCategory] || [];
+                filtered = filtered.filter(car => {
+                    const content = (car.carName + " " + car.description).toLowerCase();
+                    return targetKeywords.some(key => content.includes(key));
+                });
+            }
+
+            // Search filter
+            if (query) {
+                filtered = filtered.filter(c => 
+                    c.carName.toLowerCase().includes(query) || 
+                    c.description.toLowerCase().includes(query)
+                );
+            }
+
+            renderCars(filtered);
+        }
+
         function renderCars(cars) {
             const carList = document.getElementById("carList");
             if (cars.length === 0) {
-                carList.innerHTML = `<div class="col-span-full py-20 text-center text-slate-400 font-bold border-2 border-dashed border-slate-200 rounded-[3rem]">No vehicles found. Try adjusting your search.</div>`;
+                carList.innerHTML = `<div class="col-span-full py-20 text-center text-slate-400 font-bold border-2 border-dashed border-slate-200 rounded-[3rem]">No vehicles found matching your criteria.</div>`;
                 return;
             }
 
             carList.innerHTML = "";
 
             cars.forEach(car => {
-                const isBooked = car.isAvailableForLease === false; // Simplified availability check
+                const isReserved = car.isReserved === true;
 
                 const card = document.createElement("div");
                 card.className = "glass h-full group rounded-[2.5rem] overflow-hidden border-slate-100 hover:border-indigo-200 hover:-translate-y-3 transition-all duration-500 shadow-sm hover:shadow-2xl relative";
@@ -168,10 +216,10 @@
                         </div>
                         <p class="text-slate-500 text-sm mb-8 leading-relaxed line-clamp-2 min-h-[40px]">${car.description}</p>
                         <button class="w-full py-4 rounded-2xl font-black shadow-lg transition-all active:scale-95 flex items-center justify-center space-x-3 
-                                    ${isBooked ? 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200' : 'bg-slate-900 text-white hover:bg-indigo-600 shadow-slate-100'}"
-                                ${isBooked ? 'disabled' : `onclick="location.href='booking.html?carId=${car.id}'"`}>
-                            <i class="fas ${isBooked ? 'fa-lock' : 'fa-key'} text-xs opacity-50"></i>
-                            <span class="uppercase tracking-widest text-xs">${isBooked ? "Reserved" : "Lease Vehicle"}</span>
+                                    ${isReserved ? 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200' : 'bg-slate-900 text-white hover:bg-indigo-600 shadow-slate-100'}"
+                                ${isReserved ? 'disabled' : `onclick="location.href='booking.html?carId=${car.id}'"`}>
+                            <i class="fas ${isReserved ? 'fa-lock' : 'fa-key'} text-xs opacity-50"></i>
+                            <span class="uppercase tracking-widest text-xs">${isReserved ? "Reserved" : "Rent Vehicle"}</span>
                         </button>
                     </div>
                 `;

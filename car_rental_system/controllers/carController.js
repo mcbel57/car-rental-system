@@ -1,4 +1,5 @@
 import db from "../config/db.js";
+import { Op } from "sequelize";
 import Car from "../models/Car.js";
 
 // 🏎️ Add a new car
@@ -56,16 +57,21 @@ export const getAllCars = async (req, res) => {
             }
         };
 
-        const formattedCars = cars.map(car => ({
-            id: car.id,
-            carName: car.carName,
-            description: car.description,
-            color: car.color,
-            vehicleType: car.vehicleType,
-            costPerDay: car.costPerDay,
-            isAvailableForLease: car.isAvailableForLease,
-            weeklyLeaseCost: car.weeklyLeaseCost,
-            image: formatImage(car.image)
+        const formattedCars = await Promise.all(cars.map(async (car) => {
+            const activeRental = await db.Rental.findOne({ 
+                where: { carId: car.id, status: "active" } 
+            });
+
+            return {
+                id: car.id,
+                carName: car.carName,
+                description: car.description,
+                color: car.color,
+                vehicleType: car.vehicleType,
+                costPerDay: car.costPerDay,
+                image: formatImage(car.image),
+                isReserved: !!activeRental
+            };
         }));
 
         res.status(200).json({ success: true, cars: formattedCars });

@@ -1,6 +1,7 @@
 import express from "express";
 import { verifyToken, verifyAdmin } from "../middleware/authMiddleware.js";
 import upload from "../middleware/upload.js";
+import fs from "fs";
 import db from "../config/db.js";  // Ensure MySQL connection is imported
 import { getAllCars, addCar, deleteCar } from "../controllers/carController.js";
 
@@ -23,16 +24,31 @@ router.delete("/:id", verifyToken, verifyAdmin, deleteCar);
 // ✅ Edit Car Details
 router.put("/:id", verifyToken, verifyAdmin, upload.single("image"), async (req, res) => {
     try {
-        const { name, description, color, vehicleType, hireCostPerDay } = req.body;
-        const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+        const { carName, description, color, vehicleType, costPerDay } = req.body;
+        
+        const updateData = {};
+        if (carName) updateData.carName = carName;
+        if (description) updateData.description = description;
+        if (color) updateData.color = color;
+        if (vehicleType) updateData.vehicleType = vehicleType;
+        
+        if (costPerDay !== undefined) {
+            const parsedCost = parseFloat(costPerDay);
+            if (isNaN(parsedCost)) return res.status(400).json({ error: "Invalid cost value" });
+            updateData.costPerDay = parsedCost;
+        }
 
-        await Car.update(
-            { name, description, color, vehicleType, hireCostPerDay, imageUrl },
-            { where: { id: req.params.id } }
-        );
+        if (req.file) {
+            updateData.image = fs.readFileSync(req.file.path);
+            fs.unlinkSync(req.file.path);
+        }
 
-        res.json({ message: "Car updated successfully" });
+        await Car.update(updateData, { where: { id: req.params.id } });
+
+        res.json({ success: true, message: "Car updated successfully" });
     } catch (error) {
+        console.error("❌ Error updating car:", error);
+        if (req.file && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
         res.status(500).json({ error: "Error updating car: " + error.message });
     }
 });
@@ -41,20 +57,36 @@ router.put("/:id", verifyToken, verifyAdmin, upload.single("image"), async (req,
 router.post("/", verifyToken, verifyAdmin, upload.single("image"), async (req, res) => {
     try {
         const { carName, description, color, vehicleType, hireCost } = req.body;
-        // In this app, car images are stored as Buffers, but let's handle file upload too if needed
-        let image = req.file ? req.file.buffer : null;
+        
+        const parsedCost = parseFloat(hireCost);
+        if (isNaN(parsedCost)) {
+            if (req.file) fs.unlinkSync(req.file.path);
+            return res.status(400).json({ error: "Invalid daily rental cost" });
+        }
+
+        if (!req.file) {
+            return res.status(400).json({ error: "Vehicle image is required" });
+        }
+
+        // Read image from disk into buffer for BLOB storage
+        const image = fs.readFileSync(req.file.path);
 
         const newCar = await Car.create({
             carName,
             description,
             color,
             vehicleType,
-            costPerDay: hireCost,
+            costPerDay: parsedCost,
             image
         });
 
-        res.status(201).json({ message: "Car added successfully", car: newCar });
+        // Clean up the uploaded file from disk
+        fs.unlinkSync(req.file.path);
+
+        res.status(201).json({ success: true, message: "Car added successfully", car: newCar });
     } catch (error) {
+        console.error("❌ Error adding car:", error);
+        if (req.file && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
         res.status(500).json({ error: "Error adding car: " + error.message });
     }
 });

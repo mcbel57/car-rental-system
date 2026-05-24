@@ -16,12 +16,23 @@ export const registerUser = async (req, res) => {
     console.log("🔥 Incoming Registration Request:", req.body);
     console.log("📷 Incoming File:", req.file);
 
-    const { firstName, lastName, email, phoneNumber, idNumber, password, confirmPassword, role: requestedRole, licenseNumber } = req.body;
+    const { firstName, lastName, email, phoneNumber, idNumber, password, confirmPassword, role: requestedRole } = req.body;
 
     // 🛑 Check if passwords match
     if (password !== confirmPassword) {
-      if (req.file) fs.unlinkSync(req.file.path); // Remove uploaded file if validation fails
       return res.status(400).json({ error: "Passwords do not match" });
+    }
+
+    // 📱 Validate Phone Number (Kenyan Format)
+    const phoneRegex = /^(?:\+254|0)(?:7|1)[0-9]{8}$/;
+    if (!phoneRegex.test(phoneNumber)) {
+      return res.status(400).json({ error: "Invalid Phone Number. Use format +254... or 07.../01..." });
+    }
+
+    // 🆔 Validate National ID (7-8 digits)
+    const idRegex = /^[0-9]{7,8}$/;
+    if (!idRegex.test(idNumber)) {
+      return res.status(400).json({ error: "Invalid National ID. Must be 7-8 digits." });
     }
 
     // 🔎 Check if email or ID Number already exists
@@ -35,7 +46,6 @@ export const registerUser = async (req, res) => {
     });
 
     if (existingUser) {
-      if (req.file) fs.unlinkSync(req.file.path);
       if (existingUser.email === email) {
         return res.status(400).json({ error: "Email is already registered" });
       }
@@ -45,48 +55,16 @@ export const registerUser = async (req, res) => {
     }
 
     // 🏷️ Determine User Role
-    let role = "user";
-    let driverStatus = null;
-    let licensePhoto = null;
-    let ocrFlag = null;
-    let verificationNotes = null;
+    let role = "customer";
+    let driverStatus = null; // Only drivers get a driverStatus
 
-    if (requestedRole === "driver") {
-      role = "user"; // Kept as user until approved
-      driverStatus = "pending";
-      
-      if (req.file) {
-        licensePhoto = `/uploads/${req.file.filename}`;
-        
-        // 🤖 OCR Processing (Tesseract.js)
-        try {
-          console.log("🤖 Starting OCR on:", req.file.path);
-          const { data: { text } } = await Tesseract.recognize(req.file.path, 'eng');
-          verificationNotes = text.substring(0, 1000); // Save first 1000 chars
-
-          const lowerText = text.toLowerCase();
-          const keywords = ["driving", "licence", "license", "republic", "kenya", "birth", "class"];
-          const matches = keywords.filter(k => lowerText.includes(k));
-
-          if (matches.length >= 2) {
-            ocrFlag = "Legitimate";
-          } else if (text.trim().length > 10) {
-            ocrFlag = "Suspicious";
-          } else {
-            ocrFlag = "Not Found";
-          }
-          console.log("✅ OCR Completed. Flag:", ocrFlag);
-        } catch (ocrErr) {
-          console.error("❌ OCR Error:", ocrErr);
-          ocrFlag = "Not Found";
-          verificationNotes = "OCR Failed: " + ocrErr.message;
-        }
-      } else {
-        return res.status(400).json({ error: "Driving License photo is required for driver applications." });
-      }
-    } else if (email.endsWith("@rentify.com")) {
+    if (email.endsWith("@rentify.com") && requestedRole !== "driver") {
       role = "admin";
+    } else if (requestedRole === "driver") {
+      role = "customer"; // Kept as customer until approved by admin
+      driverStatus = "pending";
     }
+    // ✅ Pure customers have driverStatus = null (no vetting needed)
 
     // 🔐 Hash Password
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -100,11 +78,9 @@ export const registerUser = async (req, res) => {
       idNumber,
       password: hashedPassword,
       role,
-      licenseNumber: licenseNumber || null,
-      licensePhoto,
       driverStatus,
-      ocrFlag,
-      verificationNotes
+      ocrFlag: null,
+      verificationNotes: null
     });
 
     res.status(201).json({ message: "User registered successfully!", user: newUser });
@@ -146,8 +122,8 @@ export const loginUser = async (req, res) => {
       return res.status(400).json({ error: "Invalid email or password" });
     }
 
-    // ✅ Ensure user role exists (defaults to "user" if not defined)
-    const role = user.role || "user";
+    // ✅ Ensure user role exists (defaults to "customer" if not defined)
+    const role = user.role || "customer";
 
     // 🎟️ Generate JWT Token (including role)
     const token = jwt.sign(
@@ -157,11 +133,9 @@ export const loginUser = async (req, res) => {
     );
 
     // 🌍 Determine redirect based on role
-    let redirectTo = "user_dashboard.html";
+    let redirectTo = "customer_dashboard.html";
     if (role === "admin") {
       redirectTo = "admin_dashboard.html";
-    } else if (role === "driver") {
-      redirectTo = "driver_dashboard.html";
     }
 
     // 🌟 Send user details, token, and redirect path in response
@@ -176,6 +150,7 @@ export const loginUser = async (req, res) => {
         phoneNumber: user.phoneNumber,
         idNumber: user.idNumber,
         role: user.role,
+        driverStatus: user.driverStatus,
         notification: user.notification,
       },
       redirectTo,

@@ -1,16 +1,22 @@
 import { Sequelize } from "sequelize";
+import PasswordResetToken from "../models/PasswordResetToken.js";
 import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 import Car from "../models/Car.js";
 import User from "../models/User.js";
 import Rental from "../models/Rental.js";
-import Lease from "../models/Lease.js";
 import Inquiry from "../models/Inquiry.js";
 
 dotenv.config();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const databasePath = path.join(__dirname, "database.sqlite");
+
 const sequelize = new Sequelize({
     dialect: "sqlite",
-    storage: "./database.sqlite",
+    storage: databasePath,
     logging: false,
 });
 
@@ -21,26 +27,30 @@ sequelize.authenticate()
 
 // ✅ Initialize Models
 Car.init(sequelize);
+PasswordResetToken.init(sequelize);
 User.init(sequelize);
 Rental.init(sequelize);
-Lease.init(sequelize);
-Inquiry(sequelize);
+const InquiryModel = Inquiry(sequelize);
 
 // ✅ Define Associations
-User.hasMany(Lease, { foreignKey: "driverId", as: "Leases" });
-Lease.belongsTo(User, { foreignKey: "driverId", as: "Driver" });
-
-Car.hasMany(Lease, { foreignKey: "carId", as: "Leases" });
-Lease.belongsTo(Car, { foreignKey: "carId", as: "Car" });
-
 User.hasMany(Rental, { foreignKey: "userId", as: "Rentals" });
 Rental.belongsTo(User, { foreignKey: "userId", as: "User" });
 
 Car.hasMany(Rental, { foreignKey: "carId", as: "Rentals" });
 Rental.belongsTo(Car, { foreignKey: "carId", as: "Car" });
 
+// ✅ Sync function to be called after initialization
+async function syncDatabase() {
+    try {
+        await sequelize.sync({ alter: true });
+        console.log("✅ Database tables synced successfully");
+    } catch (err) {
+        console.error("❌ Database sync error:", err);
+    }
+}
+
 // ✅ Export Database Object
-const db = { sequelize, Sequelize, Car, User, Rental, Lease, Inquiry: sequelize.models.Inquiry };
+const db = { sequelize, Sequelize, Car, User, Rental, Inquiry: InquiryModel, PasswordResetToken, syncDatabase };
 
 export default db;
 

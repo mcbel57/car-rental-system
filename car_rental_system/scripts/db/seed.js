@@ -1,5 +1,5 @@
 
-import db from "./config/db.js";
+import db from "../../config/db.js";
 import bcrypt from "bcryptjs";
 
 const seedDatabase = async () => {
@@ -7,24 +7,30 @@ const seedDatabase = async () => {
         await db.sequelize.authenticate();
         console.log("✅ Connected to SQLite database.");
 
-        // Sync database
-        await db.sequelize.sync({ force: true }); // WARNING: This drops existing tables
+        // Sync database - NEVER use force: true (it deletes all data!)
+        await db.sequelize.sync({ alter: false });
         console.log("✅ Database synchronized.");
 
-        // Create Admin User
-        const passwordHash = await bcrypt.hash("admin123", 10);
-        await db.User.create({
-            firstName: "Admin",
-            lastName: "User",
-            email: "admin@example.com",
-            phoneNumber: "1234567890",
-            idNumber: "ADMIN001",
-            password: passwordHash,
-            role: "admin"
-        });
-        console.log("✅ Admin user created: admin@example.com / admin123");
+        // Check if admin already exists
+        const adminExists = await db.User.findOne({ where: { email: "admin@example.com" } });
+        if (adminExists) {
+            console.log("✅ Admin user already exists, skipping creation.");
+        } else {
+            // Create Admin User
+            const passwordHash = await bcrypt.hash("admin123", 10);
+            await db.User.create({
+                firstName: "Admin",
+                lastName: "User",
+                email: "admin@example.com",
+                phoneNumber: "1234567890",
+                idNumber: "ADMIN001",
+                password: passwordHash,
+                role: "admin"
+            });
+            console.log("✅ Admin user created: admin@example.com / admin123");
+        }
 
-        // Create Sample Cars
+        // Create Sample Cars - Skip if they already exist
         const cars = [
             {
                 carName: "Toyota Camry",
@@ -52,10 +58,19 @@ const seedDatabase = async () => {
             }
         ];
 
+        let carsCreated = 0;
         for (const car of cars) {
-            await db.Car.create(car);
+            const carExists = await db.Car.findOne({ where: { carName: car.carName } });
+            if (!carExists) {
+                await db.Car.create(car);
+                carsCreated++;
+            }
         }
-        console.log(`✅ Added ${cars.length} sample cars.`);
+        if (carsCreated > 0) {
+            console.log(`✅ Added ${carsCreated} new sample cars.`);
+        } else {
+            console.log("✅ Sample cars already exist, skipping creation.");
+        }
 
         console.log("🎉 Seeding completed successfully!");
         process.exit(0);

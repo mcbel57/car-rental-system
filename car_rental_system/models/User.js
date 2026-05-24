@@ -24,9 +24,9 @@ export default class User extends Model {
                 },
                 verificationNotes: { type: DataTypes.TEXT, allowNull: true },
                 role: {
-                    type: DataTypes.ENUM("admin", "user", "driver"),
+                    type: DataTypes.ENUM("admin", "customer", "driver"),
                     allowNull: false,
-                    defaultValue: "user", // Default role is "user"
+                    defaultValue: "customer", // Default role is "customer"
                 },
                 notification: { type: DataTypes.TEXT, allowNull: true },
             },

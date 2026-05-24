@@ -17,40 +17,38 @@
         <!-- Sidebar -->
         <aside class="w-72 bg-slate-900 text-white flex flex-col shadow-2xl relative z-20">
             <div class="p-8 flex items-center space-x-3">
-                <div
-                    class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg transform rotate-12">
+                <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg transform rotate-12">
                     <i class="fas fa-shield-halved text-white text-lg"></i>
                 </div>
                 <h1 class="text-2xl font-black tracking-tight">Makbel Car Rentals <span class="text-indigo-500">HQ</span></h1>
             </div>
 
-            <nav class="flex-1 px-4 space-y-1.5 mt-4">
+            <nav class="flex-1 px-4 space-y-1.5 mt-4 overflow-y-auto custom-scrollbar">
                 <a href="admin_dashboard.html"
                     class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
                     <i class="fas fa-th-large text-lg"></i>
                     <span>Overview</span>
                 </a>
-                <div class="pt-6 pb-2 px-4 uppercase text-[10px] font-black tracking-widest text-slate-500">Management
-                </div>
+                <div class="pt-6 pb-2 px-4 uppercase text-[10px] font-black tracking-widest text-slate-500">Management</div>
+                <a href="admin_customers.html"
+                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
+                    <i class="fas fa-users text-lg"></i>
+                    <span>Customer Directory</span>
+                </a>
+                <a href="admin_drivers.html"
+                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
+                    <i class="fas fa-user-tie text-lg"></i>
+                    <span>Approved Drivers</span>
+                </a>
+                <a href="admin_driver_management.html"
+                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
+                    <i class="fas fa-id-card text-lg"></i>
+                    <span>Driver Vetting</span>
+                </a>
                 <a href="admin_cars.html"
                     class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
                     <i class="fas fa-car-side text-lg"></i>
                     <span>Fleet Control</span>
-                </a>
-                <a href="admin_manage_cars.html"
-                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
-                    <i class="fas fa-plus-circle text-lg"></i>
-                    <span>Add New Vehicle</span>
-                </a>
-                <a href="admin_view_leases.html"
-                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
-                    <i class="fas fa-file-contract text-lg"></i>
-                    <span>Lease Pipeline</span>
-                </a>
-                <a href="admin_verifications.html"
-                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
-                    <i class="fas fa-id-card text-lg"></i>
-                    <span>Driver Vetting</span>
                 </a>
                 <a href="admin_view_rentals.html"
                     class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl bg-indigo-600/10 text-indigo-400 font-bold border border-indigo-500/20 transition-all font-semibold">
@@ -72,8 +70,7 @@
         <main class="flex-1 overflow-y-auto bg-slate-50 relative">
             <header class="sticky top-0 glass z-10 px-10 py-6 border-b border-slate-200/50">
                 <div class="animate-fade-in">
-                    <h2 class="text-3xl font-black text-slate-900 tracking-tight">Rental <span
-                            class="text-indigo-600">Archives</span></h2>
+                    <h2 class="text-3xl font-black text-slate-900 tracking-tight">Rental <span class="text-indigo-600">Archives</span></h2>
                 </div>
             </header>
 
@@ -81,21 +78,20 @@
                 <div class="glass rounded-[2rem] overflow-hidden border-slate-100 shadow-sm">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr
-                                class="bg-slate-900/5 text-slate-500 uppercase text-[10px] font-black tracking-widest text-center">
+                            <tr class="bg-slate-900/5 text-slate-500 uppercase text-[10px] font-black tracking-widest text-center">
                                 <th class="px-8 py-5 text-left">Customer Information</th>
                                 <th class="px-8 py-5 text-left">Asset Details</th>
                                 <th class="px-8 py-5">Duration</th>
                                 <th class="px-8 py-5">Accounting</th>
+                                <th class="px-8 py-5">Collection</th>
                                 <th class="px-8 py-5">Operations</th>
                             </tr>
                         </thead>
                         <tbody id="rentalsTableBody" class="divide-y divide-slate-100">
                             <tr>
-                                <td colspan="5" class="py-24 text-center">
+                                <td colspan="6" class="py-24 text-center">
                                     <i class="fas fa-database fa-spin text-indigo-500 text-3xl mb-4"></i>
-                                    <p class="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Accessing
-                                        Historical Data...</p>
+                                    <p class="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Accessing Historical Data...</p>
                                 </td>
                             </tr>
                         </tbody>
@@ -139,11 +135,24 @@
         function renderRentals(rentals) {
             const body = document.getElementById("rentalsTableBody");
             if (rentals.length === 0) {
-                body.innerHTML = `<tr><td colspan="5" class="py-20 text-center text-slate-400 font-bold">No rental records found in archives.</td></tr>`;
+                body.innerHTML = `<tr><td colspan="6" class="py-20 text-center text-slate-400 font-bold">No rental records found in archives.</td></tr>`;
                 return;
             }
 
-            body.innerHTML = rentals.map(rental => `
+            body.innerHTML = rentals.map(rental => {
+                const isDelivery = rental.deliveryOption === 'delivery';
+                const collectionCell = isDelivery
+                    ? `<div>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-violet-100 text-violet-700 rounded-full text-[10px] font-black uppercase tracking-widest border border-violet-200">
+                            <i class="fas fa-truck-fast text-[9px]"></i> Delivery
+                        </span>
+                        ${rental.deliveryAddress ? `<p class="text-[10px] text-slate-500 font-bold mt-1.5 max-w-[140px] truncate" title="${rental.deliveryAddress}">${rental.deliveryAddress}</p>` : ''}
+                       </div>`
+                    : `<span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-100 text-emerald-700 rounded-full text-[10px] font-black uppercase tracking-widest border border-emerald-200">
+                            <i class="fas fa-building text-[9px]"></i> Pickup
+                       </span>`;
+
+                return `
                 <tr class="group hover:bg-slate-50/50 transition-colors">
                     <td class="px-8 py-6">
                         <div>
@@ -161,13 +170,16 @@
                         <span class="px-2 py-1 bg-slate-100 text-slate-600 rounded-lg text-xs font-black uppercase tracking-tight">${rental.rentalDays} Days</span>
                     </td>
                     <td class="px-8 py-6 text-center">
-                        <p class="text-sm font-black text-indigo-600">Ksh ${rental.cost}</p>
+                        <p class="text-sm font-black text-indigo-600">Ksh ${(rental.cost || 0).toLocaleString()}</p>
+                        <p class="text-[10px] text-slate-400 font-bold">Dep: Ksh ${(rental.depositPaid || 0).toLocaleString()}</p>
                     </td>
+                    <td class="px-8 py-6 text-center">${collectionCell}</td>
                     <td class="px-8 py-6 text-center">
                         <button onclick="cancelRental(${rental.id})" class="px-4 py-2 bg-rose-50 text-rose-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-rose-100 hover:bg-rose-500 hover:text-white transition-all active:scale-95">Purge</button>
                     </td>
                 </tr>
-            `).join("");
+            `;
+            }).join("");
         }
 
         async function cancelRental(rentalId) {

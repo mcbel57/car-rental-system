@@ -28,6 +28,19 @@ export const verifyToken = (req, res, next) => {
     }
 };
 
+// ✅ Middleware to Verify Customer Access
+export const verifyCustomer = (req, res, next) => {
+    try {
+        if (!req.user || (req.user.role !== "customer" && req.user.role !== "admin")) {
+            return res.status(403).json({ error: "Access denied. Customers only." });
+        }
+        next();
+    } catch (error) {
+        console.error("❌ Customer Verification Error:", error);
+        res.status(500).json({ error: "Server error" });
+    }
+};
+
 // ✅ Middleware to Verify Admin Access
 export const verifyAdmin = (req, res, next) => {
     try {

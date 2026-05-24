@@ -27,8 +27,6 @@ export const getAllCars = async (req, res) => {
             color: car.color,
             vehicleType: car.vehicleType,
             costPerDay: car.costPerDay,
-            isAvailableForLease: car.isAvailableForLease,
-            weeklyLeaseCost: car.weeklyLeaseCost,
             image: formatImage(car.image)
         }));
 

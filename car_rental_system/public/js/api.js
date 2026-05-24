@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = "http://localhost:5002/api";
 
 // Function to send registration data to backend
 async function registerUser(userData) {

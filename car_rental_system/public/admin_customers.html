@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Directory | Makbel Car Rentals Control</title>
+    <title>Customer Directory | Makbel Car Rentals Control</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/modern.css">
@@ -24,33 +24,33 @@
                 <h1 class="text-2xl font-black tracking-tight">Makbel Car Rentals <span class="text-indigo-500">HQ</span></h1>
             </div>
 
-            <nav class="flex-1 px-4 space-y-1.5 mt-4">
+            
+            <nav class="flex-1 px-4 space-y-1.5 mt-4 overflow-y-auto custom-scrollbar">
                 <a href="admin_dashboard.html"
                     class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
                     <i class="fas fa-th-large text-lg"></i>
                     <span>Overview</span>
                 </a>
-                <div class="pt-6 pb-2 px-4 uppercase text-[10px] font-black tracking-widest text-slate-500">Management
-                </div>
+                <div class="pt-6 pb-2 px-4 uppercase text-[10px] font-black tracking-widest text-slate-500">Management</div>
+                <a href="admin_customers.html"
+                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl bg-indigo-600/10 text-indigo-400 font-bold border border-indigo-500/20 transition-all font-semibold">
+                    <i class="fas fa-users text-lg"></i>
+                    <span>Customer Directory</span>
+                </a>
+                <a href="admin_drivers.html"
+                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
+                    <i class="fas fa-user-tie text-lg"></i>
+                    <span>Approved Drivers</span>
+                </a>
+                <a href="admin_driver_management.html"
+                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
+                    <i class="fas fa-id-card text-lg"></i>
+                    <span>Driver Vetting</span>
+                </a>
                 <a href="admin_cars.html"
                     class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
                     <i class="fas fa-car-side text-lg"></i>
                     <span>Fleet Control</span>
-                </a>
-                <a href="admin_manage_cars.html"
-                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
-                    <i class="fas fa-plus-circle text-lg"></i>
-                    <span>Add New Vehicle</span>
-                </a>
-                <a href="admin_view_leases.html"
-                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
-                    <i class="fas fa-file-contract text-lg"></i>
-                    <span>Lease Pipeline</span>
-                </a>
-                <a href="admin_verifications.html"
-                    class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
-                    <i class="fas fa-id-card text-lg"></i>
-                    <span>Driver Vetting</span>
                 </a>
                 <a href="admin_view_rentals.html"
                     class="flex items-center space-x-3 py-3.5 px-4 rounded-2xl text-slate-400 hover:bg-white/5 hover:text-white transition-all font-semibold">
@@ -58,6 +58,7 @@
                     <span>Rental History</span>
                 </a>
             </nav>
+
 
             <div class="p-6">
                 <button id="logoutBtn"
@@ -68,7 +69,7 @@
             </div>
         </aside>
 
-        <!-- 👥 User Directory -->
+        <!-- 👥 Customer Directory -->
         <main class="flex-1 overflow-y-auto bg-slate-50 relative">
             <header class="sticky top-0 glass z-10 px-10 py-6 border-b border-slate-200/50">
                 <div class="animate-fade-in">
@@ -121,7 +122,7 @@
 
         async function fetchUsers() {
             try {
-                const response = await fetch("/api/admin/users", {
+                const response = await fetch("/api/admin/customers", {
                     method: "GET",
                     headers: { "Authorization": "Bearer " + token }
                 });
@@ -131,7 +132,7 @@
                 const users = await response.json();
                 renderUsers(users);
             } catch (error) {
-                console.error("User Directory Sync Error:", error);
+                console.error("Customer Directory Sync Error:", error);
                 Toast.error("Identity synchronization failed");
             }
         }
@@ -172,7 +173,7 @@
 
             try {
                 Toast.info("Executing deauthorization...");
-                const response = await fetch(`/api/admin/users/${userId}`, {
+                const response = await fetch(`/api/admin/customers/${userId}`, {
                     method: "DELETE",
                     headers: { "Authorization": "Bearer " + token }
                 });

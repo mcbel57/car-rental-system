@@ -1,22 +1,90 @@
 import express from "express";
-import { verifyToken, verifyAdminToken, verifyAdmin } from "../middleware/authMiddleware.js";
+import { Op } from "sequelize";
+import { verifyToken, verifyAdminToken, verifyAdmin, verifyCustomer } from "../middleware/authMiddleware.js";
 import Rental from "../models/Rental.js";
 import Car from "../models/Car.js";
 import User from "../models/User.js";
 import rentalController from "../controllers/rentalController.js"; // ✅ Named import
-import db from "../config/db.js";  // ✅ Import database connection
 
 
 
 const router = express.Router();
 
 // ✅ Create a new rental
-router.post("/", verifyToken, async (req, res) => {
+router.post("/", verifyToken, verifyCustomer, async (req, res) => {
     try {
-        const { carId, startDate, endDate, totalCost } = req.body;
-        const userId = req.user.id;
+        const { carId, rentalDate, rentalDays, cost } = req.body;
+        const userId = req.user.userId;
 
-        const newRental = await Rental.create({ userId, carId, startDate, endDate, totalCost });
+        if (!carId || !rentalDate || !rentalDays || !cost) {
+            return res.status(400).json({ error: "carId, rentalDate, rentalDays, and cost are required." });
+        }
+
+        const parsedRentalDays = parseInt(rentalDays, 10);
+        if (isNaN(parsedRentalDays) || parsedRentalDays < 1 || parsedRentalDays > 30) {
+            return res.status(400).json({ error: "rentalDays must be a number between 1 and 30." });
+        }
+
+        const bookingDate = new Date(rentalDate);
+        if (Number.isNaN(bookingDate.getTime())) {
+            return res.status(400).json({ error: "Invalid rentalDate format." });
+        }
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (bookingDate < today) {
+            return res.status(400).json({ error: "Rental date cannot be in the past." });
+        }
+
+        const requestedEnd = new Date(rentalDate);
+        requestedEnd.setDate(requestedEnd.getDate() + parsedRentalDays - 1);
+        const requestedEndDateString = requestedEnd.toISOString().split("T")[0];
+
+        const existingRentals = await Rental.findAll({
+            where: {
+                carId,
+                status: { [Op.not]: "cancelled" },
+                rentalDate: { [Op.lte]: requestedEndDateString }
+            }
+        });
+
+        for (const existingRental of existingRentals) {
+            const existingStart = new Date(existingRental.rentalDate);
+            const existingEnd = new Date(existingRental.rentalDate);
+            existingEnd.setDate(existingEnd.getDate() + existingRental.rentalDays - 1);
+
+            if (existingEnd >= bookingDate && existingStart <= requestedEnd) {
+                return res.status(409).json({ error: "This car is already booked for the selected dates." });
+            }
+        }
+
+        const car = await Car.findByPk(carId);
+        if (!car) {
+            return res.status(404).json({ error: "Car not found." });
+        }
+
+        const user = await User.findByPk(userId);
+        if (!user) {
+            return res.status(404).json({ error: "User not found." });
+        }
+
+        const fullName = `${user.firstName} ${user.lastName}`;
+        const idNumber = user.idNumber;
+
+        const newRental = await Rental.create({
+            userId,
+            carId,
+            carName: car.carName,
+            fullName,
+            idNumber,
+            rentalDate,
+            rentalDays: parsedRentalDays,
+            cost: parseFloat(cost),
+            status: "active",
+            paymentStatus: "pending"
+        });
+
         res.status(201).json({ message: "Rental created successfully", rental: newRental });
     } catch (error) {
         res.status(500).json({ error: "Error creating rental: " + error.message });

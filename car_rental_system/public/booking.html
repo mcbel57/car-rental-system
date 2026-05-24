@@ -17,7 +17,7 @@
     <header class="glass fixed top-0 left-0 w-full z-50 border-b border-slate-200/50">
         <div class="max-w-7xl mx-auto px-6 lg:px-10 py-5 flex justify-between items-center">
             <div class="flex items-center space-x-2">
-                <a href="user_dashboard.html" class="flex items-center space-x-2">
+                <a href="customer_dashboard.html" class="flex items-center space-x-2">
                     <div
                         class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg transform rotate-12 transition-transform hover:rotate-0">
                         <i class="fas fa-car text-white"></i>
@@ -29,7 +29,7 @@
 
             <nav class="flex items-center space-x-8">
                 <ul class="flex space-x-6 text-slate-500 font-bold text-xs uppercase tracking-widest">
-                    <li><a href="user_dashboard.html" class="hover:text-indigo-600 transition-colors">Fleet</a></li>
+                    <li><a href="customer_dashboard.html" class="hover:text-indigo-600 transition-colors">Fleet</a></li>
                     <li><a href="bookings.html" class="hover:text-indigo-600 transition-colors">Bookings</a></li>
                 </ul>
                 <button onclick="localStorage.clear(); window.location.href='login.html';"
@@ -94,7 +94,7 @@
                     </div>
                 </div>
                 <div class="space-y-1.5">
-                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Lease Duration
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Rental Duration
                         (Days)</label>
                     <div class="relative">
                         <i class="fas fa-hourglass-half absolute left-5 top-1/2 -translate-y-1/2 text-indigo-500"></i>
@@ -121,6 +121,69 @@
                         <p class="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-1">Due Now (50%)</p>
                         <p class="text-xl font-black text-emerald-700">Ksh <span id="displayDeposit">0</span></p>
                     </div>
+                </div>
+
+                <!-- 🔴 Non-Refundable Notice -->
+                <div class="flex items-start space-x-3 bg-red-50 border border-red-200 p-5 rounded-2xl">
+                    <div class="w-8 h-8 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <i class="fas fa-triangle-exclamation text-red-500 text-xs"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-black text-red-700 uppercase tracking-wider mb-1">Non-Refundable Deposit</p>
+                        <p class="text-xs text-red-600 leading-relaxed">The <strong>50% upfront deposit is strictly non-refundable</strong> once payment is confirmed. Please ensure your booking details are correct before proceeding.</p>
+                    </div>
+                </div>
+
+                <!-- 🚗 Collection Preference -->
+                <div class="space-y-3">
+                    <label class="block text-[10px] font-black text-slate-700 uppercase tracking-widest ml-1">Collection Preference</label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <label id="card-pickup" class="cursor-pointer group" onclick="setDelivery('pickup')">
+                            <input type="radio" name="deliveryOption" id="opt-pickup" value="pickup" class="sr-only" checked>
+                            <div class="p-5 rounded-2xl border-2 border-indigo-500 bg-indigo-50/50 transition-all">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <div class="w-8 h-8 bg-indigo-100 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-building text-indigo-600 text-xs"></i>
+                                    </div>
+                                    <span class="font-black text-slate-800 text-sm">Self-Pickup</span>
+                                </div>
+                                <p class="text-[10px] text-slate-500 font-bold">Come collect the vehicle from our Nairobi office.</p>
+                                <p class="text-xs font-black text-emerald-600 mt-2">FREE</p>
+                            </div>
+                        </label>
+                        <label id="card-delivery" class="cursor-pointer group" onclick="setDelivery('delivery')">
+                            <input type="radio" name="deliveryOption" id="opt-delivery" value="delivery" class="sr-only">
+                            <div class="p-5 rounded-2xl border-2 border-slate-200 bg-white transition-all">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <div class="w-8 h-8 bg-violet-100 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-truck-fast text-violet-600 text-xs"></i>
+                                    </div>
+                                    <span class="font-black text-slate-800 text-sm">Home / Office Delivery</span>
+                                </div>
+                                <p class="text-[10px] text-slate-500 font-bold">We bring the vehicle to your location.</p>
+                                <p class="text-xs font-black text-violet-600 mt-2">+ Ksh 1,000</p>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- Delivery Address (hidden unless delivery selected) -->
+                    <div id="deliveryAddressWrap" class="hidden space-y-1.5">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Delivery Address</label>
+                        <div class="relative">
+                            <i class="fas fa-location-dot absolute left-5 top-1/2 -translate-y-1/2 text-violet-500"></i>
+                            <input type="text" id="deliveryAddress" name="deliveryAddress" placeholder="Enter your full address..."
+                                class="w-full pl-12 pr-5 py-3.5 bg-white border border-violet-200 rounded-2xl focus:ring-2 focus:ring-violet-400 outline-none transition-all shadow-sm font-semibold">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-indigo-50/50 p-6 rounded-3xl border border-indigo-100 space-y-3">
+                    <label class="block text-[10px] font-black text-indigo-950 px-1 uppercase tracking-wider">Upload National ID Photo</label>
+                    <div class="relative group">
+                        <input type="file" id="licensePhoto" name="licensePhoto" required accept="image/*"
+                            class="w-full px-5 py-3.5 bg-white border border-indigo-200 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none shadow-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                    </div>
+                    <p class="text-[10px] text-indigo-600 font-bold uppercase tracking-widest ml-1">AI-assisted Identity verification happens instantly</p>
                 </div>
 
                 <div class="space-y-1.5">
@@ -170,7 +233,7 @@
 
         if (!carId) {
             Toast.error("Asset reference missing");
-            setTimeout(() => window.location.href = "user_dashboard.html", 1500);
+            setTimeout(() => window.location.href = "customer_dashboard.html", 1500);
         } else {
             document.getElementById("carId").value = carId;
             fetchCarInfo(carId);
@@ -192,55 +255,83 @@
         }
 
         // Live calculation
-        document.getElementById("rentalDays").addEventListener("input", function () {
-            const days = parseInt(this.value) || 0;
-            const total = days * ratePerDay;
+        let deliveryMode = 'pickup'; // track current delivery selection
+        const DELIVERY_FEE = 1000;
+
+        function setDelivery(mode) {
+            deliveryMode = mode;
+
+            // Update card styles
+            const pickupCard = document.getElementById('card-pickup').querySelector('div');
+            const deliveryCard = document.getElementById('card-delivery').querySelector('div');
+
+            if (mode === 'pickup') {
+                pickupCard.classList.replace('border-slate-200', 'border-indigo-500');
+                pickupCard.classList.add('bg-indigo-50/50');
+                deliveryCard.classList.replace('border-indigo-500', 'border-slate-200');
+                deliveryCard.classList.remove('bg-indigo-50/50');
+                document.getElementById('deliveryAddressWrap').classList.add('hidden');
+                document.getElementById('deliveryAddress').removeAttribute('required');
+            } else {
+                deliveryCard.classList.replace('border-slate-200', 'border-indigo-500');
+                deliveryCard.classList.add('bg-indigo-50/50');
+                pickupCard.classList.replace('border-indigo-500', 'border-slate-200');
+                pickupCard.classList.remove('bg-indigo-50/50');
+                document.getElementById('deliveryAddressWrap').classList.remove('hidden');
+                document.getElementById('deliveryAddress').setAttribute('required', 'required');
+            }
+
+            // Recalculate totals
+            recalculate();
+        }
+
+        function recalculate() {
+            const days = parseInt(document.getElementById("rentalDays").value) || 0;
+            const base = days * ratePerDay;
+            const total = base + (deliveryMode === 'delivery' ? DELIVERY_FEE : 0);
             const deposit = total * 0.5;
             document.getElementById("displayTotal").innerText = total.toLocaleString();
             document.getElementById("displayDeposit").innerText = deposit.toLocaleString();
-        });
+        }
+
+        document.getElementById("rentalDays").addEventListener("input", recalculate);
 
         
 
         
 
                 // Submit Booking and Initiate STK Push
-        document.getElementById("bookingForm").addEventListener("submit", async (e) => {
+        document.getElementById("bookingForm").addEventListener("submit", async function (e) {
             e.preventDefault();
             
             const days = parseInt(document.getElementById("rentalDays").value);
-            const totalCost = days * ratePerDay;
+            const baseCost = days * ratePerDay;
+            const totalCost = baseCost + (deliveryMode === 'delivery' ? DELIVERY_FEE : 0);
             const deposit = totalCost * 0.5;
             const mpesaNumber = document.getElementById("mpesaNumber").value;
+            const deliveryAddress = document.getElementById("deliveryAddress").value;
 
-            const payload = {
-                carId,
-                userId: user.id,
-                carName: document.getElementById("carName").value,
-                fullName: `${user.firstName} ${user.lastName}`,
-                idNumber: user.idNumber,
-                rentalDate: document.getElementById("rentalDate").value,
-                rentalDays: days,
-                cost: totalCost,
-                depositPaid: deposit,
-                paymentStatus: 'pending' // Initially pending until STK Push callback returns success
-            };
+            const formData = new FormData(this);
+            formData.set("cost", totalCost);
+            formData.set("depositPaid", deposit);
+            formData.set("paymentStatus", "pending");
+            formData.set("deliveryOption", deliveryMode);
+            if (deliveryMode === 'delivery') formData.set("deliveryAddress", deliveryAddress);
 
             const btn = document.querySelector('button[type="submit"]');
             const originalText = btn.innerHTML;
             
             try {
-                btn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> Initializing Booking...';
+                btn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> Initializing Booking & OCR Check...';
                 btn.disabled = true;
 
-                // 1. Create the pending Booking Record
+                // 1. Create the pending Booking Record (multipart with file upload & AI OCR scan)
                 const response = await fetch("/api/bookings", {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json",
                         "Authorization": `Bearer ${token}`,
                     },
-                    body: JSON.stringify(payload),
+                    body: formData,
                 });
 
                 if (!response.ok) {
@@ -273,41 +364,85 @@
                 if (stkResponse.ok) {
                     const stkData = await stkResponse.json();
                     const checkoutReqId = stkData.checkoutRequestId;
+                    const rentalId = resData.rentalId;
 
-                    Toast.success("Prompt sent! Provide PIN on your phone.");
-                    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Awaiting Approval...';
+                    Toast.success("M-Pesa prompt sent! Enter your PIN on your phone.");
 
+                    // Change button to "I've Paid" manual confirmation
+                    btn.innerHTML = '<i class="fas fa-mobile-alt fa-beat mr-2"></i> Enter PIN on Phone, then click here';
+                    btn.disabled = false;
+                    btn.classList.remove('btn-premium');
+                    btn.classList.add('bg-emerald-600', 'text-white', 'hover:bg-emerald-700');
+
+                    // Track if confirmed already (avoid double redirect)
+                    let confirmed = false;
+
+                    async function confirmPayment() {
+                        if (confirmed) return;
+                        confirmed = true;
+                        clearInterval(pollInterval);
+
+                        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> Confirming...';
+                        btn.disabled = true;
+
+                        try {
+                            const confirmRes = await fetch(`/api/payment/confirm/${rentalId}`, {
+                                method: "POST",
+                                headers: { "Authorization": `Bearer ${token}` }
+                            });
+
+                            const confirmData = await confirmRes.json();
+
+                            if (confirmRes.ok && confirmData.success) {
+                                btn.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Confirmed!';
+                                Toast.success("Booking confirmed! Redirecting...");
+                                setTimeout(() => window.location.href = "bookings.html", 2000);
+                            } else {
+                                confirmed = false;
+                                btn.innerHTML = '<i class="fas fa-mobile-alt fa-beat mr-2"></i> Enter PIN on Phone, then click here';
+                                btn.disabled = false;
+                                Toast.error(confirmData.message || "Payment not verified. Please complete payment on your phone.");
+                            }
+                        } catch (err) {
+                            confirmed = false;
+                            btn.disabled = false;
+                            Toast.error("Network error. Please try again.");
+                        }
+                    }
+
+                    // Clicking the button manually confirms payment
+                    btn.onclick = confirmPayment;
+
+                    // Background polling still runs — auto-confirms if real callback arrives
                     let pollAttempts = 0;
                     const pollInterval = setInterval(async () => {
                         pollAttempts++;
-                        if (pollAttempts > 25) { // Timeout after 75s
+                        if (pollAttempts > 30 || confirmed) {
                             clearInterval(pollInterval);
-                            Toast.error("Request timed out or ignored. Pay later.");
-                            window.location.href = "bookings.html";
                             return;
                         }
-
                         try {
                             const statusRes = await fetch(`/api/payment/status/${checkoutReqId}`, {
                                 headers: { "Authorization": `Bearer ${token}` }
                             });
-                            
                             if (statusRes.ok) {
                                 const statusData = await statusRes.json();
-                                if (statusData.status === 'paid') {
+                                if (statusData.status === 'paid' && !confirmed) {
+                                    confirmed = true;
                                     clearInterval(pollInterval);
+                                    btn.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Automatically Confirmed!';
                                     Toast.success("Payment Received & Confirmed!");
-                                    btn.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Verified';
-                                    btn.classList.add('bg-emerald-500', 'text-white'); // Optional visual cue
-                                    setTimeout(() => window.location.href = "bookings.html", 3000);
+                                    setTimeout(() => window.location.href = "bookings.html", 2000);
                                 } else if (statusData.status === 'failed') {
                                     clearInterval(pollInterval);
-                                    Toast.error("Payment Failed or Canceled.");
-                                    btn.innerHTML = 'Complete Transaction';
+                                    Toast.error("Payment was declined. Please try again.");
+                                    btn.innerHTML = originalText;
+                                    btn.classList.add('btn-premium');
+                                    btn.classList.remove('bg-emerald-600', 'text-white', 'hover:bg-emerald-700');
                                     btn.disabled = false;
                                 }
                             }
-                        } catch(e) { console.error("Poll err:", e); }
+                        } catch(e) { /* silent */ }
                     }, 3000);
 
                 } else {

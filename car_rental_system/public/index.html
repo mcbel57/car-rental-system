@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Makbel Car Rentals | Premium Car Rental & Leasing</title>
+    <title>Makbel Car Rentals | Premium Car Rental</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
@@ -30,7 +30,7 @@
             <nav id="navLinks" class="hidden md:flex items-center space-x-8 text-slate-600 font-semibold">
                 <a href="#about" class="hover:text-indigo-600 transition-colors">About</a>
                 <a href="#contact" class="hover:text-indigo-600 transition-colors">Contact</a>
-                <a href="user_form.html" class="px-4 py-2 text-slate-700 hover:text-indigo-600 transition-colors">Sign
+                <a href="customer_register.html" class="px-4 py-2 text-slate-700 hover:text-indigo-600 transition-colors">Sign
                     Up</a>
                 <a href="login.html"
                     class="px-6 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-all shadow-md active:scale-95">Sign
@@ -46,11 +46,10 @@
             const navLinks = document.getElementById("navLinks");
 
             if (token && user) {
-                let dashboardLink = "user_dashboard.html";
+                let dashboardLink = "customer_dashboard.html";
                 let dashboardText = "Dashboard";
 
                 if (user.role === "admin") dashboardLink = "admin_dashboard.html";
-                else if (user.role === "driver") dashboardLink = "driver_dashboard.html";
 
                 navLinks.innerHTML = `
                     <a href="#about" class="hover:text-indigo-600 transition-colors">About</a>
@@ -96,7 +95,7 @@
                 the keys to your aspirations.
             </p>
             <div class="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6">
-                <a href="user_form.html" class="btn-premium px-10 py-4 rounded-full text-lg font-bold w-full sm:w-auto">
+                <a href="customer_register.html" class="btn-premium px-10 py-4 rounded-full text-lg font-bold w-full sm:w-auto">
                     Get Started Now
                 </a>
                 <a href="#fleet"
@@ -115,69 +114,12 @@
                 Welcome to Makbel Car Rentals, your trusted partner in premium transportation. 
                 Our mission is to redefine your travel experience by offering a meticulously curated fleet 
                 of luxury, performance, and comfortable vehicles. Whether you're traveling for business, 
-                planning a weekend getaway, or seeking a reliable long-term lease, we are dedicated to providing 
+                planning a weekend getaway, or seeking a reliable long-term rental, we are dedicated to providing 
                 exceptional service, unbeatable flexibility, and journeys you'll never forget.
             </p>
         </div>
     </section>
 
-    <!-- 🚀 Driver Partner Section -->
-    <section class="py-24 bg-slate-100 relative overflow-hidden">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="grid md:grid-cols-2 gap-16 items-center">
-                <div class="animate-fade-in">
-                    <h2 class="text-4xl font-bold text-slate-900 mb-6 tracking-tight">Drive & Own Your <span
-                            class="text-indigo-600">Future.</span></h2>
-                    <p class="text-slate-600 text-lg mb-8 leading-relaxed">
-                        Join our exclusive driver ecosystem. Our taxi leasing program provides premium, well-maintained
-                        vehicles with flexible weekly rates designed to maximize your earnings.
-                    </p>
-                    <div class="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
-                        <a href="driver_register.html" class="btn-premium px-8 py-4 rounded-2xl font-bold text-center">
-                            Apply to Lease
-                        </a>
-                        <a href="#program"
-                            class="px-8 py-4 bg-white text-slate-700 rounded-2xl font-bold text-center border border-slate-200 hover:border-indigo-300 transition-all">
-                            Program Details
-                        </a>
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 gap-6">
-                    <div
-                        class="glass p-8 rounded-3xl border-indigo-100 transform hover:-translate-y-2 transition-all duration-300">
-                        <div
-                            class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mb-6">
-                            <i class="fas fa-hand-holding-dollar text-xl"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-2">High Earnings</h3>
-                        <p class="text-slate-500">Industry-leading weekly rates ensuring you keep more of what you earn.
-                        </p>
-                    </div>
-                    <div
-                        class="glass p-8 rounded-3xl border-emerald-100 transform hover:-translate-y-2 transition-all duration-300">
-                        <div
-                            class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mb-6">
-                            <i class="fas fa-shield-halved text-xl"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-2">Comprehensive Cover</h3>
-                        <p class="text-slate-500">Don't sweat the small stuff. Insurance and maintenance are on us.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 🚀 Driver Program Details Section -->
-    <section id="program" class="py-24 bg-slate-50 border-t border-slate-200">
-        <div class="max-w-5xl mx-auto px-6 text-center">
-            <h2 class="text-4xl font-bold text-slate-900 mb-6 tracking-tight">Taxi Leasing <span class="text-indigo-600">Program Details</span></h2>
-            <p class="text-lg text-slate-600 leading-relaxed mb-8">
-                Our leasing program is built specifically for gig-economy drivers who want to elevate their earning potential. We provide top-tier, fuel-efficient vehicles on flexible weekly plans. 
-                With zero upfront maintenance costs and comprehensive insurance included, you can focus on the road ahead. Our partners enjoy priority support and performance-based bonuses!
-            </p>
-            <a href="driver_register.html" class="btn-premium px-10 py-4 rounded-full text-lg font-bold">Start Your Journey Today</a>
-        </div>
-    </section>
 
     <!-- 🚀 Featured Fleet Section -->
     <section id="fleet" class="py-24 bg-white">

@@ -23,7 +23,19 @@ export default class Rental extends Model {
                     type: DataTypes.FLOAT,
                     defaultValue: 0,
                 },
+                checkoutRequestId: {
+                    type: DataTypes.STRING,
+                    allowNull: true,
+                },
                 cost: { type: DataTypes.FLOAT, allowNull: false },
+                deliveryOption: {
+                    type: DataTypes.ENUM("pickup", "delivery"),
+                    defaultValue: "pickup"
+                },
+                deliveryAddress: {
+                    type: DataTypes.STRING,
+                    allowNull: true
+                }
             },
             {
                 sequelize,

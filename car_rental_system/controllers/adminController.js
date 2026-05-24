@@ -16,7 +16,7 @@ export const addCar = async (req, res) => {
             return res.status(400).json({ error: "Image is required" });
         }
 
-        const { carName, description, color, vehicleType, hireCost, isAvailableForLease, weeklyLeaseCost } = req.body;
+        const { carName, description, color, vehicleType, hireCost } = req.body;
 
         if (!carName || !description || !color || !vehicleType || !hireCost) {
             return res.status(400).json({ error: "All fields are required, including the image." });
@@ -28,9 +28,7 @@ export const addCar = async (req, res) => {
             color,
             vehicleType,
             costPerDay: hireCost,
-            image: req.file.buffer, // ✅ Store image as buffer in DB
-            isAvailableForLease: isAvailableForLease === 'true' || isAvailableForLease === 'on' || isAvailableForLease === true,
-            weeklyLeaseCost: weeklyLeaseCost ? parseFloat(weeklyLeaseCost) : null
+            image: req.file.buffer // ✅ Store image as buffer in DB
         });
 
         res.status(201).json({ message: "Car added successfully", car: newCar });
@@ -71,7 +69,7 @@ export const verifyDriver = async (req, res) => {
         user.driverStatus = status;
         if (status === "approved") {
             user.role = "driver";
-            user.notification = "Your driving license has been verified! You can now start leasing cars.";
+            user.notification = "Your driving license has been verified. You may now access the platform features.";
         } else {
             user.notification = "Your driving license verification was rejected. Please re-upload a clear image.";
         }

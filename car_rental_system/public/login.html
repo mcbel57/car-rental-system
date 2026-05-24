@@ -25,7 +25,7 @@
                 </a>
             </div>
             <nav class="flex space-x-6 text-slate-600 font-semibold text-sm">
-                <a href="user_form.html" class="hover:text-indigo-600">Sign Up</a>
+                <a href="customer_register.html" class="hover:text-indigo-600">Sign Up</a>
                 <a href="login.html" class="text-indigo-600">Sign In</a>
             </nav>
         </div>
@@ -45,7 +45,7 @@
                         class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 group-focus-within:text-indigo-500 transition-colors">
                         <i class="fas fa-envelope"></i>
                     </span>
-                    <input type="email" id="email" name="email" placeholder="john@example.com" required
+                    <input type="email" id="email" name="email" placeholder="john@example.com" required autocomplete="off"
                         class="w-full pl-11 pr-4 py-3 bg-white/50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none">
                 </div>
             </div>
@@ -72,54 +72,73 @@
 
             <p class="text-center text-sm text-slate-500">
                 Don't have an account?
-                <a href="user_form.html" class="text-indigo-600 font-bold hover:underline">Create one</a>
+                <a href="customer_register.html" class="text-indigo-600 font-bold hover:underline">Create one</a>
             </p>
         </form>
     </div>
 
     <script>
+        // Force clear fields on page load to prevent browser pre-filling
+        window.onload = () => {
+            document.getElementById("email").value = "";
+            document.getElementById("password").value = "";
+        };
+
+                // Enhanced login handling with validation and detailed error feedback
         document.getElementById("loginForm").addEventListener("submit", async function (event) {
             event.preventDefault();
 
-            const email = document.getElementById("email").value.trim();
-            const password = document.getElementById("password").value.trim();
+            const emailInput = document.getElementById("email");
+            const passwordInput = document.getElementById("password");
+            const email = emailInput.value.trim();
+            const password = passwordInput.value.trim();
+            const loginButton = document.querySelector("button[type='submit']");
+            const originalText = loginButton.innerText;
+
+            // Basic client‑side validation
+            if (!email || !password) {
+                Toast.error("Please provide both email and password.");
+                return;
+            }
+
+            // UI feedback while authenticating
+            loginButton.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> Authenticating...';
+            loginButton.disabled = true;
 
             try {
-                const loginButton = document.querySelector("button[type='submit']");
-                const originalText = loginButton.innerText;
-                loginButton.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> Authenticating...';
-                loginButton.disabled = true;
-
                 const response = await fetch("/api/auth/login", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ email, password })
                 });
 
+                // Attempt to parse JSON regardless of status to capture server‑provided messages
                 const data = await response.json();
 
                 if (!response.ok) {
-                    throw new Error(data.error || "Login failed");
+                    // Server returned an error (e.g., invalid credentials)
+                    const serverMsg = data.error || "Login failed";
+                    throw new Error(serverMsg);
                 }
 
+                // Successful login – store credentials
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("user", JSON.stringify(data.user));
+                Toast.success(`Welcome back, ${data.user.firstName}!`);
 
-                Toast.success("Welcome back, " + data.user.firstName + "!");
-
+                // Redirect if server supplied a path, otherwise stay on page
                 if (data.redirectTo) {
                     setTimeout(() => window.location.href = data.redirectTo, 1500);
                 } else {
-                    Toast.error("No redirect path provided.");
-                    loginButton.innerText = originalText;
-                    loginButton.disabled = false;
+                    Toast.warn("No redirect path provided. You are now logged in.");
                 }
-
             } catch (error) {
+                // Network error or thrown server error
                 console.error("❌ Login Error:", error);
-                Toast.error(error.message);
-                const loginButton = document.querySelector("button[type='submit']");
-                loginButton.innerText = "Sign In";
+                Toast.error(error.message || "Unable to connect to server");
+            } finally {
+                // Always reset button UI
+                loginButton.innerHTML = originalText;
                 loginButton.disabled = false;
             }
         });
