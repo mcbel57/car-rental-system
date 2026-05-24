@@ -117,23 +117,19 @@
                 row.className = "group hover:bg-white transition-colors duration-300";
                 
                 // Determine status styling
-                const isPending = booking.paymentStatus === 'pending' && booking.status === 'pending';
                 const isPaid = booking.paymentStatus === 'paid' && booking.status === 'active';
+                const isPending = !isPaid;
                 
-                let statusBg = 'bg-amber-50';
-                let statusText = 'text-amber-600';
-                let statusBorder = 'border-amber-100';
-                let rowBg = '';
+                let statusBg = 'bg-red-50';
+                let statusText = 'text-red-600';
+                let statusBorder = 'border-red-100';
+                let rowBg = 'bg-red-50/30';
                 
-                if (isPending) {
-                    statusBg = 'bg-red-50';
-                    statusText = 'text-red-600';
-                    statusBorder = 'border-red-100';
-                    rowBg = 'bg-red-50/30';
-                } else if (isPaid) {
+                if (isPaid) {
                     statusBg = 'bg-emerald-50';
                     statusText = 'text-emerald-600';
                     statusBorder = 'border-emerald-100';
+                    rowBg = '';
                 }
 
                 row.innerHTML = `
@@ -159,7 +155,7 @@
                             <p class="text-lg font-black text-indigo-600 leading-none">Ksh ${booking.cost.toLocaleString()}</p>
                             <div class="flex items-center justify-center space-x-2">
                                 <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Deposit: Ksh ${booking.depositPaid || 0}</span>
-                                <span class="px-2 py-0.5 ${statusBg} ${statusText} rounded text-[8px] font-black uppercase tracking-widest border ${statusBorder}">${isPending ? 'PAYMENT PENDING' : booking.paymentStatus.toUpperCase()}</span>
+                                <span class="px-2 py-0.5 ${statusBg} ${statusText} rounded text-[8px] font-black uppercase tracking-widest border ${statusBorder}">${isPaid ? 'PAID' : 'PAYMENT PENDING'}</span>
                             </div>
                         </div>
                     </td>

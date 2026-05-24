@@ -127,14 +127,12 @@ export const confirmRentalPayment = async (req, res) => {
         const verification = await verifySTKPayment(rental.checkoutRequestId, mpesaToken);
 
         if (!verification.apiReachable) {
-            // Network failure — we can't verify either way.
-            // Since STK was initiated, mark as paid and log for admin to reconcile.
-            console.warn(`⚠️  Safaricom unreachable for Rental #${rentalId}. Marking paid based on STK initiation. Admin should reconcile.`);
-            await rental.update({ paymentStatus: "paid", status: "active" });  // ✅ Activate after payment
-            if (paymentStatusCache[rental.checkoutRequestId]) {
-                paymentStatusCache[rental.checkoutRequestId].status = "paid";
-            }
-            return res.status(200).json({ success: true, message: "Payment recorded. Our team will verify shortly." });
+            // Network failure — do not mark payment as paid without confirmation.
+            console.warn(`⚠️  Safaricom unreachable for Rental #${rentalId}. Payment cannot be verified at this time.`);
+            return res.status(503).json({
+                success: false,
+                message: "Unable to verify payment with M-Pesa right now. Please try again in a few moments."
+            });
         }
 
         if (!verification.paid) {
