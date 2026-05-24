@@ -42,11 +42,11 @@ router.post("/", verifyToken, upload.single("licensePhoto"), async (req, res) =>
         const requestedEnd = new Date(rentalDate);
         requestedEnd.setDate(requestedEnd.getDate() + rentalDays - 1);
 
-        // 🛑 Check for date conflicts — any existing non-cancelled rental that overlaps
+        // 🛑 Check for date conflicts — only with ACTIVE (confirmed) rentals
         const existingRentals = await Rental.findAll({
             where: {
                 carId,
-                status: { [Op.not]: "cancelled" },
+                status: "active",  // ✅ Only check confirmed bookings
                 rentalDate: { [Op.lte]: requestedEnd.toISOString().split("T")[0] }
             }
         });
@@ -100,7 +100,7 @@ router.post("/", verifyToken, upload.single("licensePhoto"), async (req, res) =>
         // Calculate deposit server-side — 50% of total (includes delivery fee if applicable)
         const depositPaid = totalCost * 0.5;
 
-        // ✅ Create Booking
+        // ✅ Create Booking with PENDING status until payment confirmed
         const rental = await Rental.create({
             carId,
             userId,
@@ -112,7 +112,7 @@ router.post("/", verifyToken, upload.single("licensePhoto"), async (req, res) =>
             cost: totalCost,
             depositPaid,
             paymentStatus: paymentStatus || 'pending',
-            status: "active",
+            status: "pending",  // ✅ CHANGED: Start as pending, only activate after payment confirmed
             deliveryOption,
             deliveryAddress,
         });

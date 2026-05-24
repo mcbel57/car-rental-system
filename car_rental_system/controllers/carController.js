@@ -57,11 +57,12 @@ export const getAllCars = async (req, res) => {
         };
 
         const formattedCars = await Promise.all(cars.map(async (car) => {
-            // Get all non-cancelled rentals for this car
+            // Only get ACTIVE rentals (confirmed payments)
+            // Exclude pending (payment not yet confirmed) and cancelled
             const rentals = await db.Rental.findAll({ 
                 where: { 
                     carId: car.id, 
-                    status: { [db.Sequelize.Op.not]: "cancelled" }
+                    status: "active"  // ✅ Only block for confirmed bookings
                 },
                 attributes: ["rentalDate", "rentalDays"]
             });

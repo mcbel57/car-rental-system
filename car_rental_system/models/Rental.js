@@ -12,8 +12,8 @@ export default class Rental extends Model {
                 rentalDate: { type: DataTypes.DATEONLY, allowNull: false },
                 rentalDays: { type: DataTypes.INTEGER, allowNull: false },
                 status: {
-                    type: DataTypes.ENUM("active", "completed", "cancelled"),
-                    defaultValue: "active",
+                    type: DataTypes.ENUM("pending", "active", "completed", "cancelled"),  // ✅ Added "pending"
+                    defaultValue: "pending",  // ✅ Start as pending until payment confirmed
                 },
                 paymentStatus: {
                     type: DataTypes.ENUM("pending", "partial", "paid"),

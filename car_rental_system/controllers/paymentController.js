@@ -130,7 +130,7 @@ export const confirmRentalPayment = async (req, res) => {
             // Network failure — we can't verify either way.
             // Since STK was initiated, mark as paid and log for admin to reconcile.
             console.warn(`⚠️  Safaricom unreachable for Rental #${rentalId}. Marking paid based on STK initiation. Admin should reconcile.`);
-            await rental.update({ paymentStatus: "paid" });
+            await rental.update({ paymentStatus: "paid", status: "active" });  // ✅ Activate after payment
             if (paymentStatusCache[rental.checkoutRequestId]) {
                 paymentStatusCache[rental.checkoutRequestId].status = "paid";
             }
@@ -147,7 +147,7 @@ export const confirmRentalPayment = async (req, res) => {
         }
 
         // ✅ Safaricom confirmed payment
-        await rental.update({ paymentStatus: "paid" });
+        await rental.update({ paymentStatus: "paid", status: "active" });  // ✅ Activate only after verified payment
         if (paymentStatusCache[rental.checkoutRequestId]) {
             paymentStatusCache[rental.checkoutRequestId].status = "paid";
         }
@@ -266,11 +266,11 @@ export const stkCallback = async (req, res) => {
                  paymentStatusCache[checkoutReqId].status = 'paid';
              }
              
-             // Update the database (Rental)
+             // Update the database (Rental) - Mark as paid AND activate
              const rentalRecord = await Rental.findOne({ where: { checkoutRequestId: checkoutReqId } });
              if (rentalRecord) {
-                 await rentalRecord.update({ paymentStatus: 'paid' });
-                 console.log(`✅ Rental DB record #${rentalRecord.id} marked as 'paid'.`);
+                 await rentalRecord.update({ paymentStatus: 'paid', status: 'active' });  // ✅ Activate on confirmed payment
+                 console.log(`✅ Rental DB record #${rentalRecord.id} marked as 'paid' and activated.`);
              }
         }
 
