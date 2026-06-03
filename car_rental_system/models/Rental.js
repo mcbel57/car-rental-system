@@ -35,13 +35,51 @@ export default class Rental extends Model {
                 deliveryAddress: {
                     type: DataTypes.STRING,
                     allowNull: true
+                },
+                licenseNumber: {
+                    type: DataTypes.STRING,
+                    allowNull: true,
+                    comment: "Parsed license number from uploaded image"
+                },
+                ocrText: {
+                    type: DataTypes.TEXT,
+                    allowNull: true,
+                    comment: "Raw OCR text extracted from uploaded license image"
+                },
+                returnedDate: {
+                    type: DataTypes.DATEONLY,
+                    allowNull: true,
+                    comment: "Date when vehicle was returned by customer"
+                },
+                refundAmount: {
+                    type: DataTypes.FLOAT,
+                    defaultValue: 0,
+                    comment: "Refund issued for early termination or partial usage"
+                },
+                cancellationReason: {
+                    type: DataTypes.STRING(500),
+                    allowNull: true,
+                    comment: "Reason for cancellation/early termination"
+                },
+                penaltyCharged: {
+                    type: DataTypes.FLOAT,
+                    defaultValue: 0,
+                    comment: "Penalty for early termination"
+                },
+                createdAt: {
+                    type: DataTypes.DATE,
+                    defaultValue: DataTypes.NOW
+                },
+                updatedAt: {
+                    type: DataTypes.DATE,
+                    defaultValue: DataTypes.NOW
                 }
             },
             {
                 sequelize,
                 modelName: "Rental",
                 tableName: "Rentals",
-                timestamps: false,
+                timestamps: true,
             }
         );
     }

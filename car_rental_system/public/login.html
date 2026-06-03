@@ -126,9 +126,19 @@
                 localStorage.setItem("user", JSON.stringify(data.user));
                 Toast.success(`Welcome back, ${data.user.firstName}!`);
 
-                // Redirect if server supplied a path, otherwise stay on page
+                // Prefer redirect query param (e.g., booking.html?carId=123)
+                const urlParams = new URLSearchParams(window.location.search);
+                const requestedRedirect = urlParams.get('redirect');
+
+                if (requestedRedirect) {
+                    const dest = decodeURIComponent(requestedRedirect);
+                    setTimeout(() => window.location.href = dest, 800);
+                    return;
+                }
+
+                // Fallback to server-provided redirectTo
                 if (data.redirectTo) {
-                    setTimeout(() => window.location.href = data.redirectTo, 1500);
+                    setTimeout(() => window.location.href = data.redirectTo, 800);
                 } else {
                     Toast.warn("No redirect path provided. You are now logged in.");
                 }

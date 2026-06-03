@@ -12,7 +12,8 @@ dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const databasePath = path.join(__dirname, "database.sqlite");
+// Use a single consolidated DB at the project root
+const databasePath = path.join(__dirname, "..", "database.sqlite");
 
 const sequelize = new Sequelize({
     dialect: "sqlite",
@@ -42,7 +43,7 @@ Rental.belongsTo(Car, { foreignKey: "carId", as: "Car" });
 // ✅ Sync function to be called after initialization
 async function syncDatabase() {
     try {
-        await sequelize.sync({ alter: true });
+        await sequelize.sync();
         console.log("✅ Database tables synced successfully");
     } catch (err) {
         console.error("❌ Database sync error:", err);

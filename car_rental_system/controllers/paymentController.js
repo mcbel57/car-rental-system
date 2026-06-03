@@ -299,17 +299,48 @@ export const checkPaymentStatus = async (req, res) => {
         return res.status(200).json({ success: true, status: cacheHit.status });
     }
 
-    // 2. Check Database as backup (in case of server restart)
     try {
         const rental = await Rental.findOne({ where: { checkoutRequestId: checkoutRequestId } });
         if (rental && rental.paymentStatus === 'paid') {
+            paymentStatusCache[checkoutRequestId] = { status: 'paid', rentalId: rental.id };
             return res.status(200).json({ success: true, status: 'paid' });
         }
 
-        // If still pending or not found
-        res.status(200).json({ success: true, status: cacheHit ? cacheHit.status : 'pending' });
+        if (!rental || !rental.checkoutRequestId) {
+            return res.status(404).json({ success: false, status: 'pending', message: 'No linked payment found.' });
+        }
+
+        paymentStatusCache[checkoutRequestId] = { status: 'pending', rentalId: rental.id };
+
+        // Try to verify payment with Safaricom directly if still pending.
+        let mpesaToken;
+        try {
+            mpesaToken = await getMpesaToken();
+        } catch (tokenError) {
+            console.warn("⚠️ Could not obtain M-Pesa token while checking status:", tokenError.message);
+            return res.status(200).json({ success: true, status: cacheHit ? cacheHit.status : 'pending' });
+        }
+
+        const verification = await verifySTKPayment(checkoutRequestId, mpesaToken);
+        if (verification.apiReachable && verification.paid) {
+            await rental.update({ paymentStatus: 'paid', status: 'active' });
+            paymentStatusCache[checkoutRequestId] = { status: 'paid', rentalId: rental.id };
+            return res.status(200).json({ success: true, status: 'paid' });
+        }
+
+        if (verification.apiReachable && !verification.paid) {
+            // The transaction was verified as not completed or canceled.
+            const failedStatus = verification.resultDesc?.toLowerCase().includes('cancel') || verification.resultDesc?.toLowerCase().includes('failed') ? 'failed' : 'pending';
+            if (failedStatus === 'failed') {
+                paymentStatusCache[checkoutRequestId] = { status: 'failed', rentalId: rental.id };
+            }
+            return res.status(200).json({ success: true, status: failedStatus });
+        }
+
+        // API not reachable, keep returning pending until next check.
+        return res.status(200).json({ success: true, status: cacheHit ? cacheHit.status : 'pending' });
     } catch (error) {
         console.error("Status Check DB Error:", error);
-        res.status(200).json({ success: true, status: 'pending' });
+        return res.status(200).json({ success: true, status: 'pending' });
     }
 };

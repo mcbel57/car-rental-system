@@ -1,7 +1,7 @@
 import express from "express";
 import db from "../config/db.js";
 import { verifyToken, verifyAdmin } from "../middleware/authMiddleware.js";
-import { getPendingDrivers, verifyDriver } from "../controllers/adminController.js";
+import { getPendingDrivers, verifyDriver, getUserOcr, reviewOcr, getLicenseEntries } from "../controllers/adminController.js";
 
 const router = express.Router();
 const { Car, User, Rental } = db;
@@ -9,6 +9,10 @@ const { Car, User, Rental } = db;
 // ✅ Verification Routes
 router.get("/pending-drivers", verifyToken, verifyAdmin, getPendingDrivers);
 router.post("/verify-driver", verifyToken, verifyAdmin, verifyDriver);
+router.get("/license-entries", verifyToken, verifyAdmin, getLicenseEntries);
+// OCR review endpoints
+router.get("/ocr/:userId", verifyToken, verifyAdmin, getUserOcr);
+router.post("/ocr-review", verifyToken, verifyAdmin, reviewOcr);
 
 // ✅ Get All Customers (Admin)
 router.get("/customers", verifyToken, verifyAdmin, async (req, res) => {

@@ -52,14 +52,26 @@
                 <h1 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">Your <span
                         class="text-indigo-600">Reservations.</span></h1>
             </div>
+            <div class="flex space-x-3">
+                <button onclick="switchTab('active')" id="tab-active" 
+                    class="px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold text-sm uppercase tracking-widest transition-all shadow-lg">
+                    Active Bookings
+                </button>
+                <button onclick="switchTab('history')" id="tab-history"
+                    class="px-6 py-3 bg-slate-100 text-slate-600 rounded-xl font-bold text-sm uppercase tracking-widest transition-all">
+                    Rental History
+                </button>
+            </div>
         </div>
 
-        <div class="glass rounded-[2.5rem] overflow-hidden border-indigo-50 shadow-sm relative overflow-x-auto">
+        <!-- Active Bookings Table -->
+        <div id="activeSection" class="glass rounded-[2.5rem] overflow-hidden border-indigo-50 shadow-sm relative overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr
                         class="bg-indigo-900/5 text-slate-500 uppercase text-[10px] font-black tracking-widest text-center">
                         <th class="px-10 py-6 text-left">Selected Vehicle</th>
+                        <th class="px-10 py-6">License No.</th>
                         <th class="px-10 py-6">Commencement</th>
                         <th class="px-10 py-6">Duration</th>
                         <th class="px-10 py-6">Total Investment</th>
@@ -68,10 +80,35 @@
                 </thead>
                 <tbody id="bookingsTable" class="divide-y divide-indigo-50">
                     <tr>
-                        <td colspan="5" class="py-24 text-center">
+                        <td colspan="6" class="py-24 text-center">
                             <i class="fas fa-circle-notch fa-spin text-indigo-500 text-3xl mb-4"></i>
                             <p class="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Accessing Secure
                                 Ledger...</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Rental History Table -->
+        <div id="historySection" class="hidden glass rounded-[2.5rem] overflow-hidden border-indigo-50 shadow-sm relative overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr
+                        class="bg-indigo-900/5 text-slate-500 uppercase text-[10px] font-black tracking-widest text-center">
+                        <th class="px-10 py-6 text-left">Vehicle</th>
+                        <th class="px-10 py-6">License No.</th>
+                        <th class="px-10 py-6">Rental Period</th>
+                        <th class="px-10 py-6">Status</th>
+                        <th class="px-10 py-6">Total Cost</th>
+                        <th class="px-10 py-6">Refund/Penalty</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTable" class="divide-y divide-indigo-50">
+                    <tr>
+                        <td colspan="6" class="py-24 text-center">
+                            <i class="fas fa-circle-notch fa-spin text-indigo-500 text-3xl mb-4"></i>
+                            <p class="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Loading History...</p>
                         </td>
                     </tr>
                 </tbody>
@@ -87,20 +124,121 @@
             window.location.href = "login.html";
         }
 
+        let currentTab = 'active';
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.getElementById('activeSection').classList.toggle('hidden', tab !== 'active');
+            document.getElementById('historySection').classList.toggle('hidden', tab !== 'history');
+            document.getElementById('tab-active').classList.toggle('bg-indigo-600', tab === 'active');
+            document.getElementById('tab-active').classList.toggle('text-white', tab === 'active');
+            document.getElementById('tab-active').classList.toggle('bg-slate-100', tab !== 'active');
+            document.getElementById('tab-active').classList.toggle('text-slate-600', tab !== 'active');
+            document.getElementById('tab-history').classList.toggle('bg-indigo-600', tab === 'history');
+            document.getElementById('tab-history').classList.toggle('text-white', tab === 'history');
+            document.getElementById('tab-history').classList.toggle('bg-slate-100', tab !== 'history');
+            document.getElementById('tab-history').classList.toggle('text-slate-600', tab !== 'history');
+            
+            if (tab === 'history') {
+                fetchRentalHistory();
+            }
+        }
+
         async function fetchBookings() {
             try {
                 const response = await fetch(`/api/bookings/${user.id}`, {
-                    headers: { "Authorization": `Bearer ${token}` }
+                    method: "GET",
+                    cache: "no-store",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Cache-Control": "no-store"
+                    }
                 });
 
                 if (!response.ok) throw new Error("Sync failed");
 
                 const bookings = await response.json();
                 renderBookings(bookings);
+                pollPendingPayments(bookings);
             } catch (error) {
                 console.error("Ledger Sync Error:", error);
                 Toast.error("Failed to load reservation history");
             }
+        }
+
+        async function fetchRentalHistory() {
+            try {
+                const response = await fetch(`/api/bookings/${user.id}/history`, {
+                    method: "GET",
+                    cache: "no-store",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Cache-Control": "no-store"
+                    }
+                });
+
+                if (!response.ok) throw new Error("Sync failed");
+
+                const history = await response.json();
+                renderHistory(history);
+            } catch (error) {
+                console.error("History Sync Error:", error);
+                Toast.error("Failed to load rental history");
+            }
+        }
+
+        const pendingPaymentPolls = new Map();
+
+        async function pollPendingPayments(bookings) {
+            const pendingBookings = bookings.filter(booking =>
+                booking.checkoutRequestId && !(booking.paymentStatus === 'paid' && booking.status === 'active')
+            );
+
+            for (const booking of pendingBookings) {
+                if (pendingPaymentPolls.has(booking.checkoutRequestId)) continue;
+                pendingPaymentPolls.set(booking.checkoutRequestId, true);
+                checkPaymentStatusLoop(booking.checkoutRequestId, booking.id);
+            }
+        }
+
+        async function checkPaymentStatusLoop(checkoutRequestId, bookingId) {
+            let attempts = 0;
+            const maxAttempts = 120;
+            while (attempts < maxAttempts) {
+                attempts += 1;
+                try {
+                    const statusRes = await fetch(`/api/payment/status/${checkoutRequestId}`, {
+                        headers: { "Authorization": `Bearer ${token}` }
+                    });
+
+                    if (statusRes.ok) {
+                        const statusData = await statusRes.json();
+                        if (statusData.status === 'paid') {
+                            Toast.success("Payment confirmed. Updating bookings...");
+                            await fetchBookings();
+                            pendingPaymentPolls.delete(checkoutRequestId);
+                            return;
+                        }
+
+                        if (statusData.status === 'failed') {
+                            Toast.error("A pending payment failed. Please retry from fleet.");
+                            pendingPaymentPolls.delete(checkoutRequestId);
+                            return;
+                        }
+
+                        if (attempts > 2 && attempts % 3 === 0) {
+                            await confirmBookingPayment(bookingId, false);
+                        }
+                    }
+                } catch (error) {
+                    // ignore network and try again later
+                }
+
+                await new Promise(resolve => setTimeout(resolve, 5000));
+            }
+
+            Toast.info("Payment confirmation is still in progress. Keep this page open and we'll keep checking.");
+            pendingPaymentPolls.delete(checkoutRequestId);
         }
 
         function renderBookings(bookings) {
@@ -145,6 +283,9 @@
                         </div>
                     </td>
                     <td class="px-10 py-8 text-center ${rowBg}">
+                        <span class="text-sm font-bold text-slate-600">${booking.licenseNumber || 'N/A'}</span>
+                    </td>
+                    <td class="px-10 py-8 text-center ${rowBg}">
                         <span class="text-sm font-bold text-slate-600">${booking.rentalDate}</span>
                     </td>
                     <td class="px-10 py-8 text-center ${rowBg}">
@@ -162,8 +303,8 @@
                     <td class="px-10 py-8 text-center ${rowBg}">
                         ${isPending ? `
                             <div class="flex flex-col space-y-2">
-                                <button onclick="confirmBookingPayment(${booking.id})" class="px-5 py-2.5 bg-indigo-50 text-indigo-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-indigo-100 hover:bg-indigo-500 hover:text-white transition-all active:scale-95 shadow-sm">
-                                    Complete Payment
+                                <button class="px-5 py-2.5 bg-slate-100 text-slate-500 rounded-xl text-[10px] font-black uppercase tracking-widest border border-slate-200 cursor-not-allowed shadow-sm" disabled>
+                                    Awaiting payment confirmation
                                 </button>
                                 <button onclick="cancelBooking(${booking.id})" class="px-5 py-2.5 bg-rose-50 text-rose-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-rose-100 hover:bg-rose-500 hover:text-white transition-all active:scale-95 shadow-sm">
                                     Cancel
@@ -181,9 +322,80 @@
             });
         }
 
-        async function confirmBookingPayment(bookingId) {
+        function renderHistory(history) {
+            const table = document.getElementById("historyTable");
+            table.innerHTML = "";
+
+            if (history.length === 0) {
+                table.innerHTML = `<tr><td colspan="5" class="py-24 text-center text-slate-400 font-bold border-2 border-dashed border-indigo-50 rounded-[3rem] m-8 uppercase tracking-widest text-xs">No rental history yet.</td></tr>`;
+                return;
+            }
+
+            history.forEach(rental => {
+                const row = document.createElement("tr");
+                row.className = "group hover:bg-white transition-colors duration-300";
+                
+                // Status styling
+                let statusColor = rental.status === 'completed' ? 
+                    'bg-blue-50 text-blue-600 border-blue-100' : 
+                    'bg-slate-50 text-slate-600 border-slate-100';
+
+                const hasRefund = rental.refundAmount > 0;
+                const hasPenalty = rental.penaltyCharged > 0;
+                let refundDisplay = 'N/A';
+                let refundColor = 'text-slate-500';
+
+                if (hasRefund) {
+                    refundDisplay = `Refund: Ksh ${rental.refundAmount.toLocaleString()}`;
+                    refundColor = 'text-emerald-600';
+                }
+                if (hasPenalty) {
+                    refundDisplay = `Penalty: Ksh ${rental.penaltyCharged.toLocaleString()}`;
+                    refundColor = 'text-rose-600';
+                }
+
+                row.innerHTML = `
+                    <td class="px-10 py-8">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-car-side"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-base font-black text-slate-800 tracking-tight">${rental.carName}</h4>
+                                <p class="text-[9px] text-slate-400 font-black uppercase tracking-widest mt-0.5">ID #${rental.id}</p>
+                            </div>
+                        </div>
+                    </td>
+                        <td class="px-10 py-8 text-center">
+                        <span class="text-sm font-bold text-slate-600">${rental.licenseNumber || 'N/A'}</span>
+                    </td>
+                    <td class="px-10 py-8 text-center">
+                        <div class="text-sm font-bold text-slate-600">
+                            <p>${rental.rentalDate}</p>
+                            <p class="text-xs text-slate-400 mt-1">${rental.rentalDays} days</p>
+                            ${rental.returnedDate ? `<p class="text-xs text-slate-400 mt-1">Returned: ${rental.returnedDate}</p>` : ''}
+                        </div>
+                    </td>
+                    <td class="px-10 py-8 text-center">
+                        <span class="px-3 py-1 ${statusColor} rounded-lg text-[10px] font-black uppercase tracking-widest border">${rental.status}</span>
+                    </td>
+                    <td class="px-10 py-8 text-center">
+                        <p class="text-lg font-black text-indigo-600">Ksh ${rental.cost.toLocaleString()}</p>
+                        <p class="text-xs text-slate-400 mt-1">Deposit: Ksh ${rental.depositPaid || 0}</p>
+                    </td>
+                    <td class="px-10 py-8 text-center">
+                        <p class="text-sm font-bold ${refundColor}">${refundDisplay}</p>
+                        ${rental.cancellationReason ? `<p class="text-xs text-slate-400 mt-2 italic">"${rental.cancellationReason}"</p>` : ''}
+                    </td>
+                `;
+
+                table.appendChild(row);
+            });
+        }
+
+        async function confirmBookingPayment(bookingId, showToast = true) {
             try {
-                Toast.info("Verifying payment status...");
+                if (showToast) Toast.info("Verifying payment status...");
                 const response = await fetch(`/api/payment/confirm/${bookingId}`, {
                     method: "POST",
                     headers: { "Authorization": `Bearer ${token}` }
@@ -191,30 +403,44 @@
 
                 const data = await response.json();
                 if (response.ok && data.success) {
-                    Toast.success("Payment confirmed. Refreshing reservations...");
+                    if (showToast) Toast.success("Payment confirmed. Refreshing reservations...");
                     fetchBookings();
-                    return;
+                    return true;
                 }
 
-                Toast.error(data.message || "Payment verification failed.");
+                if (showToast) Toast.error(data.message || "Payment verification failed.");
+                return false;
             } catch (error) {
                 console.error("Payment confirm error:", error);
-                Toast.error("Unable to verify payment. Please try again.");
+                if (showToast) Toast.error("Unable to verify payment. Please try again.");
+                return false;
             }
         }
 
         async function cancelBooking(bookingId) {
-            if (!confirm("Are you sure you want to terminate this reservation? Access will be revoked immediately.")) return;
+            const reason = prompt("Please provide a reason for termination (optional):");
+            if (reason === null) return;
 
             try {
                 Toast.info("Executing termination...");
                 const response = await fetch(`/api/bookings/${bookingId}`, {
                     method: "DELETE",
-                    headers: { "Authorization": `Bearer ${token}` }
+                    headers: { 
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ reason: reason || "User terminated booking" })
                 });
 
                 if (response.ok) {
-                    Toast.success("Reservation terminated successfully");
+                    const data = await response.json();
+                    if (data.refund && data.refund.refundAmount > 0) {
+                        Toast.success(`Reservation terminated. Refund: Ksh ${data.refund.refundAmount.toLocaleString()}`);
+                    } else if (data.refund && data.refund.penaltyCharged > 0) {
+                        Toast.warning(`Reservation terminated. Penalty applied: Ksh ${data.refund.penaltyCharged.toLocaleString()}`);
+                    } else {
+                        Toast.success("Reservation terminated successfully");
+                    }
                     fetchBookings();
                 } else {
                     Toast.error("Termination failed");

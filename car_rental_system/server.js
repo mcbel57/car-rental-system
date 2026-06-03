@@ -38,6 +38,13 @@ const upload = multer({ dest: "uploads/" });
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded data
+app.use((req, res, next) => {
+    if (req.path.startsWith('/api/') || req.path.endsWith('.html')) {
+        res.set('Cache-Control', 'no-store');
+        res.set('Pragma', 'no-cache');
+    }
+    next();
+});
 app.use(morgan("dev")); // Log all requests (GET, POST, etc.)
 
 // ✅ Serve Static Files (Frontend HTML)

@@ -15,7 +15,12 @@
 
     <div class="flex min-h-screen">
         <!-- 🚀 Modern Sidebar -->
-        <aside class="w-72 bg-slate-900 text-white flex flex-col shadow-2xl fixed top-0 left-0 h-screen z-20 overflow-y-auto custom-scrollbar">
+        <aside id="adminSidebar" class="hidden md:flex w-72 bg-slate-900 text-white flex-col shadow-2xl fixed top-0 left-0 h-screen z-30 overflow-y-auto custom-scrollbar">
+            <div class="md:hidden flex justify-end p-4">
+                <button id="sidebarClose" class="p-3 rounded-2xl bg-slate-800 text-white hover:bg-slate-700 transition-all">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
             <div class="p-8 flex items-center space-x-3 flex-shrink-0">
                 <div
                     class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg transform rotate-12 transition-transform hover:rotate-0">
@@ -60,10 +65,13 @@
         </aside>
 
         <!-- 🏢 Main Dashboard -->
-        <main class="ml-72 flex-1 bg-slate-50 relative min-h-screen">
+        <main class="ml-0 md:ml-72 flex-1 bg-slate-50 relative min-h-screen">
             <!-- Header -->
             <header
-                class="sticky top-0 glass z-10 px-10 py-6 flex justify-between items-center border-b border-slate-200/50">
+                class="sticky top-0 glass-soft z-10 px-4 md:px-10 py-6 flex justify-between items-center border-b border-slate-200/50">
+                <button id="menuToggle" class="md:hidden inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-slate-900 text-white hover:bg-slate-800 transition-all">
+                    <i class="fas fa-bars"></i>
+                </button>
                 <div class="animate-fade-in">
                     <h1 class="text-2xl font-black text-slate-800 tracking-tighter">Admin Dashboard</h1>
                 </div>
@@ -78,7 +86,7 @@
                 <!-- 📊 Stats Overview -->
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div
-                        class="glass p-8 rounded-[2rem] border-indigo-50 shadow-sm transition-all hover:shadow-xl group">
+                        class="glass-soft p-8 rounded-[2rem] border-indigo-50 shadow-sm transition-all hover:shadow-xl group">
                         <div
                             class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                             <i class="fas fa-car text-xl"></i>
@@ -87,7 +95,7 @@
                         <h4 class="text-3xl font-black text-slate-800 tracking-tighter" id="totalCars">--</h4>
                     </div>
                     <div
-                        class="glass p-8 rounded-[2rem] border-violet-50 shadow-sm transition-all hover:shadow-xl group">
+                        class="glass-soft p-8 rounded-[2rem] border-violet-50 shadow-sm transition-all hover:shadow-xl group">
                         <div
                             class="w-12 h-12 bg-violet-100 text-violet-600 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                             <i class="fas fa-calendar-check text-xl"></i>
@@ -106,8 +114,8 @@
                     </div>
                     <div id="inquiriesGrid" class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <!-- Loading Skeletons -->
-                        <div class="glass p-8 rounded-[2rem] animate-pulse h-40"></div>
-                        <div class="glass p-8 rounded-[2rem] animate-pulse h-40"></div>
+                        <div class="glass-soft p-8 rounded-[2rem] animate-pulse h-40"></div>
+                        <div class="glass-soft p-8 rounded-[2rem] animate-pulse h-40"></div>
                     </div>
                 </section>
 
@@ -116,7 +124,7 @@
                     <h3 class="text-xl font-bold text-slate-800 mb-8 tracking-tight">Quick Actions</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                         <a href="admin_manage_cars.html"
-                            class="glass group p-8 rounded-[2.5rem] border-blue-50 hover:border-blue-400 transition-all hover:-translate-y-2 shadow-sm hover:shadow-2xl">
+                            class="glass-soft group p-8 rounded-[2.5rem] border-blue-50 hover:border-blue-400 transition-all hover:-translate-y-2 shadow-sm hover:shadow-2xl">
                             <div
                                 class="w-14 h-14 bg-blue-600 text-white rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-blue-100 group-hover:rotate-12 transition-transform">
                                 <i class="fas fa-plus text-2xl"></i>
@@ -167,6 +175,8 @@
 
                 // 2. Fetch Inquiries
                 const inquiryRes = await fetch("/api/inquiries", {
+                    method: "GET",
+                    cache: "no-store",
                     headers: { "Authorization": `Bearer ${token}` }
                 });
                 if (inquiryRes.ok) {
@@ -193,7 +203,7 @@
             countBadge.innerText = `${inquiries.filter(i => i.status === 'new').length} New`;
             
             grid.innerHTML = inquiries.slice(0, 4).map(inv => `
-                <div class="glass p-8 rounded-[2rem] border-slate-100 hover:border-indigo-200 transition-all group relative overflow-hidden">
+                <div class="glass-soft p-8 rounded-[2rem] border-slate-100 hover:border-indigo-200 transition-all group relative overflow-hidden">
                     <div class="flex justify-between items-start mb-4">
                         <div class="flex items-center space-x-3">
                             <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center font-black text-xs uppercase">${inv.fullName[0]}</div>
@@ -206,13 +216,61 @@
                     </div>
                     <p class="text-sm text-slate-600 line-clamp-2 italic leading-relaxed">"${inv.message}"</p>
                     <div class="mt-6 flex justify-end">
-                        <button class="text-[10px] font-black uppercase tracking-widest text-indigo-600 hover:text-indigo-800 transition-colors">Mark as Read <i class="fas fa-check ml-1"></i></button>
+                        <button onclick="markAsRead(${inv.id})" class="text-[10px] font-black uppercase tracking-widest text-indigo-600 hover:text-indigo-800 transition-colors">Mark as Read <i class="fas fa-check ml-1"></i></button>
                     </div>
                 </div>
             `).join("");
         }
 
+        async function markAsRead(inquiryId) {
+            try {
+                let response = await fetch(`/api/inquiries/${inquiryId}/read`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    // Fallback for older clients or stale cached endpoints.
+                    response = await fetch(`/api/inquiries/${inquiryId}/read`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                }
+
+                if (!response.ok) {
+                    let errorBody;
+                    try {
+                        errorBody = await response.json();
+                    } catch (jsonError) {
+                        console.error('Failed to parse error response:', jsonError);
+                    }
+                    const message = errorBody?.error || response.statusText || 'Failed to mark inquiry as read';
+                    throw new Error(message);
+                }
+
+                Toast.success('Inquiry marked as read');
+                fetchDashboardData();
+            } catch (error) {
+                console.error('Mark as Read Error:', error);
+                Toast.error(`Unable to mark inquiry as read: ${error.message}`);
+            }
+        }
+
         fetchDashboardData();
+
+        document.getElementById('menuToggle')?.addEventListener('click', () => {
+            document.getElementById('adminSidebar')?.classList.toggle('hidden');
+        });
+
+        document.getElementById('sidebarClose')?.addEventListener('click', () => {
+            document.getElementById('adminSidebar')?.classList.add('hidden');
+        });
     </script>
 
 </body>

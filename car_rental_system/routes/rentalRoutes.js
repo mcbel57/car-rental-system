@@ -136,8 +136,19 @@ router.get("/admin", verifyToken, verifyAdmin, async (req, res) => {
 // ✅ Get all rentals for general admin use (backward compatibility)
 router.get("/", verifyToken, verifyAdmin, async (req, res) => {
     try {
-        const rentals = await Rental.findAll();
-        res.json(rentals);
+        const rentals = await Rental.findAll({
+            include: [
+                { model: Car, as: "Car", attributes: ["carName", "costPerDay"] }
+            ]
+        });
+
+        // ✅ Map to use current car data
+        const formattedRentals = rentals.map(r => ({
+            ...r.toJSON(),
+            carName: r.Car ? r.Car.carName : r.carName
+        }));
+
+        res.json(formattedRentals);
     } catch (error) {
         console.error("❌ Error fetching rentals:", error);
         res.status(500).json({ success: false, message: "Error fetching rentals." });

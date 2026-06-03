@@ -1,5 +1,6 @@
 import express from "express";
 import db from "../config/db.js";
+import { verifyToken, verifyAdmin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 const { Inquiry } = db;
@@ -21,12 +22,48 @@ router.post("/", async (req, res) => {
 });
 
 // ✅ GET all inquiries (Admin only)
-router.get("/", async (req, res) => {
+router.get("/", verifyToken, verifyAdmin, async (req, res) => {
     try {
         const inquiries = await Inquiry.findAll({ order: [['createdAt', 'DESC']] });
         res.json(inquiries);
     } catch (error) {
         res.status(500).json({ error: "Failed to fetch inquiries" });
+    }
+});
+
+// ✅ PATCH inquiry status to read
+router.patch("/:id/read", verifyToken, verifyAdmin, async (req, res) => {
+    try {
+        const inquiryId = req.params.id;
+        const inquiry = await Inquiry.findByPk(inquiryId);
+
+        if (!inquiry) {
+            return res.status(404).json({ error: "Inquiry not found" });
+        }
+
+        await inquiry.update({ status: 'read' });
+        res.json({ message: "Inquiry marked as read", inquiry });
+    } catch (error) {
+        console.error("❌ Inquiry update error:", error);
+        res.status(500).json({ error: "Failed to update inquiry status" });
+    }
+});
+
+// ✅ POST alias for read marking, in case PATCH is blocked by intermediary agents
+router.post("/:id/read", verifyToken, verifyAdmin, async (req, res) => {
+    try {
+        const inquiryId = req.params.id;
+        const inquiry = await Inquiry.findByPk(inquiryId);
+
+        if (!inquiry) {
+            return res.status(404).json({ error: "Inquiry not found" });
+        }
+
+        await inquiry.update({ status: 'read' });
+        res.json({ message: "Inquiry marked as read", inquiry });
+    } catch (error) {
+        console.error("❌ Inquiry update error:", error);
+        res.status(500).json({ error: "Failed to update inquiry status" });
     }
 });
 

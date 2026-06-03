@@ -90,6 +90,12 @@ export const getAllCars = async (req, res) => {
             };
         }));
 
+        // If client requested only available cars, filter those with no bookedDates
+        if (req.query.available && req.query.available.toString() === 'true') {
+            const available = formattedCars.filter(c => !c.bookedDates || c.bookedDates.length === 0);
+            return res.status(200).json({ success: true, cars: available });
+        }
+
         res.status(200).json({ success: true, cars: formattedCars });
     } catch (error) {
         res.status(500).json({ success: false, message: "Error retrieving cars", error: error.message });
